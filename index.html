@@ -3,310 +3,350 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Device Diagnostic — Permission-based Tester</title>
+  <title>Device Diagnostic — Pro (Client-only)</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>tailwind.config = {theme: {extend: {colors: {brand:'#0b76ef'}}}}</script>
+  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free/css/all.min.css">
   <style>
-    :root{--accent:#0b76ef}
-    body{font-family:Inter, system-ui, Arial, sans-serif;margin:0;background:#f6f8fb;color:#111}
-    header{background:linear-gradient(90deg,#0b76ef22,#0b76ef11);padding:18px 20px;border-bottom:1px solid #e6eefc}
-    h1{margin:0;font-size:18px}
-    .wrap{max-width:980px;margin:18px auto;padding:12px}
-    .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(12,40,80,0.06)}
-    button{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
-    .muted{color:#556; font-size:13px}
-    pre{background:#0f1724;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto}
-    .row{display:flex;gap:10px;flex-wrap:wrap}
-    label{font-size:13px}
-    select,input[type=text]{padding:6px;border-radius:8px;border:1px solid #e2e8f0}
-    video,canvas{max-width:100%;border-radius:8px}
-    .small{font-size:13px}
-    .kpi{display:inline-block;padding:6px 10px;background:#f1f7ff;border-radius:8px;margin-right:8px}
-    .danger{color:#b91c1c}
+    /* small custom styles */
+    .card { @apply bg-white rounded-xl shadow-md p-4; }
+    .muted { color: #6b7280; }
+    pre { background:#0b1320;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto }
+    video, canvas { border-radius:8px; }
   </style>
 </head>
-<body>
-  <header>
-    <div class="wrap">
-      <h1>Device Diagnostic — Permission-based tester</h1>
-      <div class="muted">This page only reads data you explicitly allow. It won't send unauthorized data anywhere unless you click a share button.</div>
-    </div>
-  </header>
-
-  <main class="wrap">
-    <section class="card">
-      <h3>1) Local device & browser info</h3>
-      <div class="muted small">Non-permissioned info we can read from the browser</div>
-      <pre id="basicInfo">Loading...</pre>
-      <div style="margin-top:8px"><button id="refreshBasic">Refresh</button></div>
-    </section>
-
-    <section class="card">
-      <h3>2) Network & IP</h3>
-      <div class="muted small">Public IP & ISP (needs external lookup) and a quick download-speed test</div>
-      <div style="margin:8px 0">
-        <button id="getIpBtn">Get IP & ISP (external)</button>
-        <button id="speedTestBtn">Run network speed test</button>
+<body class="bg-slate-50 text-slate-800 antialiased">
+  <div class="max-w-6xl mx-auto p-4">
+    <header class="flex items-center justify-between mb-4">
+      <div>
+        <h1 class="text-2xl font-semibold">Device Diagnostic — Pro (Client-side)</h1>
+        <p class="muted text-sm">Local-only diagnostics. Nothing is uploaded unless you explicitly export or share.</p>
       </div>
-      <div id="ipResult" class="small"></div>
-      <div id="speedResult" class="small" style="margin-top:8px"></div>
-    </section>
+      <div class="flex items-center gap-3">
+        <button id="themeToggle" class="px-3 py-2 rounded-md bg-brand text-white text-sm">Dark</button>
+        <button id="downloadReportBtn" class="px-3 py-2 rounded-md border text-sm">Export JSON</button>
+      </div>
+    </header>
 
-    <section class="card">
-      <h3>3) Camera & Microphone test</h3>
-      <div class="muted small">Click to allow camera / mic — you will be asked by your browser. Choose devices if you have multiple.</div>
-      <div style="margin-top:8px" class="row">
-        <div style="flex:1">
-          <label>Camera</label>
-          <div style="margin:6px 0"><select id="videoDevices"></select> <button id="startCamera">Start camera</button></div>
-          <video id="preview" autoplay playsinline muted style="background:#000;height:240px"></video>
-          <div style="margin-top:8px"><button id="takeSnapshot">Take snapshot</button> <a id="downloadSnapshot" style="display:none;margin-left:8px">Download</a></div>
+    <main class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <!-- Left column: summary -->
+      <section class="md:col-span-1">
+        <div class="card mb-4">
+          <h3 class="font-medium">Quick Summary</h3>
+          <div class="mt-2 text-sm muted">Snapshot of your device</div>
+          <div id="summaryCards" class="mt-3 grid grid-cols-2 gap-2"></div>
         </div>
-        <div style="flex:1">
-          <label>Microphone</label>
-          <div style="margin:6px 0"><select id="audioDevices"></select> <button id="startMic">Start mic</button></div>
-          <div style="margin-top:8px">
-            <button id="startRecording">Start recording (cam+mic)</button>
-            <button id="stopRecording" disabled>Stop recording</button>
-            <div id="recordingsList"></div>
+
+        <div class="card mb-4">
+          <h3 class="font-medium">Network</h3>
+          <div class="mt-2 muted text-sm">IP, ISP, basic speed & ping</div>
+          <div class="mt-3 space-y-2 text-sm">
+            <div id="ipBox">IP: —</div>
+            <div id="ispBox">ISP: —</div>
+            <div id="speedBox">Speed: —</div>
+            <div id="pingBox">Ping: —</div>
+            <div class="flex gap-2 mt-2">
+              <button id="btnIp" class="px-2 py-1 rounded bg-brand text-white text-sm">Get IP</button>
+              <button id="btnSpeed" class="px-2 py-1 rounded border text-sm">Speed test</button>
+              <button id="btnPing" class="px-2 py-1 rounded border text-sm">Ping</button>
+            </div>
           </div>
         </div>
-      </div>
-    </section>
 
-    <section class="card">
-      <h3>4) Enumerate media devices</h3>
-      <div class="muted small">List of available input/output devices (requires browser permission to show labels in many browsers)</div>
-      <button id="listDevices">List devices</button>
-      <pre id="devicesList">-</pre>
-    </section>
+        <div class="card">
+          <h3 class="font-medium">Privacy</h3>
+          <div class="mt-2 muted text-sm">This tool is client-only. It will never send data to a server unless you export and choose to share it.</div>
+          <div class="mt-3 text-xs">
+            <label class="flex items-center gap-2"><input type="checkbox" id="optLabels"> Show device labels (requires permission)</label>
+          </div>
+        </div>
+      </section>
 
-    <section class="card">
-      <h3>5) Advanced</h3>
-      <div class="muted small">Optional: copy details to clipboard (local only). The page will not automatically upload or send data anywhere.</div>
-      <div style="margin-top:8px">
-        <button id="copyAll">Copy summary to clipboard</button>
-        <button id="downloadJson">Download JSON</button>
-      </div>
-      <pre id="summary">-</pre>
-    </section>
+      <!-- Middle column: dashboard cards -->
+      <section class="md:col-span-2">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <!-- Browser & Device -->
+          <div class="card">
+            <div class="flex items-center justify-between">
+              <h3 class="font-medium">Browser & Device</h3>
+              <div class="muted text-sm">non-permissioned info</div>
+            </div>
+            <pre id="basicInfo" class="mt-3">Loading...</pre>
+            <div class="mt-2 flex gap-2">
+              <button id="refreshBasic" class="px-3 py-1 rounded border text-sm">Refresh</button>
+              <button id="btnBattery" class="px-3 py-1 rounded border text-sm">Get Battery</button>
+            </div>
+          </div>
 
-    <section class="card">
-      <div class="danger">Legal note:</div>
-      <div class="muted small">Only use this tool on devices you own or with explicit consent from the device owner. This tool requires permissions and is intended for diagnostics and troubleshooting only.</div>
-    </section>
-  </main>
+          <!-- Performance -->
+          <div class="card">
+            <h3 class="font-medium">Performance Tests</h3>
+            <div class="muted text-sm mt-1">Run quick CPU / FPS tests</div>
+            <div class="mt-3 flex flex-col gap-2">
+              <div class="flex gap-2">
+                <button id="btnCpu" class="px-3 py-1 rounded border text-sm">CPU stress</button>
+                <button id="btnFps" class="px-3 py-1 rounded border text-sm">FPS Test</button>
+                <button id="btnStorage" class="px-3 py-1 rounded border text-sm">LocalStorage test</button>
+              </div>
+              <div id="perfResult" class="text-sm muted"></div>
+            </div>
+          </div>
 
-<script>
-// Helpers and state
-const state = { basic: {}, ip: null, speed: null, devices: [], recordings: [] };
+          <!-- Camera & Mic -->
+          <div class="card">
+            <h3 class="font-medium">Camera & Microphone</h3>
+            <div class="muted text-sm mt-1">Allow camera/mic to test preview, snapshot & recording</div>
+            <div class="mt-3 grid grid-cols-1 gap-2">
+              <div>
+                <label class="text-sm">Camera</label>
+                <div class="flex gap-2 mt-1">
+                  <select id="videoDevices" class="flex-1 rounded border p-1"></select>
+                  <button id="startCamera" class="px-2 py-1 rounded border text-sm">Start</button>
+                  <button id="snap" class="px-2 py-1 rounded border text-sm">Snapshot</button>
+                </div>
+                <video id="preview" autoplay playsinline muted class="w-full mt-2 h-48 bg-black"></video>
+              </div>
 
-function showBasic() {
-  const nav = navigator;
-  const info = {
-    userAgent: nav.userAgent,
-    platform: nav.platform,
-    language: nav.language,
-    cookiesEnabled: navigator.cookieEnabled,
-    online: navigator.onLine,
-    hardwareConcurrency: nav.hardwareConcurrency || 'n/a',
-    deviceMemory: nav.deviceMemory || 'n/a',
-    vendor: nav.vendor || 'n/a',
-    webdriver: !!nav.webdriver,
-    engines: { product: nav.product }
-  };
-  state.basic = info;
-  document.getElementById('basicInfo').textContent = JSON.stringify(info, null, 2);
-  refreshSummary();
-}
+              <div>
+                <label class="text-sm">Microphone</label>
+                <div class="flex gap-2 mt-1">
+                  <select id="audioDevices" class="flex-1 rounded border p-1"></select>
+                  <button id="startMic" class="px-2 py-1 rounded border text-sm">Test</button>
+                </div>
+                <div class="mt-2 flex gap-2">
+                  <button id="startRec" class="px-3 py-1 rounded bg-brand text-white text-sm">Start Rec</button>
+                  <button id="stopRec" class="px-3 py-1 rounded border text-sm" disabled>Stop</button>
+                </div>
+                <div id="recordings" class="mt-2 text-sm muted"></div>
+              </div>
 
-document.getElementById('refreshBasic').addEventListener('click', showBasic);
-showBasic();
+            </div>
+          </div>
 
-// IP & ISP
-document.getElementById('getIpBtn').addEventListener('click', async ()=>{
-  const out = document.getElementById('ipResult'); out.textContent = 'Fetching...';
-  try{
-    // ipapi.co provides a simple JSON endpoint with org, ip, city, country_name
-    const res = await fetch('https://ipapi.co/json/');
-    if(!res.ok) throw new Error('Lookup failed');
-    const j = await res.json();
-    state.ip = j;
-    out.textContent = `IP: ${j.ip}\nCity: ${j.city || '-'}\nRegion: ${j.region || '-'}\nCountry: ${j.country_name || '-'}\nOrg/ISP: ${j.org || j.company || '-'}\n`;
-    refreshSummary();
-  }catch(err){
-    out.textContent = 'Could not fetch IP/ISP (blocked or offline). Try again or open from a web host.';
-  }
-});
+          <!-- Tools: QR, Clipboard, Notepad -->
+          <div class="card">
+            <h3 class="font-medium">Tools</h3>
+            <div class="mt-2 grid grid-cols-1 gap-2">
+              <div>
+                <label class="text-sm">Simple Notepad</label>
+                <textarea id="notepad" class="w-full mt-1 border rounded p-2" rows="3" placeholder="Take notes... (local only)"></textarea>
+                <div class="mt-2 flex gap-2">
+                  <button id="saveNote" class="px-3 py-1 rounded border text-sm">Save</button>
+                  <button id="clearNote" class="px-3 py-1 rounded border text-sm">Clear</button>
+                </div>
+              </div>
 
-// Simple download speed test
-async function runSpeedTest(){
-  const out = document.getElementById('speedResult');
-  out.textContent = 'Running...';
-  try{
-    const url = 'https://speed.hetzner.de/100KB.bin'; // ~100 KB test file
-    const start = performance.now();
-    const r = await fetch(url, {cache:'no-store'});
-    const blob = await r.blob();
-    const ms = performance.now() - start;
-    const bytes = blob.size;
-    const bitsPerSec = (bytes * 8) / (ms/1000);
-    const mbps = (bitsPerSec / (1024*1024)).toFixed(2);
-    state.speed = { bytes, ms, mbps };
-    out.textContent = `Downloaded ${bytes} bytes in ${ms.toFixed(0)} ms → ≈ ${mbps} Mbps`;
-    refreshSummary();
-  }catch(err){
-    out.textContent = 'Speed test failed (cross-origin or offline).';
-  }
-}
+              <div>
+                <label class="text-sm">QR Code (from text)</label>
+                <input id="qrText" class="w-full mt-1 border rounded p-1" placeholder="Enter text to generate QR" />
+                <div class="mt-2 flex gap-2 items-center">
+                  <button id="genQr" class="px-3 py-1 rounded border text-sm">Generate</button>
+                  <div id="qrcode" class="ml-2"></div>
+                </div>
+              </div>
 
-document.getElementById('speedTestBtn').addEventListener('click', runSpeedTest);
+              <div>
+                <label class="text-sm">Clipboard</label>
+                <div class="mt-1 flex gap-2">
+                  <input id="clipIn" class="flex-1 border rounded p-1" placeholder="Text to copy" />
+                  <button id="copyBtn" class="px-3 py-1 rounded border text-sm">Copy</button>
+                </div>
+              </div>
 
-// Media devices
-async function enumerateMedia(){
-  try{
-    const devices = await navigator.mediaDevices.enumerateDevices();
-    state.devices = devices;
-    const selV = document.getElementById('videoDevices');
-    const selA = document.getElementById('audioDevices');
-    selV.innerHTML = '';
-    selA.innerHTML = '';
-    devices.forEach(d=>{
-      const o = document.createElement('option');
-      o.value = d.deviceId;
-      o.textContent = d.label || `${d.kind} (${d.deviceId.slice(0,6)})`;
-      if(d.kind === 'videoinput') selV.appendChild(o);
-      if(d.kind === 'audioinput') selA.appendChild(o);
+            </div>
+          </div>
+
+        </div>
+
+        <!-- Device list & advanced -->
+        <div class="card mt-4">
+          <h3 class="font-medium">Devices & Export</h3>
+          <div class="muted text-sm mt-1">Enumerate devices and export a JSON/PDF report</div>
+          <div class="mt-3 flex gap-2">
+            <button id="listDevices" class="px-3 py-1 rounded border text-sm">List Devices</button>
+            <button id="downloadJson" class="px-3 py-1 rounded border text-sm">Download JSON</button>
+            <button id="downloadPdf" class="px-3 py-1 rounded border text-sm">Download PDF</button>
+          </div>
+          <pre id="devicesList" class="mt-3">-</pre>
+        </div>
+
+      </section>
+    </main>
+
+    <footer class="mt-6 text-center muted text-sm">Only use this on your own devices or with consent. This app is client-only — no server uploads by default.</footer>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+  <script>
+    // State
+    const state = { basic: {}, ip: null, speed: null, ping: null, devices: [], recordings: [] };
+
+    // Basic info
+    function showBasic(){
+      const nav = navigator;
+      const info = {
+        userAgent: nav.userAgent,
+        platform: nav.platform,
+        language: nav.language,
+        cookiesEnabled: nav.cookieEnabled,
+        online: nav.onLine,
+        hardwareConcurrency: nav.hardwareConcurrency || 'n/a',
+        deviceMemory: nav.deviceMemory || 'n/a',
+        vendor: nav.vendor || 'n/a',
+        webdriver: !!nav.webdriver,
+        screen: { width: screen.width, height: screen.height, pixelRatio: window.devicePixelRatio }
+      };
+      state.basic = info;
+      document.getElementById('basicInfo').textContent = JSON.stringify(info,null,2);
+      updateSummaryCards();
+    }
+    document.getElementById('refreshBasic').addEventListener('click', showBasic);
+    showBasic();
+
+    function updateSummaryCards(){
+      const box = document.getElementById('summaryCards'); box.innerHTML='';
+      const items = [
+        ['Browser', navigator.userAgent],
+        ['Platform', navigator.platform],
+        ['Resolution', screen.width+'x'+screen.height],
+        ['Cores', navigator.hardwareConcurrency || 'n/a']
+      ];
+      items.forEach(it=>{
+        const el = document.createElement('div'); el.className='p-3 bg-white rounded-lg shadow flex flex-col';
+        el.innerHTML = `<div class="text-xs muted">${it[0]}</div><div class="font-medium text-sm mt-1">${it[1]}</div>`;
+        box.appendChild(el);
+      });
+    }
+
+    // IP & ISP
+    document.getElementById('btnIp').addEventListener('click', async ()=>{
+      const ipBox = document.getElementById('ipBox'); ipBox.textContent='Fetching...';
+      try{
+        const r = await fetch('https://ipapi.co/json/'); if(!r.ok) throw 0; const j = await r.json();
+        state.ip = j; document.getElementById('ipBox').textContent = 'IP: '+j.ip; document.getElementById('ispBox').textContent = 'ISP: '+(j.org||j.company||'-');
+      }catch(e){ ipBox.textContent='IP lookup failed (CORS/offline)'; }
     });
-    document.getElementById('devicesList').textContent = JSON.stringify(devices.map(d=>({kind:d.kind,label:d.label,id:d.deviceId})), null, 2);
-    refreshSummary();
-  }catch(err){
-    document.getElementById('devicesList').textContent = 'enumerateDevices failed — allow camera/mic permissions first or run on secure context (https).';
-  }
-}
 
-document.getElementById('listDevices').addEventListener('click', enumerateMedia);
+    // Speed test (simple)
+    document.getElementById('btnSpeed').addEventListener('click', async ()=>{
+      const box = document.getElementById('speedBox'); box.textContent='Running...';
+      try{
+        const url='https://speed.hetzner.de/100KB.bin'; const start = performance.now(); const r = await fetch(url,{cache:'no-store'}); const blob = await r.blob(); const ms = performance.now()-start; const bits = (blob.size*8)/(ms/1000); const mbps = (bits/(1024*1024)).toFixed(2);
+        state.speed = {mbps,bytes:blob.size,ms}; box.textContent = `${mbps} Mbps (${blob.size} bytes)`; 
+      }catch(err){ box.textContent='Speed test failed.'; }
+    });
 
-// Camera preview, snapshot
-let currentStream = null;
-async function startCamera(){
-  const vid = document.getElementById('preview');
-  const sel = document.getElementById('videoDevices');
-  const deviceId = sel.value || undefined;
-  try{
-    if(currentStream){ currentStream.getTracks().forEach(t=>t.stop()); currentStream = null; }
-    const stream = await navigator.mediaDevices.getUserMedia({ video: deviceId ? { deviceId: { exact: deviceId } } : true, audio: false });
-    currentStream = stream;
-    vid.srcObject = stream;
-    await enumerateMedia();
-  }catch(err){
-    alert('Camera start failed: ' + (err.message || err));
-  }
-}
+    // Ping (simple fetch latency)
+    document.getElementById('btnPing').addEventListener('click', async ()=>{
+      const box = document.getElementById('pingBox'); box.textContent='Pinging...';
+      try{
+        const start = performance.now(); await fetch('https://example.com',{cache:'no-store',mode:'no-cors'}); const ms = performance.now()-start; state.ping = ms; box.textContent = ms.toFixed(0)+' ms (approx)';
+      }catch(e){ box.textContent='Ping test: may be blocked by CORS.'; }
+    });
 
-document.getElementById('startCamera').addEventListener('click', startCamera);
+    // Battery
+    document.getElementById('btnBattery').addEventListener('click', async ()=>{
+      try{
+        const bat = await navigator.getBattery();
+        alert('Battery: '+(bat.level*100).toFixed(0)+'% — charging: '+bat.charging);
+      }catch(e){ alert('Battery API not supported'); }
+    });
 
-document.getElementById('takeSnapshot').addEventListener('click', ()=>{
-  const vid = document.getElementById('preview');
-  if(!vid.srcObject){ alert('Start camera first'); return; }
-  const c = document.createElement('canvas');
-  c.width = vid.videoWidth || 640; c.height = vid.videoHeight || 480;
-  const ctx = c.getContext('2d'); ctx.drawImage(vid,0,0,c.width,c.height);
-  c.toBlob(blob=>{
-    const url = URL.createObjectURL(blob);
-    const a = document.getElementById('downloadSnapshot');
-    a.href = url; a.download = 'snapshot.png'; a.style.display='inline-block'; a.textContent='Download snapshot';
-  }, 'image/png');
-});
+    // Enumerate devices
+    async function enumerateMedia(){
+      try{
+        const devices = await navigator.mediaDevices.enumerateDevices(); state.devices = devices;
+        const v = document.getElementById('videoDevices'); const a = document.getElementById('audioDevices'); v.innerHTML=''; a.innerHTML='';
+        devices.forEach(d=>{ const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label||d.kind+' '+d.deviceId.slice(0,6); if(d.kind==='videoinput') v.appendChild(o); if(d.kind==='audioinput') a.appendChild(o); });
+        document.getElementById('devicesList').textContent = JSON.stringify(devices.map(x=>({kind:x.kind,label:x.label})),null,2);
+      }catch(e){ document.getElementById('devicesList').textContent='enumerateDevices failed — allow permissions or use https.'; }
+    }
+    document.getElementById('listDevices').addEventListener('click', enumerateMedia);
+    if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) enumerateMedia();
 
-// Microphone and recording
-let mediaRecorder = null; let recordedChunks = [];
-async function startMic(){
-  const sel = document.getElementById('audioDevices');
-  const deviceId = sel.value || undefined;
-  try{
-    const s = await navigator.mediaDevices.getUserMedia({ audio: deviceId ? { deviceId: { exact: deviceId } } : true, video: false });
-    // create a short test playback (visual meter would need analyser — omitted for brevity)
-    const ctx = new AudioContext();
-    const src = ctx.createMediaStreamSource(s);
-    // connect to destination briefly (muted) so audio works in some browsers
-    src.connect(ctx.destination);
-    // stop immediately after 1s
-    setTimeout(()=>{
-      s.getTracks().forEach(t=>t.stop());
-    }, 1000);
-    enumerateMedia();
-    alert('Microphone permission granted (test recorded silently). Use recording to capture audio/video.');
-  }catch(err){
-    alert('Mic start failed: ' + (err.message || err));
-  }
-}
+    // Camera preview & snapshot
+    let currentStream=null; document.getElementById('startCamera').addEventListener('click', async ()=>{
+      const sel = document.getElementById('videoDevices'); const id = sel.value||undefined; try{ if(currentStream) currentStream.getTracks().forEach(t=>t.stop()); const s = await navigator.mediaDevices.getUserMedia({video: id?{deviceId:{exact:id}}:true}); currentStream=s; document.getElementById('preview').srcObject=s; await enumerateMedia(); }catch(e){ alert('Camera failed: '+e.message); }
+    });
+    document.getElementById('snap').addEventListener('click', ()=>{
+      const vid = document.getElementById('preview'); if(!vid.srcObject) return alert('Start camera first'); const c=document.createElement('canvas'); c.width=vid.videoWidth||640; c.height=vid.videoHeight||480; c.getContext('2d').drawImage(vid,0,0,c.width,c.height); c.toBlob(b=>{ const url = URL.createObjectURL(b); const a=document.createElement('a'); a.href=url; a.download='snapshot.png'; a.click(); },'image/png');
+    });
 
-document.getElementById('startMic').addEventListener('click', startMic);
+    // Mic test and recording
+    let mediaRecorder=null, recordedChunks=[];
+    document.getElementById('startMic').addEventListener('click', async ()=>{
+      const sel = document.getElementById('audioDevices'); const id = sel.value||undefined; try{ const s = await navigator.mediaDevices.getUserMedia({audio: id?{deviceId:{exact:id}}:true}); const ctx = new AudioContext(); const src = ctx.createMediaStreamSource(s); src.connect(ctx.destination); setTimeout(()=>s.getTracks().forEach(t=>t.stop()),800); alert('Mic permission granted (test)'); await enumerateMedia(); }catch(e){ alert('Mic failed: '+e.message); }
+    });
 
-// Recording both camera+mic
-async function startRecording(){
-  const selV = document.getElementById('videoDevices');
-  const selA = document.getElementById('audioDevices');
-  const constraints = {
-    video: selV.value ? { deviceId: { exact: selV.value } } : true,
-    audio: selA.value ? { deviceId: { exact: selA.value } } : true
-  };
-  try{
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    // show preview
-    const vid = document.getElementById('preview'); vid.srcObject = stream;
-    recordedChunks = [];
-    mediaRecorder = new MediaRecorder(stream);
-    mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recordedChunks.push(e.data); };
-    mediaRecorder.onstop = ()=>{
-      const blob = new Blob(recordedChunks, { type: 'video/webm' });
-      const url = URL.createObjectURL(blob);
-      const list = document.getElementById('recordingsList');
-      const item = document.createElement('div');
-      item.innerHTML = `<a href="${url}" download="recording.webm">Download recording</a> (<small>${(blob.size/1024).toFixed(0)} KB</small>)`;
-      list.prepend(item);
-      state.recordings.push({ url, size: blob.size });
-      refreshSummary();
-      // stop tracks
-      stream.getTracks().forEach(t=>t.stop());
-    };
-    mediaRecorder.start();
-    document.getElementById('startRecording').disabled = true;
-    document.getElementById('stopRecording').disabled = false;
-  }catch(err){
-    alert('Recording failed: ' + (err.message || err));
-  }
-}
+    document.getElementById('startRec').addEventListener('click', async ()=>{
+      const vsel = document.getElementById('videoDevices').value; const asel = document.getElementById('audioDevices').value;
+      try{
+        const stream = await navigator.mediaDevices.getUserMedia({video: vsel?{deviceId:{exact:vsel}}:true, audio: asel?{deviceId:{exact:asel}}:true});
+        document.getElementById('preview').srcObject = stream; recordedChunks = [];
+        mediaRecorder = new MediaRecorder(stream);
+        mediaRecorder.ondataavailable = e=>{ if(e.data && e.data.size) recordedChunks.push(e.data); };
+        mediaRecorder.onstop = ()=>{
+          const blob = new Blob(recordedChunks, { type: 'video/webm' }); const url = URL.createObjectURL(blob);
+          const list = document.getElementById('recordings'); const a = document.createElement('a'); a.href = url; a.download='recording.webm'; a.textContent = 'Download recording ('+(blob.size/1024).toFixed(0)+' KB)'; list.prepend(a);
+          stream.getTracks().forEach(t=>t.stop()); state.recordings.push({size:blob.size});
+        };
+        mediaRecorder.start(); document.getElementById('startRec').disabled=true; document.getElementById('stopRec').disabled=false;
+      }catch(e){ alert('Recording failed: '+e.message); }
+    });
+    document.getElementById('stopRec').addEventListener('click', ()=>{ if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); document.getElementById('startRec').disabled=false; document.getElementById('stopRec').disabled=true; });
 
-document.getElementById('startRecording').addEventListener('click', startRecording);
+    // Notepad
+    document.getElementById('saveNote').addEventListener('click', ()=>{ localStorage.setItem('diag_notepad', document.getElementById('notepad').value); alert('Saved locally'); });
+    document.getElementById('clearNote').addEventListener('click', ()=>{ document.getElementById('notepad').value=''; localStorage.removeItem('diag_notepad'); });
+    document.getElementById('notepad').value = localStorage.getItem('diag_notepad')||'';
 
-document.getElementById('stopRecording').addEventListener('click', ()=>{
-  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
-  document.getElementById('startRecording').disabled = false;
-  document.getElementById('stopRecording').disabled = true;
-});
+    // QR generator
+    document.getElementById('genQr').addEventListener('click', ()=>{
+      const t = document.getElementById('qrText').value||' '; document.getElementById('qrcode').innerHTML=''; new QRCode(document.getElementById('qrcode'), { text: t, width: 128, height: 128 });
+    });
 
-// Summary and export
-function refreshSummary(){
-  const s = { basic: state.basic, ip: state.ip, speed: state.speed, devices: state.devices.map(d=>({kind:d.kind,label:d.label})) };
-  document.getElementById('summary').textContent = JSON.stringify(s,null,2);
-}
+    // Clipboard
+    document.getElementById('copyBtn').addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(document.getElementById('clipIn').value); alert('Copied'); }catch(e){ alert('Copy failed'); } });
 
-document.getElementById('copyAll').addEventListener('click', async ()=>{
-  try{
-    await navigator.clipboard.writeText(document.getElementById('summary').textContent);
-    alert('Summary copied to clipboard (local only).');
-  }catch(err){ alert('Clipboard failed: ' + err.message); }
-});
+    // Performance tests
+    document.getElementById('btnCpu').addEventListener('click', ()=>{
+      const t0 = performance.now(); let x=0; for(let i=0;i<5e7;i++){ x += i%3; } const ms = performance.now()-t0; document.getElementById('perfResult').textContent = 'CPU test completed: '+ms.toFixed(0)+' ms';
+    });
+    document.getElementById('btnFps').addEventListener('click', ()=>{
+      let frames=0, running=true; const start = performance.now(); function f(){ if(!running) return; frames++; if(performance.now()-start<3000){ requestAnimationFrame(f);} else { const fps = (frames/3).toFixed(0); document.getElementById('perfResult').textContent='FPS approx: '+fps; running=false; } } f();
+    });
+    document.getElementById('btnStorage').addEventListener('click', ()=>{
+      try{ const key='diag_test'; let s='x'.repeat(1024*50); localStorage.setItem(key,s); localStorage.removeItem(key); document.getElementById('perfResult').textContent='LocalStorage test OK (50 KB)'; }catch(e){ document.getElementById('perfResult').textContent='LocalStorage test failed'; }
+    });
 
-document.getElementById('downloadJson').addEventListener('click', ()=>{
-  const blob = new Blob([document.getElementById('summary').textContent], {type:'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a'); a.href = url; a.download = 'device-summary.json'; a.click();
-});
+    // Export JSON & PDF
+    function buildReport(){
+      return {
+        generatedAt: new Date().toISOString(), basic: state.basic, ip: state.ip, speed: state.speed, ping: state.ping, devices: state.devices.map(d=>({kind:d.kind,label:d.label})), recordings: state.recordings
+      };
+    }
+    document.getElementById('downloadJson').addEventListener('click', ()=>{
+      const blob = new Blob([JSON.stringify(buildReport(),null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='device-report.json'; a.click();
+    });
+    document.getElementById('downloadReportBtn').addEventListener('click', ()=>{ document.getElementById('downloadJson').click(); });
 
-// Initial enumerate (may show limited labels until permissions granted)
-if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) enumerateMedia();
+    document.getElementById('downloadPdf').addEventListener('click', async ()=>{
+      const { jsPDF } = window.jspdf; const doc = new jsPDF(); const r = buildReport(); doc.setFontSize(12); doc.text('Device Diagnostic Report',14,14); doc.setFontSize(9); doc.text(JSON.stringify(r,null,2),14,24); doc.save('device-report.pdf');
+    });
 
-</script>
+    // Theme toggle
+    document.getElementById('themeToggle').addEventListener('click', ()=>{
+      document.documentElement.classList.toggle('dark'); if(document.documentElement.classList.contains('dark')){ document.body.classList.add('bg-slate-900','text-white'); document.getElementById('themeToggle').textContent='Light'; } else { document.body.classList.remove('bg-slate-900','text-white'); document.getElementById('themeToggle').textContent='Dark'; }
+    });
+
+    // Download top-level JSON
+    document.getElementById('downloadJson').addEventListener('click', ()=>{});
+
+    // Initial populate
+    updateSummaryCards();
+  </script>
 </body>
 </html>
