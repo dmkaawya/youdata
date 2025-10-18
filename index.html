@@ -1,0 +1,312 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Device Diagnostic — Permission-based Tester</title>
+  <style>
+    :root{--accent:#0b76ef}
+    body{font-family:Inter, system-ui, Arial, sans-serif;margin:0;background:#f6f8fb;color:#111}
+    header{background:linear-gradient(90deg,#0b76ef22,#0b76ef11);padding:18px 20px;border-bottom:1px solid #e6eefc}
+    h1{margin:0;font-size:18px}
+    .wrap{max-width:980px;margin:18px auto;padding:12px}
+    .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:14px;box-shadow:0 6px 18px rgba(12,40,80,0.06)}
+    button{background:var(--accent);color:#fff;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+    .muted{color:#556; font-size:13px}
+    pre{background:#0f1724;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    label{font-size:13px}
+    select,input[type=text]{padding:6px;border-radius:8px;border:1px solid #e2e8f0}
+    video,canvas{max-width:100%;border-radius:8px}
+    .small{font-size:13px}
+    .kpi{display:inline-block;padding:6px 10px;background:#f1f7ff;border-radius:8px;margin-right:8px}
+    .danger{color:#b91c1c}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="wrap">
+      <h1>Device Diagnostic — Permission-based tester</h1>
+      <div class="muted">This page only reads data you explicitly allow. It won't send unauthorized data anywhere unless you click a share button.</div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="card">
+      <h3>1) Local device & browser info</h3>
+      <div class="muted small">Non-permissioned info we can read from the browser</div>
+      <pre id="basicInfo">Loading...</pre>
+      <div style="margin-top:8px"><button id="refreshBasic">Refresh</button></div>
+    </section>
+
+    <section class="card">
+      <h3>2) Network & IP</h3>
+      <div class="muted small">Public IP & ISP (needs external lookup) and a quick download-speed test</div>
+      <div style="margin:8px 0">
+        <button id="getIpBtn">Get IP & ISP (external)</button>
+        <button id="speedTestBtn">Run network speed test</button>
+      </div>
+      <div id="ipResult" class="small"></div>
+      <div id="speedResult" class="small" style="margin-top:8px"></div>
+    </section>
+
+    <section class="card">
+      <h3>3) Camera & Microphone test</h3>
+      <div class="muted small">Click to allow camera / mic — you will be asked by your browser. Choose devices if you have multiple.</div>
+      <div style="margin-top:8px" class="row">
+        <div style="flex:1">
+          <label>Camera</label>
+          <div style="margin:6px 0"><select id="videoDevices"></select> <button id="startCamera">Start camera</button></div>
+          <video id="preview" autoplay playsinline muted style="background:#000;height:240px"></video>
+          <div style="margin-top:8px"><button id="takeSnapshot">Take snapshot</button> <a id="downloadSnapshot" style="display:none;margin-left:8px">Download</a></div>
+        </div>
+        <div style="flex:1">
+          <label>Microphone</label>
+          <div style="margin:6px 0"><select id="audioDevices"></select> <button id="startMic">Start mic</button></div>
+          <div style="margin-top:8px">
+            <button id="startRecording">Start recording (cam+mic)</button>
+            <button id="stopRecording" disabled>Stop recording</button>
+            <div id="recordingsList"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h3>4) Enumerate media devices</h3>
+      <div class="muted small">List of available input/output devices (requires browser permission to show labels in many browsers)</div>
+      <button id="listDevices">List devices</button>
+      <pre id="devicesList">-</pre>
+    </section>
+
+    <section class="card">
+      <h3>5) Advanced</h3>
+      <div class="muted small">Optional: copy details to clipboard (local only). The page will not automatically upload or send data anywhere.</div>
+      <div style="margin-top:8px">
+        <button id="copyAll">Copy summary to clipboard</button>
+        <button id="downloadJson">Download JSON</button>
+      </div>
+      <pre id="summary">-</pre>
+    </section>
+
+    <section class="card">
+      <div class="danger">Legal note:</div>
+      <div class="muted small">Only use this tool on devices you own or with explicit consent from the device owner. This tool requires permissions and is intended for diagnostics and troubleshooting only.</div>
+    </section>
+  </main>
+
+<script>
+// Helpers and state
+const state = { basic: {}, ip: null, speed: null, devices: [], recordings: [] };
+
+function showBasic() {
+  const nav = navigator;
+  const info = {
+    userAgent: nav.userAgent,
+    platform: nav.platform,
+    language: nav.language,
+    cookiesEnabled: navigator.cookieEnabled,
+    online: navigator.onLine,
+    hardwareConcurrency: nav.hardwareConcurrency || 'n/a',
+    deviceMemory: nav.deviceMemory || 'n/a',
+    vendor: nav.vendor || 'n/a',
+    webdriver: !!nav.webdriver,
+    engines: { product: nav.product }
+  };
+  state.basic = info;
+  document.getElementById('basicInfo').textContent = JSON.stringify(info, null, 2);
+  refreshSummary();
+}
+
+document.getElementById('refreshBasic').addEventListener('click', showBasic);
+showBasic();
+
+// IP & ISP
+document.getElementById('getIpBtn').addEventListener('click', async ()=>{
+  const out = document.getElementById('ipResult'); out.textContent = 'Fetching...';
+  try{
+    // ipapi.co provides a simple JSON endpoint with org, ip, city, country_name
+    const res = await fetch('https://ipapi.co/json/');
+    if(!res.ok) throw new Error('Lookup failed');
+    const j = await res.json();
+    state.ip = j;
+    out.textContent = `IP: ${j.ip}\nCity: ${j.city || '-'}\nRegion: ${j.region || '-'}\nCountry: ${j.country_name || '-'}\nOrg/ISP: ${j.org || j.company || '-'}\n`;
+    refreshSummary();
+  }catch(err){
+    out.textContent = 'Could not fetch IP/ISP (blocked or offline). Try again or open from a web host.';
+  }
+});
+
+// Simple download speed test
+async function runSpeedTest(){
+  const out = document.getElementById('speedResult');
+  out.textContent = 'Running...';
+  try{
+    const url = 'https://speed.hetzner.de/100KB.bin'; // ~100 KB test file
+    const start = performance.now();
+    const r = await fetch(url, {cache:'no-store'});
+    const blob = await r.blob();
+    const ms = performance.now() - start;
+    const bytes = blob.size;
+    const bitsPerSec = (bytes * 8) / (ms/1000);
+    const mbps = (bitsPerSec / (1024*1024)).toFixed(2);
+    state.speed = { bytes, ms, mbps };
+    out.textContent = `Downloaded ${bytes} bytes in ${ms.toFixed(0)} ms → ≈ ${mbps} Mbps`;
+    refreshSummary();
+  }catch(err){
+    out.textContent = 'Speed test failed (cross-origin or offline).';
+  }
+}
+
+document.getElementById('speedTestBtn').addEventListener('click', runSpeedTest);
+
+// Media devices
+async function enumerateMedia(){
+  try{
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    state.devices = devices;
+    const selV = document.getElementById('videoDevices');
+    const selA = document.getElementById('audioDevices');
+    selV.innerHTML = '';
+    selA.innerHTML = '';
+    devices.forEach(d=>{
+      const o = document.createElement('option');
+      o.value = d.deviceId;
+      o.textContent = d.label || `${d.kind} (${d.deviceId.slice(0,6)})`;
+      if(d.kind === 'videoinput') selV.appendChild(o);
+      if(d.kind === 'audioinput') selA.appendChild(o);
+    });
+    document.getElementById('devicesList').textContent = JSON.stringify(devices.map(d=>({kind:d.kind,label:d.label,id:d.deviceId})), null, 2);
+    refreshSummary();
+  }catch(err){
+    document.getElementById('devicesList').textContent = 'enumerateDevices failed — allow camera/mic permissions first or run on secure context (https).';
+  }
+}
+
+document.getElementById('listDevices').addEventListener('click', enumerateMedia);
+
+// Camera preview, snapshot
+let currentStream = null;
+async function startCamera(){
+  const vid = document.getElementById('preview');
+  const sel = document.getElementById('videoDevices');
+  const deviceId = sel.value || undefined;
+  try{
+    if(currentStream){ currentStream.getTracks().forEach(t=>t.stop()); currentStream = null; }
+    const stream = await navigator.mediaDevices.getUserMedia({ video: deviceId ? { deviceId: { exact: deviceId } } : true, audio: false });
+    currentStream = stream;
+    vid.srcObject = stream;
+    await enumerateMedia();
+  }catch(err){
+    alert('Camera start failed: ' + (err.message || err));
+  }
+}
+
+document.getElementById('startCamera').addEventListener('click', startCamera);
+
+document.getElementById('takeSnapshot').addEventListener('click', ()=>{
+  const vid = document.getElementById('preview');
+  if(!vid.srcObject){ alert('Start camera first'); return; }
+  const c = document.createElement('canvas');
+  c.width = vid.videoWidth || 640; c.height = vid.videoHeight || 480;
+  const ctx = c.getContext('2d'); ctx.drawImage(vid,0,0,c.width,c.height);
+  c.toBlob(blob=>{
+    const url = URL.createObjectURL(blob);
+    const a = document.getElementById('downloadSnapshot');
+    a.href = url; a.download = 'snapshot.png'; a.style.display='inline-block'; a.textContent='Download snapshot';
+  }, 'image/png');
+});
+
+// Microphone and recording
+let mediaRecorder = null; let recordedChunks = [];
+async function startMic(){
+  const sel = document.getElementById('audioDevices');
+  const deviceId = sel.value || undefined;
+  try{
+    const s = await navigator.mediaDevices.getUserMedia({ audio: deviceId ? { deviceId: { exact: deviceId } } : true, video: false });
+    // create a short test playback (visual meter would need analyser — omitted for brevity)
+    const ctx = new AudioContext();
+    const src = ctx.createMediaStreamSource(s);
+    // connect to destination briefly (muted) so audio works in some browsers
+    src.connect(ctx.destination);
+    // stop immediately after 1s
+    setTimeout(()=>{
+      s.getTracks().forEach(t=>t.stop());
+    }, 1000);
+    enumerateMedia();
+    alert('Microphone permission granted (test recorded silently). Use recording to capture audio/video.');
+  }catch(err){
+    alert('Mic start failed: ' + (err.message || err));
+  }
+}
+
+document.getElementById('startMic').addEventListener('click', startMic);
+
+// Recording both camera+mic
+async function startRecording(){
+  const selV = document.getElementById('videoDevices');
+  const selA = document.getElementById('audioDevices');
+  const constraints = {
+    video: selV.value ? { deviceId: { exact: selV.value } } : true,
+    audio: selA.value ? { deviceId: { exact: selA.value } } : true
+  };
+  try{
+    const stream = await navigator.mediaDevices.getUserMedia(constraints);
+    // show preview
+    const vid = document.getElementById('preview'); vid.srcObject = stream;
+    recordedChunks = [];
+    mediaRecorder = new MediaRecorder(stream);
+    mediaRecorder.ondataavailable = e => { if(e.data && e.data.size) recordedChunks.push(e.data); };
+    mediaRecorder.onstop = ()=>{
+      const blob = new Blob(recordedChunks, { type: 'video/webm' });
+      const url = URL.createObjectURL(blob);
+      const list = document.getElementById('recordingsList');
+      const item = document.createElement('div');
+      item.innerHTML = `<a href="${url}" download="recording.webm">Download recording</a> (<small>${(blob.size/1024).toFixed(0)} KB</small>)`;
+      list.prepend(item);
+      state.recordings.push({ url, size: blob.size });
+      refreshSummary();
+      // stop tracks
+      stream.getTracks().forEach(t=>t.stop());
+    };
+    mediaRecorder.start();
+    document.getElementById('startRecording').disabled = true;
+    document.getElementById('stopRecording').disabled = false;
+  }catch(err){
+    alert('Recording failed: ' + (err.message || err));
+  }
+}
+
+document.getElementById('startRecording').addEventListener('click', startRecording);
+
+document.getElementById('stopRecording').addEventListener('click', ()=>{
+  if(mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  document.getElementById('startRecording').disabled = false;
+  document.getElementById('stopRecording').disabled = true;
+});
+
+// Summary and export
+function refreshSummary(){
+  const s = { basic: state.basic, ip: state.ip, speed: state.speed, devices: state.devices.map(d=>({kind:d.kind,label:d.label})) };
+  document.getElementById('summary').textContent = JSON.stringify(s,null,2);
+}
+
+document.getElementById('copyAll').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(document.getElementById('summary').textContent);
+    alert('Summary copied to clipboard (local only).');
+  }catch(err){ alert('Clipboard failed: ' + err.message); }
+});
+
+document.getElementById('downloadJson').addEventListener('click', ()=>{
+  const blob = new Blob([document.getElementById('summary').textContent], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a'); a.href = url; a.download = 'device-summary.json'; a.click();
+});
+
+// Initial enumerate (may show limited labels until permissions granted)
+if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) enumerateMedia();
+
+</script>
+</body>
+</html>
