@@ -22,6 +22,20 @@
             --transition: all 0.3s ease;
         }
 
+        [data-theme="dark"] {
+            --primary-blue: #3498db;
+            --dark-blue: #2980b9;
+            --light-blue: #5dade2;
+            --black: #0a0a0a;
+            --dark-gray: #1a1a1a;
+            --gray: #2d2d2d;
+            --light-gray: #2a2a2a;
+            --gold: #f1c40f;
+            --light-gold: #f9e79f;
+            --white: #f0f0f0;
+            --text-color: #e0e0e0;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -34,6 +48,7 @@
             color: var(--text-color);
             background-color: var(--white);
             overflow-x: hidden;
+            transition: var(--transition);
         }
 
         .container {
@@ -121,6 +136,30 @@
             background-color: var(--white);
             margin: 3px 0;
             transition: var(--transition);
+        }
+
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-blue);
+            color: var(--white);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow);
+            z-index: 1000;
+            transition: var(--transition);
+        }
+
+        .theme-toggle:hover {
+            background-color: var(--dark-blue);
+            transform: scale(1.1);
         }
 
         /* Page Sections */
@@ -308,6 +347,12 @@
         }
 
         /* Grid Layouts */
+        .grid-2 {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
         .grid-3 {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -480,6 +525,8 @@
             border-radius: 4px;
             font-size: 16px;
             transition: var(--transition);
+            background-color: var(--white);
+            color: var(--text-color);
         }
 
         .form-control:focus {
@@ -1073,6 +1120,34 @@
             background-color: #2ecc71;
         }
 
+        /* Locked Content */
+        .locked-content {
+            position: relative;
+            filter: blur(5px);
+            pointer-events: none;
+        }
+
+        .locked-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            border-radius: 8px;
+        }
+
+        .locked-overlay i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--gold);
+        }
+
         /* Responsive Styles */
         @media (max-width: 992px) {
             .admin-sidebar {
@@ -1223,8 +1298,16 @@
             text-align: right;
         }
 
+        .mb-10 {
+            margin-bottom: 10px;
+        }
+
         .mb-20 {
             margin-bottom: 20px;
+        }
+
+        .mt-10 {
+            margin-top: 10px;
         }
 
         .mt-20 {
@@ -2171,6 +2254,11 @@
         </div>
     </footer>
 
+    <!-- Theme Toggle Button -->
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon"></i>
+    </div>
+
     <!-- Modals -->
     <!-- Notice Modal -->
     <div id="noticeModal" class="modal">
@@ -2479,4 +2567,1646 @@
                         {
                             id: 9,
                             question: 'What is the meaning of "친구"?',
-                            questionSin: '"
+                            questionSin: '"친구" හැඟීම කුමක්ද?',
+                            options: ['Family', 'Friend', 'Teacher', 'Student'],
+                            optionsSin: ['පවුල', 'යහළුවා', 'ගුරුවරයා', 'සිසුවා'],
+                            correctAnswer: 1
+                        },
+                        {
+                            id: 10,
+                            question: 'How do you say "Goodbye" in Korean?',
+                            questionSin: 'කොරියානු භාෂාවෙන් "Goodbye" කියන්නේ කෙසේද?',
+                            options: ['안녕히 가세요', '안녕하세요', '만나서 반가워요', '잘 자요'],
+                            optionsSin: ['සමුගැනීම', 'හෙලෝ', 'මුණගැසීමට සතුටුයි', 'සුභ රාත්රියි'],
+                            correctAnswer: 0
+                        }
+                    ],
+                    quizResults: {},
+                    theme: 'blue'
+                };
+                
+                localStorage.setItem('koreanPro', JSON.stringify(initialData));
+            }
+            
+            // Initialize app
+            initApp();
+            
+            // Setup navigation
+            setupNavigation();
+            
+            // Setup theme toggle
+            setupThemeToggle();
+            
+            // Setup modals
+            setupModals();
+            
+            // Setup forms
+            setupForms();
+            
+            // Check authentication
+            checkAuth();
+            
+            // Load data
+            loadHomeNotices();
+            loadNotices();
+            loadRecordings('monthly');
+            loadRecordings('theory');
+            loadRecordings('paper');
+            loadRecordings('extra');
+            loadQuizzes();
+            loadAdminData();
+        });
+
+        // Initialize app
+        function initApp() {
+            // Check if theme is saved
+            const savedTheme = localStorage.getItem('theme');
+            if (savedTheme) {
+                document.documentElement.setAttribute('data-theme', savedTheme);
+                updateThemeIcon(savedTheme);
+            }
+        }
+
+        // Setup navigation
+        function setupNavigation() {
+            const navLinks = document.querySelectorAll('.nav-links a, .footer-links a');
+            const hamburger = document.querySelector('.hamburger');
+            const navMenu = document.querySelector('.nav-links');
+            
+            // Handle navigation clicks
+            navLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.getAttribute('data-page');
+                    if (page) {
+                        showPage(page);
+                        
+                        // Close mobile menu if open
+                        if (navMenu.classList.contains('active')) {
+                            navMenu.classList.remove('active');
+                        }
+                    }
+                });
+            });
+            
+            // Handle hamburger menu
+            if (hamburger) {
+                hamburger.addEventListener('click', function() {
+                    navMenu.classList.toggle('active');
+                });
+            }
+        }
+
+        // Show page
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => {
+                page.classList.remove('active');
+            });
+            
+            // Show selected page
+            const selectedPage = document.getElementById(`${pageId}-page`);
+            if (selectedPage) {
+                selectedPage.classList.add('active');
+                
+                // Scroll to top
+                window.scrollTo(0, 0);
+                
+                // Load page-specific data
+                if (pageId === 'dashboard') {
+                    loadDashboard();
+                } else if (pageId === 'recordings') {
+                    loadRecordings('monthly');
+                } else if (pageId === 'theory') {
+                    loadRecordings('theory');
+                } else if (pageId === 'paper') {
+                    loadRecordings('paper');
+                } else if (pageId === 'extra') {
+                    loadRecordings('extra');
+                } else if (pageId === 'quizzes') {
+                    loadQuizzes();
+                } else if (pageId === 'noticeboard') {
+                    loadNotices();
+                }
+            }
+        }
+
+        // Setup theme toggle
+        function setupThemeToggle() {
+            const themeToggle = document.getElementById('themeToggle');
+            
+            if (themeToggle) {
+                themeToggle.addEventListener('click', function() {
+                    const currentTheme = document.documentElement.getAttribute('data-theme');
+                    const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+                    
+                    document.documentElement.setAttribute('data-theme', newTheme);
+                    localStorage.setItem('theme', newTheme);
+                    updateThemeIcon(newTheme);
+                });
+            }
+        }
+
+        // Update theme icon
+        function updateThemeIcon(theme) {
+            const themeToggle = document.getElementById('themeToggle');
+            if (themeToggle) {
+                const icon = themeToggle.querySelector('i');
+                if (theme === 'dark') {
+                    icon.className = 'fas fa-sun';
+                } else {
+                    icon.className = 'fas fa-moon';
+                }
+            }
+        }
+
+        // Setup modals
+        function setupModals() {
+            const modalTriggers = document.querySelectorAll('[data-modal]');
+            const closeButtons = document.querySelectorAll('.close-modal');
+            
+            modalTriggers.forEach(trigger => {
+                trigger.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const modalId = this.getAttribute('data-modal');
+                    const modal = document.getElementById(modalId);
+                    
+                    if (modal) {
+                        modal.style.display = 'block';
+                        document.body.style.overflow = 'hidden';
+                    }
+                });
+            });
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const modal = this.closest('.modal');
+                    if (modal) {
+                        modal.style.display = 'none';
+                        document.body.style.overflow = 'auto';
+                    }
+                });
+            });
+            
+            // Close modal when clicking outside
+            window.addEventListener('click', function(e) {
+                if (e.target.classList.contains('modal')) {
+                    e.target.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            });
+        }
+
+        // Setup forms
+        function setupForms() {
+            const forms = document.querySelectorAll('form');
+            
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    handleFormSubmit(this);
+                });
+            });
+        }
+
+        // Handle form submission
+        function handleFormSubmit(form) {
+            const formId = form.id;
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                data[key] = value;
+            }
+            
+            switch (formId) {
+                case 'loginForm':
+                    handleLogin(data);
+                    break;
+                case 'signupForm':
+                    handleSignup(data);
+                    break;
+                case 'contactForm':
+                    handleContactForm(data);
+                    break;
+                case 'noticeForm':
+                    handleNoticeForm(data);
+                    break;
+                case 'recordingForm':
+                    handleRecordingForm(data);
+                    break;
+                case 'quizForm':
+                    handleQuizForm(data);
+                    break;
+                default:
+                    console.log('Form submission not handled:', formId);
+            }
+        }
+
+        // Handle login
+        function handleLogin(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users;
+            
+            const user = users.find(u => u.username === data.username && u.password === data.password);
+            
+            if (user) {
+                // Set current user in localStorage
+                localStorage.setItem('currentUser', JSON.stringify(user));
+                
+                // Show success message
+                showMessage('Login successful! Redirecting...', 'success');
+                
+                // Redirect based on role
+                setTimeout(() => {
+                    if (user.role === 'admin') {
+                        showPage('admin');
+                    } else {
+                        showPage('dashboard');
+                    }
+                }, 1500);
+            } else {
+                showMessage('Invalid username or password', 'error');
+            }
+        }
+
+        // Handle signup
+        function handleSignup(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users;
+            
+            // Check if username already exists
+            if (users.some(u => u.username === data.username)) {
+                showMessage('Username already exists', 'error');
+                return;
+            }
+            
+            // Create new user
+            const newUser = {
+                username: data.username,
+                password: data.password,
+                role: 'student',
+                email: data.email,
+                phone: data.phone,
+                approved: false
+            };
+            
+            users.push(newUser);
+            appData.users = users;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Signup successful! Please wait for admin approval.', 'success');
+            
+            // Reset form
+            document.getElementById('signupForm').reset();
+            
+            // Redirect to login after delay
+            setTimeout(() => {
+                showPage('login');
+            }, 2000);
+        }
+
+        // Handle contact form
+        function handleContactForm(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const messages = appData.messages || [];
+            
+            const newMessage = {
+                id: Date.now(),
+                name: data.name,
+                email: data.email,
+                subject: data.subject,
+                message: data.message,
+                date: new Date().toISOString().split('T')[0]
+            };
+            
+            messages.push(newMessage);
+            appData.messages = messages;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Message sent successfully! We will get back to you soon.', 'success');
+            
+            // Reset form
+            document.getElementById('contactForm').reset();
+        }
+
+        // Handle notice form
+        function handleNoticeForm(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const notices = appData.notices || [];
+            
+            const newNotice = {
+                id: Date.now(),
+                title: data.title,
+                content: data.content,
+                date: new Date().toISOString().split('T')[0],
+                category: data.category
+            };
+            
+            notices.push(newNotice);
+            appData.notices = notices;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Notice added successfully!', 'success');
+            
+            // Reset form
+            document.getElementById('noticeForm').reset();
+            
+            // Reload notices
+            loadNotices();
+            loadHomeNotices();
+            
+            // Close modal
+            const modal = document.getElementById('addNoticeModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Handle recording form
+        function handleRecordingForm(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const type = data.type;
+            const recordings = appData.recordings[type] || [];
+            
+            const newRecording = {
+                id: Date.now(),
+                title: data.title,
+                url: data.url,
+                date: new Date().toISOString().split('T')[0],
+                month: data.month
+            };
+            
+            recordings.push(newRecording);
+            appData.recordings[type] = recordings;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Recording added successfully!', 'success');
+            
+            // Reset form
+            document.getElementById('recordingForm').reset();
+            
+            // Reload recordings
+            loadRecordings(type);
+            
+            // Close modal
+            const modal = document.getElementById('addRecordingModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Handle quiz form
+        function handleQuizForm(data) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const quizzes = appData.quizzes || [];
+            
+            const newQuiz = {
+                id: Date.now(),
+                question: data.question,
+                questionSin: data.questionSin,
+                options: [data.option1, data.option2, data.option3, data.option4],
+                optionsSin: [data.option1Sin, data.option2Sin, data.option3Sin, data.option4Sin],
+                correctAnswer: parseInt(data.correctAnswer)
+            };
+            
+            quizzes.push(newQuiz);
+            appData.quizzes = quizzes;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Quiz added successfully!', 'success');
+            
+            // Reset form
+            document.getElementById('quizForm').reset();
+            
+            // Close modal
+            const modal = document.getElementById('addQuizModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+        }
+
+        // Show message
+        function showMessage(message, type) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}`;
+            messageDiv.textContent = message;
+            
+            // Style the message
+            messageDiv.style.position = 'fixed';
+            messageDiv.style.top = '20px';
+            messageDiv.style.right = '20px';
+            messageDiv.style.padding = '15px 20px';
+            messageDiv.style.borderRadius = '4px';
+            messageDiv.style.color = 'white';
+            messageDiv.style.zIndex = '9999';
+            messageDiv.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.1)';
+            
+            if (type === 'success') {
+                messageDiv.style.backgroundColor = '#2ecc71';
+            } else if (type === 'error') {
+                messageDiv.style.backgroundColor = '#e74c3c';
+            } else {
+                messageDiv.style.backgroundColor = '#3498db';
+            }
+            
+            document.body.appendChild(messageDiv);
+            
+            // Remove message after 3 seconds
+            setTimeout(() => {
+                messageDiv.style.opacity = '0';
+                messageDiv.style.transition = 'opacity 0.5s ease';
+                
+                setTimeout(() => {
+                    document.body.removeChild(messageDiv);
+                }, 500);
+            }, 3000);
+        }
+
+        // Check authentication
+        function checkAuth() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            
+            // Update UI based on current user
+            if (currentUser) {
+                // Update user info in UI
+                const userElements = document.querySelectorAll('.user-name');
+                userElements.forEach(el => {
+                    el.textContent = currentUser.username;
+                });
+                
+                // Show/hide admin links
+                const adminLinks = document.querySelectorAll('.admin-content');
+                adminLinks.forEach(link => {
+                    if (currentUser.role === 'admin') {
+                        link.style.display = 'block';
+                    } else {
+                        link.style.display = 'none';
+                    }
+                });
+                
+                // Show/hide user-specific content
+                const userContent = document.querySelectorAll('.user-content');
+                userContent.forEach(content => {
+                    content.style.display = 'block';
+                });
+                
+                const guestContent = document.querySelectorAll('.guest-content');
+                guestContent.forEach(content => {
+                    content.style.display = 'none';
+                });
+            } else {
+                // Show/hide guest-specific content
+                const userContent = document.querySelectorAll('.user-content');
+                userContent.forEach(content => {
+                    content.style.display = 'none';
+                });
+                
+                const guestContent = document.querySelectorAll('.guest-content');
+                guestContent.forEach(content => {
+                    content.style.display = 'block';
+                });
+            }
+        }
+
+        // Logout
+        function logout() {
+            localStorage.removeItem('currentUser');
+            showMessage('Logged out successfully', 'success');
+            setTimeout(() => {
+                showPage('home');
+            }, 1000);
+        }
+
+        /        // Load home notices
+        function loadHomeNotices() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const notices = appData.notices || [];
+            const container = document.getElementById('home-notices');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            // Show only first 3 notices
+            const homeNotices = notices.slice(0, 3);
+            
+            if (homeNotices.length === 0) {
+                container.innerHTML = '<p>No notices available.</p>';
+                return;
+            }
+            
+            homeNotices.forEach(notice => {
+                const noticeElement = document.createElement('div');
+                noticeElement.className = 'notice';
+                noticeElement.setAttribute('data-id', notice.id);
+                
+                noticeElement.innerHTML = `
+                    <div class="notice-header">
+                        <div class="notice-title">${notice.title}</div>
+                        <div class="notice-date">${notice.date}</div>
+                    </div>
+                    <div class="notice-category">${notice.category}</div>
+                    <div class="notice-preview">${notice.content}</div>
+                `;
+                
+                noticeElement.addEventListener('click', function() {
+                    showNoticeModal(notice);
+                });
+                
+                container.appendChild(noticeElement);
+            });
+        }
+
+        // Load notices
+        function loadNotices() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const notices = appData.notices || [];
+            const container = document.getElementById('noticesContainer');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (notices.length === 0) {
+                container.innerHTML = '<p>No notices available.</p>';
+                return;
+            }
+            
+            notices.forEach(notice => {
+                const noticeElement = document.createElement('div');
+                noticeElement.className = 'notice';
+                noticeElement.setAttribute('data-id', notice.id);
+                
+                noticeElement.innerHTML = `
+                    <div class="notice-header">
+                        <div class="notice-title">${notice.title}</div>
+                        <div class="notice-date">${notice.date}</div>
+                    </div>
+                    <div class="notice-category">${notice.category}</div>
+                    <div class="notice-preview">${notice.content}</div>
+                `;
+                
+                noticeElement.addEventListener('click', function() {
+                    showNoticeModal(notice);
+                });
+                
+                container.appendChild(noticeElement);
+            });
+        }
+
+        // Show notice modal
+        function showNoticeModal(notice) {
+            const modal = document.getElementById('noticeModal');
+            if (!modal) return;
+            
+            const modalTitle = document.getElementById('noticeModalTitle');
+            const modalDate = document.getElementById('noticeModalDate');
+            const modalCategory = document.getElementById('noticeModalCategory');
+            const modalContent = document.getElementById('noticeModalContent');
+            
+            if (modalTitle) modalTitle.textContent = notice.title;
+            if (modalDate) modalDate.textContent = notice.date;
+            if (modalCategory) modalCategory.textContent = notice.category;
+            if (modalContent) modalContent.textContent = notice.content;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Load recordings
+        function loadRecordings(type) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const recordings = appData.recordings[type] || [];
+            const container = document.getElementById(`${type}Container`);
+            
+            if (!container) return;
+            
+            // Check if user is approved
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            const isApproved = currentUser && currentUser.approved;
+            
+            // Group recordings by month
+            const recordingsByMonth = {};
+            
+            recordings.forEach(recording => {
+                if (!recordingsByMonth[recording.month]) {
+                    recordingsByMonth[recording.month] = [];
+                }
+                recordingsByMonth[recording.month].push(recording);
+            });
+            
+            container.innerHTML = '';
+            
+            if (Object.keys(recordingsByMonth).length === 0) {
+                container.innerHTML = '<p>No recordings available.</p>';
+                return;
+            }
+            
+            // Create month sections
+            Object.keys(recordingsByMonth).sort().forEach(month => {
+                const monthSection = document.createElement('div');
+                monthSection.className = 'month-section';
+                
+                const monthHeader = document.createElement('div');
+                monthHeader.className = 'month-header';
+                monthHeader.innerHTML = `
+                    <h3>${month}</h3>
+                    <span class="month-toggle">▼</span>
+                `;
+                
+                const monthContent = document.createElement('div');
+                monthContent.className = 'month-content';
+                
+                recordingsByMonth[month].forEach(recording => {
+                    const videoItem = document.createElement('div');
+                    videoItem.className = 'video-item';
+                    
+                    if (!isApproved) {
+                        videoItem.classList.add('locked-content');
+                        videoItem.innerHTML = `
+                            <div class="video-container">
+                                ${getVideoEmbed(recording.url)}
+                            </div>
+                            <div class="locked-overlay">
+                                <i class="fas fa-lock"></i>
+                                <p>Payment required to access this content</p>
+                            </div>
+                            <div class="video-title">${recording.title}</div>
+                            <div class="video-date">${recording.date}</div>
+                        `;
+                    } else {
+                        videoItem.innerHTML = `
+                            <div class="video-container">
+                                ${getVideoEmbed(recording.url)}
+                            </div>
+                            <div class="video-title">${recording.title}</div>
+                            <div class="video-date">${recording.date}</div>
+                        `;
+                    }
+                    
+                    monthContent.appendChild(videoItem);
+                });
+                
+                monthHeader.addEventListener('click', function() {
+                    monthSection.classList.toggle('collapsed');
+                });
+                
+                monthSection.appendChild(monthHeader);
+                monthSection.appendChild(monthContent);
+                container.appendChild(monthSection);
+            });
+        }
+
+        // Get video embed code
+        function getVideoEmbed(url) {
+            // YouTube
+            if (url.includes('youtube.com') || url.includes('youtu.be')) {
+                const videoId = getYouTubeId(url);
+                return `<iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>`;
+            }
+            
+            // Vimeo
+            if (url.includes('vimeo.com')) {
+                const videoId = url.split('/').pop();
+                return `<iframe src="https://player.vimeo.com/video/${videoId}" allowfullscreen></iframe>`;
+            }
+            
+            // Google Drive
+            if (url.includes('drive.google.com')) {
+                const fileId = url.split('/').pop();
+                return `<iframe src="https://drive.google.com/file/d/${fileId}/preview" allowfullscreen></iframe>`;
+            }
+            
+            // Direct MP4
+            if (url.endsWith('.mp4')) {
+                return `<video controls><source src="${url}" type="video/mp4">Your browser does not support the video tag.</video>`;
+            }
+            
+            // Default fallback
+            return `<div class="video-error">Unsupported video format</div>`;
+        }
+
+        // Get YouTube video ID
+        function getYouTubeId(url) {
+            const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|&v=)([^#&?]*).*/;
+            const match = url.match(regExp);
+            return (match && match[2].length === 11) ? match[2] : null;
+        }
+
+        // Load quizzes
+        function loadQuizzes() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const quizzes = appData.quizzes || [];
+            const container = document.getElementById('quizzesContainer');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (quizzes.length === 0) {
+                container.innerHTML = '<p>No quizzes available.</p>';
+                return;
+            }
+            
+            // Create quiz container
+            const quizContainer = document.createElement('div');
+            quizContainer.className = 'quiz-container';
+            
+            // Quiz header
+            const quizHeader = document.createElement('div');
+            quizHeader.className = 'quiz-header';
+            quizHeader.innerHTML = `
+                <h2 class="quiz-title">Korean Language Quiz</h2>
+                <div class="language-toggle">
+                    <button class="active" data-lang="korean">Korean</button>
+                    <button data-lang="sinhala">Sinhala</button>
+                </div>
+            `;
+            
+            quizContainer.appendChild(quizHeader);
+            
+            // Quiz questions
+            const quizQuestions = document.createElement('div');
+            quizQuestions.className = 'quiz-questions';
+            
+            quizzes.forEach((quiz, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question';
+                questionDiv.setAttribute('data-index', index);
+                
+                // Korean question
+                const koreanQuestion = document.createElement('div');
+                koreanQuestion.className = 'question-text korean-question';
+                koreanQuestion.textContent = `${index + 1}. ${quiz.question}`;
+                
+                // Sinhala question
+                const sinhalaQuestion = document.createElement('div');
+                sinhalaQuestion.className = 'question-text sinhala-question hidden';
+                sinhalaQuestion.textContent = `${index + 1}. ${quiz.questionSin}`;
+                
+                // Options
+                const optionsDiv = document.createElement('div');
+                optionsDiv.className = 'options';
+                
+                quiz.options.forEach((option, optionIndex) => {
+                    const optionDiv = document.createElement('div');
+                    optionDiv.className = 'option';
+                    optionDiv.setAttribute('data-index', optionIndex);
+                    
+                    const input = document.createElement('input');
+                    input.type = 'radio';
+                    input.name = `question-${index}`;
+                    input.value = optionIndex;
+                    
+                    const label = document.createElement('label');
+                    label.textContent = option;
+                    
+                    optionDiv.appendChild(input);
+                    optionDiv.appendChild(label);
+                    
+                    // Add Sinhala option
+                    const sinhalaOption = document.createElement('div');
+                    sinhalaOption.className = 'sinhala-option hidden';
+                    sinhalaOption.textContent = quiz.optionsSin[optionIndex];
+                    
+                    optionDiv.appendChild(sinhalaOption);
+                    
+                    optionDiv.addEventListener('click', function() {
+                        input.checked = true;
+                    });
+                    
+                    optionsDiv.appendChild(optionDiv);
+                });
+                
+                questionDiv.appendChild(koreanQuestion);
+                questionDiv.appendChild(sinhalaQuestion);
+                questionDiv.appendChild(optionsDiv);
+                
+                quizQuestions.appendChild(questionDiv);
+            });
+            
+            quizContainer.appendChild(quizQuestions);
+            
+            // Quiz actions
+            const quizActions = document.createElement('div');
+            quizActions.className = 'quiz-actions';
+            quizActions.innerHTML = `
+                <button class="btn btn-outline" id="resetQuizBtn">Reset</button>
+                <button class="btn" id="submitQuizBtn">Submit Quiz</button>
+            `;
+            
+            quizContainer.appendChild(quizActions);
+            
+            // Quiz result
+            const quizResult = document.createElement('div');
+            quizResult.className = 'quiz-result hidden';
+            quizResult.innerHTML = `
+                <h3>Quiz Result</h3>
+                <div class="score">0%</div>
+                <p>You scored 0 out of ${quizzes.length}</p>
+            `;
+            
+            quizContainer.appendChild(quizResult);
+            
+            container.appendChild(quizContainer);
+            
+            // Setup language toggle
+            const langButtons = quizHeader.querySelectorAll('.language-toggle button');
+            langButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    langButtons.forEach(btn => btn.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    const lang = this.getAttribute('data-lang');
+                    
+                    if (lang === 'korean') {
+                        document.querySelectorAll('.korean-question').forEach(el => {
+                            el.classList.remove('hidden');
+                        });
+                        document.querySelectorAll('.sinhala-question').forEach(el => {
+                            el.classList.add('hidden');
+                        });
+                        document.querySelectorAll('.sinhala-option').forEach(el => {
+                            el.classList.add('hidden');
+                        });
+                    } else {
+                        document.querySelectorAll('.korean-question').forEach(el => {
+                            el.classList.add('hidden');
+                        });
+                        document.querySelectorAll('.sinhala-question').forEach(el => {
+                            el.classList.remove('hidden');
+                        });
+                        document.querySelectorAll('.sinhala-option').forEach(el => {
+                            el.classList.remove('hidden');
+                        });
+                    }
+                });
+            });
+            
+            // Setup quiz actions
+            const resetBtn = document.getElementById('resetQuizBtn');
+            const submitBtn = document.getElementById('submitQuizBtn');
+            
+            if (resetBtn) {
+                resetBtn.addEventListener('click', function() {
+                    document.querySelectorAll('input[type="radio"]').forEach(input => {
+                        input.checked = false;
+                    });
+                    quizResult.classList.add('hidden');
+                });
+            }
+            
+            if (submitBtn) {
+                submitBtn.addEventListener('click', function() {
+                    submitQuiz(quizzes, quizResult);
+                });
+            }
+        }
+
+        // Submit quiz
+        function submitQuiz(quizzes, resultElement) {
+            let score = 0;
+            const total = quizzes.length;
+            
+            quizzes.forEach((quiz, index) => {
+                const selectedOption = document.querySelector(`input[name="question-${index}"]:checked`);
+                if (selectedOption && parseInt(selectedOption.value) === quiz.correctAnswer) {
+                    score++;
+                }
+            });
+            
+            const percentage = Math.round((score / total) * 100);
+            
+            resultElement.innerHTML = `
+                <h3>Quiz Result</h3>
+                <div class="score">${percentage}%</div>
+                <p>You scored ${score} out of ${total}</p>
+            `;
+            
+            resultElement.classList.remove('hidden');
+            
+            // Save quiz result
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (currentUser) {
+                const appData = JSON.parse(localStorage.getItem('koreanPro'));
+                const quizResults = appData.quizResults || {};
+                
+                if (!quizResults[currentUser.username]) {
+                    quizResults[currentUser.username] = [];
+                }
+                
+                quizResults[currentUser.username].push({
+                    date: new Date().toISOString().split('T')[0],
+                    score: score,
+                    total: total,
+                    percentage: percentage
+                });
+                
+                appData.quizResults = quizResults;
+                localStorage.setItem('koreanPro', JSON.stringify(appData));
+                
+                // Update dashboard stats if on dashboard page
+                if (document.getElementById('dashboard-page').classList.contains('active')) {
+                    loadDashboard();
+                }
+            }
+        }
+
+        // Load dashboard
+        function loadDashboard() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+            if (!currentUser) return;
+            
+            // Update payment status
+            const paymentStatus = document.getElementById('paymentStatus');
+            if (paymentStatus) {
+                if (currentUser.approved) {
+                    paymentStatus.className = 'payment-status paid';
+                    paymentStatus.innerHTML = '<i class="fas fa-check-circle"></i> Your payment has been approved. You have full access to all features.';
+                } else {
+                    paymentStatus.className = 'payment-status unpaid';
+                    paymentStatus.innerHTML = '<i class="fas fa-exclamation-circle"></i> Your payment is pending approval. Please contact admin for access to all features.';
+                }
+            }
+            
+            // Load quiz stats
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const quizResults = appData.quizResults || {};
+            const userResults = quizResults[currentUser.username] || [];
+            
+            const quizzesCompleted = userResults.length;
+            const averageScore = quizzesCompleted > 0 
+                ? Math.round(userResults.reduce((sum, result) => sum + result.percentage, 0) / quizzesCompleted)
+                : 0;
+            
+            // Update stats
+            const quizzesCompletedEl = document.getElementById('quizzesCompleted');
+            const averageScoreEl = document.getElementById('averageScore');
+            const daysActiveEl = document.getElementById('daysActive');
+            
+            if (quizzesCompletedEl) quizzesCompletedEl.textContent = quizzesCompleted;
+            if (averageScoreEl) averageScoreEl.textContent = averageScore + '%';
+            if (daysActiveEl) daysActiveEl.textContent = Math.min(quizzesCompleted, 30); // Simplified days active calculation
+        }
+
+        // Load admin data
+        function loadAdminData() {
+            loadAdminDashboard();
+            loadAdminStudents();
+            loadAdminPayments();
+            loadAdminRecordings('monthly');
+            loadAdminQuizzes();
+            loadAdminNotices();
+            loadAdminMessages();
+            setupAdminTabs();
+        }
+
+        // Load admin dashboard
+        function loadAdminDashboard() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users || [];
+            const students = users.filter(user => user.role === 'student');
+            const approvedStudents = students.filter(student => student.approved);
+            
+            // Count recordings
+            let totalRecordings = 0;
+            Object.values(appData.recordings || {}).forEach(recordings => {
+                totalRecordings += recordings.length;
+            });
+            
+            // Update stats
+            const totalStudentsEl = document.getElementById('totalStudents');
+            const approvedStudentsEl = document.getElementById('approvedStudents');
+            const totalRecordingsEl = document.getElementById('totalRecordings');
+            const totalQuizzesEl = document.getElementById('totalQuizzes');
+            
+            if (totalStudentsEl) totalStudentsEl.textContent = students.length;
+            if (approvedStudentsEl) approvedStudentsEl.textContent = approvedStudents.length;
+            if (totalRecordingsEl) totalRecordingsEl.textContent = totalRecordings;
+            if (totalQuizzesEl) totalQuizzesEl.textContent = (appData.quizzes || []).length;
+        }
+
+        // Load admin students
+        function loadAdminStudents() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users || [];
+            const students = users.filter(user => user.role === 'student');
+            const container = document.getElementById('studentsTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (students.length === 0) {
+                container.innerHTML = '<tr><td colspan="6">No students found.</td></tr>';
+                return;
+            }
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.username}</td>
+                    <td>${student.email}</td>
+                    <td>${student.phone}</td>
+                    <td>${student.approved ? '<span class="badge badge-success">Approved</span>' : '<span class="badge badge-warning">Pending</span>'}</td>
+                    <td>${student.role}</td>
+                    <td>
+                        <form class="reset-password-form" data-user-id="${student.username}">
+                            <div class="form-group">
+                                <input type="password" name="newPassword" class="form-control" placeholder="New Password" required>
+                            </div>
+                            <button type="submit" class="btn btn-small btn-primary">Reset</button>
+                        </form>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup reset password forms
+            const resetForms = container.querySelectorAll('.reset-password-form');
+            resetForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const userId = this.getAttribute('data-user-id');
+                    const newPassword = this.querySelector('input[name="newPassword"]').value;
+                    resetPassword(userId, newPassword);
+                });
+            });
+        }
+
+        // Load admin payments
+        function loadAdminPayments() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users || [];
+            const students = users.filter(user => user.role === 'student' && !user.approved);
+            const container = document.getElementById('paymentsTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (students.length === 0) {
+                container.innerHTML = '<tr><td colspan="5">No pending payments.</td></tr>';
+                return;
+            }
+            
+            students.forEach(student => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${student.username}</td>
+                    <td>${student.email}</td>
+                    <td>${student.phone}</td>
+                    <td><span class="badge badge-warning">Pending</span></td>
+                    <td>
+                        <form class="approve-form" data-user-id="${student.username}">
+                            <button type="submit" class="btn btn-small btn-approve">Approve</button>
+                        </form>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup approve forms
+            const approveForms = container.querySelectorAll('.approve-form');
+            approveForms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const userId = this.getAttribute('data-user-id');
+                    approvePayment(userId);
+                });
+            });
+        }
+
+        // Load admin recordings
+        function loadAdminRecordings(type = 'monthly') {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const recordings = appData.recordings[type] || [];
+            const container = document.getElementById('recordingsTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (recordings.length === 0) {
+                container.innerHTML = '<tr><td colspan="5">No recordings found.</td></tr>';
+                return;
+            }
+            
+            recordings.forEach(recording => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${recording.title}</td>
+                    <td>${recording.month}</td>
+                    <td>${recording.date}</td>
+                    <td>${recording.url.substring(0, 50)}...</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-edit edit-recording" data-id="${recording.id}" data-type="${type}">Edit</button>
+                            <button class="btn btn-small btn-delete delete-recording" data-id="${recording.id}" data-type="${type}">Delete</button>
+                        </div>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup edit and delete buttons
+            const editButtons = container.querySelectorAll('.edit-recording');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const recordingId = this.getAttribute('data-id');
+                    const recordingType = this.getAttribute('data-type');
+                    editRecording(recordingId, recordingType);
+                });
+            });
+            
+            const deleteButtons = container.querySelectorAll('.delete-recording');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const recordingId = this.getAttribute('data-id');
+                    const recordingType = this.getAttribute('data-type');
+                    deleteRecording(recordingId, recordingType);
+                });
+            });
+        }
+
+        // Load admin quizzes
+        function loadAdminQuizzes() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const quizzes = appData.quizzes || [];
+            const container = document.getElementById('quizzesTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (quizzes.length === 0) {
+                container.innerHTML = '<tr><td colspan="4">No quizzes found.</td></tr>';
+                return;
+            }
+            
+            quizzes.forEach(quiz => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${quiz.question}</td>
+                    <td>${quiz.options[quiz.correctAnswer]}</td>
+                    <td>${quiz.questionSin}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-edit edit-quiz" data-id="${quiz.id}">Edit</button>
+                            <button class="btn btn-small btn-delete delete-quiz" data-id="${quiz.id}">Delete</button>
+                        </div>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup edit and delete buttons
+            const editButtons = container.querySelectorAll('.edit-quiz');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const quizId = this.getAttribute('data-id');
+                    editQuiz(quizId);
+                });
+            });
+            
+            const deleteButtons = container.querySelectorAll('.delete-quiz');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const quizId = this.getAttribute('data-id');
+                    deleteQuiz(quizId);
+                });
+            });
+        }
+
+        // Load admin notices
+        function loadAdminNotices() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const notices = appData.notices || [];
+            const container = document.getElementById('noticesTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (notices.length === 0) {
+                container.innerHTML = '<tr><td colspan="5">No notices found.</td></tr>';
+                return;
+            }
+            
+            notices.forEach(notice => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${notice.title}</td>
+                    <td>${notice.category}</td>
+                    <td>${notice.date}</td>
+                    <td>${notice.content.substring(0, 50)}...</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn btn-small btn-edit edit-notice" data-id="${notice.id}">Edit</button>
+                            <button class="btn btn-small btn-delete delete-notice" data-id="${notice.id}">Delete</button>
+                        </div>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup edit and delete buttons
+            const editButtons = container.querySelectorAll('.edit-notice');
+            editButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const noticeId = this.getAttribute('data-id');
+                    editNotice(noticeId);
+                });
+            });
+            
+            const deleteButtons = container.querySelectorAll('.delete-notice');
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const noticeId = this.getAttribute('data-id');
+                    deleteNotice(noticeId);
+                });
+            });
+        }
+
+        // Load admin messages
+        function loadAdminMessages() {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const messages = appData.messages || [];
+            const container = document.getElementById('messagesTableBody');
+            
+            if (!container) return;
+            
+            container.innerHTML = '';
+            
+            if (messages.length === 0) {
+                container.innerHTML = '<tr><td colspan="5">No messages found.</td></tr>';
+                return;
+            }
+            
+            messages.forEach(message => {
+                const row = document.createElement('tr');
+                
+                row.innerHTML = `
+                    <td>${message.name}</td>
+                    <td>${message.email}</td>
+                    <td>${message.subject}</td>
+                    <td>${message.date}</td>
+                    <td>
+                        <button class="btn btn-small btn-primary view-message" data-id="${message.id}">View</button>
+                    </td>
+                `;
+                
+                container.appendChild(row);
+            });
+            
+            // Setup view message buttons
+            const viewButtons = container.querySelectorAll('.view-message');
+            viewButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const messageId = this.getAttribute('data-id');
+                    viewMessage(messageId);
+                });
+            });
+        }
+
+        // Setup admin tabs
+        function setupAdminTabs() {
+            // Setup admin menu
+            const adminMenuItems = document.querySelectorAll('.admin-menu a');
+            adminMenuItems.forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all items
+                    adminMenuItems.forEach(i => i.classList.remove('active'));
+                    
+                    // Add active class to clicked item
+                    this.classList.add('active');
+                    
+                    // Get the target section
+                    const target = this.getAttribute('data-target');
+                    
+                    // Hide all sections
+                    const sections = document.querySelectorAll('.admin-section');
+                    sections.forEach(section => {
+                        section.style.display = 'none';
+                    });
+                    
+                    // Show target section
+                    const targetSection = document.getElementById(target);
+                    if (targetSection) {
+                        targetSection.style.display = 'block';
+                    }
+                });
+            });
+            
+            // Setup recording tabs
+            const recordingTabs = document.querySelectorAll('[data-recording-type]');
+            recordingTabs.forEach(tab => {
+                tab.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    // Remove active class from all tabs
+                    recordingTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Load recordings for selected type
+                    const type = this.getAttribute('data-recording-type');
+                    loadAdminRecordings(type);
+                });
+            });
+            
+            // Setup admin buttons
+            const addNoticeBtn = document.getElementById('addNoticeBtn');
+            const addRecordingBtn = document.getElementById('addRecordingBtn');
+            const addTheoryBtn = document.getElementById('addTheoryBtn');
+            const addPaperBtn = document.getElementById('addPaperBtn');
+            const addExtraBtn = document.getElementById('addExtraBtn');
+            const addQuizBtn = document.getElementById('addQuizBtn');
+            const addAdminRecordingBtn = document.getElementById('addAdminRecordingBtn');
+            const addAdminQuizBtn = document.getElementById('addAdminQuizBtn');
+            const addAdminNoticeBtn = document.getElementById('addAdminNoticeBtn');
+            const saveThemeBtn = document.getElementById('saveThemeBtn');
+            
+            if (addNoticeBtn) {
+                addNoticeBtn.addEventListener('click', function() {
+                    document.getElementById('addNoticeModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addRecordingBtn) {
+                addRecordingBtn.addEventListener('click', function() {
+                    document.getElementById('addRecordingModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addTheoryBtn) {
+                addTheoryBtn.addEventListener('click', function() {
+                    document.getElementById('recordingType').value = 'theory';
+                    document.getElementById('addRecordingModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addPaperBtn) {
+                addPaperBtn.addEventListener('click', function() {
+                    document.getElementById('recordingType').value = 'paper';
+                    document.getElementById('addRecordingModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addExtraBtn) {
+                addExtraBtn.addEventListener('click', function() {
+                    document.getElementById('recordingType').value = 'extra';
+                    document.getElementById('addRecordingModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addQuizBtn) {
+                addQuizBtn.addEventListener('click', function() {
+                    document.getElementById('addQuizModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addAdminRecordingBtn) {
+                addAdminRecordingBtn.addEventListener('click', function() {
+                    document.getElementById('addRecordingModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addAdminQuizBtn) {
+                addAdminQuizBtn.addEventListener('click', function() {
+                    document.getElementById('addQuizModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (addAdminNoticeBtn) {
+                addAdminNoticeBtn.addEventListener('click', function() {
+                    document.getElementById('addNoticeModal').style.display = 'block';
+                    document.body.style.overflow = 'hidden';
+                });
+            }
+            
+            if (saveThemeBtn) {
+                saveThemeBtn.addEventListener('click', function() {
+                    const theme = document.getElementById('themeSelect').value;
+                    document.documentElement.setAttribute('data-theme', theme);
+                    localStorage.setItem('theme', theme);
+                    updateThemeIcon(theme);
+                    showMessage('Theme saved successfully!', 'success');
+                });
+            }
+        }
+
+        // Approve payment
+        function approvePayment(userId) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users || [];
+            const userIndex = users.findIndex(u => u.username === userId);
+            
+            if (userIndex === -1) return;
+            
+            users[userIndex].approved = true;
+            appData.users = users;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Payment approved successfully!', 'success');
+            loadAdminPayments();
+            loadAdminStudents();
+        }
+
+        // Reset password
+        function resetPassword(userId, newPassword) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const users = appData.users || [];
+            const userIndex = users.findIndex(u => u.username === userId);
+            
+            if (userIndex === -1) return;
+            
+            users[userIndex].password = newPassword;
+            appData.users = users;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Password reset successfully!', 'success');
+            loadAdminStudents();
+        }
+
+        // Edit recording
+        function editRecording(recordingId, type) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const recordings = appData.recordings[type] || [];
+            const recording = recordings.find(r => r.id == recordingId);
+            
+            if (!recording) return;
+            
+            const modal = document.getElementById('addRecordingModal');
+            if (!modal) return;
+            
+            const form = document.getElementById('recordingForm');
+            if (form) {
+                form.setAttribute('data-id', recordingId);
+                form.setAttribute('data-type', type);
+                form.type.value = type;
+                form.title.value = recording.title;
+                form.month.value = recording.month;
+                form.url.value = recording.url;
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Delete recording
+        function deleteRecording(recordingId, type) {
+            if (!confirm('Are you sure you want to delete this recording?')) return;
+            
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            let recordings = appData.recordings[type] || [];
+            
+            recordings = recordings.filter(r => r.id != recordingId);
+            appData.recordings[type] = recordings;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Recording deleted successfully!', 'success');
+            loadAdminRecordings(type);
+        }
+
+        // Edit quiz
+        function editQuiz(quizId) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const quizzes = appData.quizzes || [];
+            const quiz = quizzes.find(q => q.id == quizId);
+            
+            if (!quiz) return;
+            
+            const modal = document.getElementById('addQuizModal');
+            if (!modal) return;
+            
+            const form = document.getElementById('quizForm');
+            if (form) {
+                form.setAttribute('data-id', quizId);
+                form.question.value = quiz.question;
+                form.questionSin.value = quiz.questionSin;
+                form.option1.value = quiz.options[0];
+                form.option2.value = quiz.options[1];
+                form.option3.value = quiz.options[2];
+                form.option4.value = quiz.options[3];
+                form.option1Sin.value = quiz.optionsSin[0];
+                form.option2Sin.value = quiz.optionsSin[1];
+                form.option3Sin.value = quiz.optionsSin[2];
+                form.option4Sin.value = quiz.optionsSin[3];
+                form.correctAnswer.value = quiz.correctAnswer;
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Delete quiz
+        function deleteQuiz(quizId) {
+            if (!confirm('Are you sure you want to delete this quiz?')) return;
+            
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            let quizzes = appData.quizzes || [];
+            
+            quizzes = quizzes.filter(q => q.id != quizId);
+            appData.quizzes = quizzes;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Quiz deleted successfully!', 'success');
+            loadAdminQuizzes();
+        }
+
+        // Edit notice
+        function editNotice(noticeId) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const notices = appData.notices || [];
+            const notice = notices.find(n => n.id == noticeId);
+            
+            if (!notice) return;
+            
+            const modal = document.getElementById('addNoticeModal');
+            if (!modal) return;
+            
+            const form = document.getElementById('noticeForm');
+            if (form) {
+                form.setAttribute('data-id', noticeId);
+                form.title.value = notice.title;
+                form.category.value = notice.category;
+                form.content.value = notice.content;
+            }
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+
+        // Delete notice
+        function deleteNotice(noticeId) {
+            if (!confirm('Are you sure you want to delete this notice?')) return;
+            
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            let notices = appData.notices || [];
+            
+            notices = notices.filter(n => n.id != noticeId);
+            appData.notices = notices;
+            localStorage.setItem('koreanPro', JSON.stringify(appData));
+            
+            showMessage('Notice deleted successfully!', 'success');
+            loadAdminNotices();
+            loadNotices();
+            loadHomeNotices();
+        }
+
+        // View message
+        function viewMessage(messageId) {
+            const appData = JSON.parse(localStorage.getItem('koreanPro'));
+            const messages = appData.messages || [];
+            const message = messages.find(m => m.id == messageId);
+            
+            if (!message) return;
+            
+            const modal = document.getElementById('messageModal');
+            if (!modal) return;
+            
+            const modalName = document.getElementById('messageModalName');
+            const modalEmail = document.getElementById('messageModalEmail');
+            const modalSubject = document.getElementById('messageModalSubject');
+            const modalDate = document.getElementById('messageModalDate');
+            const modalMessage = document.getElementById('messageModalMessage');
+            
+            if (modalName) modalName.textContent = message.name;
+            if (modalEmail) modalEmail.textContent = message.email;
+            if (modalSubject) modalSubject.textContent = message.subject;
+            if (modalDate) modalDate.textContent = message.date;
+            if (modalMessage) modalMessage.textContent = message.message;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+    </script>
+</body>
+</html>
