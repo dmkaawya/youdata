@@ -1,395 +1,1609 @@
-
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Device Diagnostic — Pro (Client-only)</title>
-  <meta name="description" content="Client-side device diagnostic dashboard — camera, mic, speed test, IP/ISP, battery, CPU, FPS, storage, QR, notepad, export (JSON/PDF), PWA-ready." />
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script>tailwind.config = {theme: {extend: {colors: {brand:'#0b76ef'}}}}</script>
-  <link rel="stylesheet" href="https://unpkg.com/@fortawesome/fontawesome-free/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Korean Pro - Learn Korean with Expert Instruction</title>
+  <meta name="description" content="Master Korean language with structured courses, bilingual quizzes, and expert video lessons. EPS-TOPIK preparation available.">
+  <meta property="og:title" content="Korean Pro - Korean Learning Platform">
+  <meta property="og:description" content="Comprehensive Korean language courses with bilingual support">
+  <meta property="og:type" content="website">
+  <link rel="manifest" href="#" id="manifest-placeholder">
   <style>
-    /* small custom styles */
-    .card { @apply bg-white rounded-xl shadow-md p-4; }
-    .muted { color: #6b7280; }
-    pre { background:#0b1320;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto; white-space:pre-wrap; word-wrap:break-word; }
-    video, canvas { border-radius:8px; }
-    :root { --glass: rgba(255,255,255,0.6); }
-    .glass { background:var(--glass); backdrop-filter: blur(6px); }
+/*
+=============================================================================
+README & SETUP INSTRUCTIONS
+=============================================================================
+
+DEMO CREDENTIALS:
+- Admin: admin / admin123
+- Students: student1..student6 / student123
+
+TO RUN LOCALLY:
+- Use http-server (npm install -g http-server, then run: http-server)
+- Or Python: python -m http.server 8000
+- Service Worker requires HTTP/HTTPS (localhost works)
+
+PRODUCTION REPLACEMENTS NEEDED:
+1. AUTH: Replace localStorage auth with Firebase Auth, Auth0, or backend API
+2. PAYMENT: Integrate real payment gateway (Stripe, PayPal, local bank API)
+3. VIDEO HOSTING: Host on S3, Vimeo Pro, or dedicated CDN with proper DRM
+4. DATABASE: Replace localStorage with PostgreSQL/MongoDB via API
+5. SERVICE WORKER: Deploy proper caching strategy and update mechanism
+6. SECURITY: Add CSRF tokens, rate limiting, input validation on backend
+7. EMAIL: Integrate SendGrid/AWS SES for real notifications
+
+FEATURES INCLUDED:
+✓ Demo authentication with localStorage
+✓ Admin panel for user/content management
+✓ Bank transfer payment workflow with admin approval
+✓ Paid-only recordings portal with video player
+✓ Bilingual quiz system (Korean/Sinhala toggle)
+✓ Daily quiz scheduling and tracking
+✓ Student dashboard with progress tracking
+✓ PWA manifest and service worker
+✓ Responsive mobile-first design
+✓ Light/Dark mode with brand colors
+✓ 3 demo lessons + 10 demo quizzes
+=============================================================================
+*/
+
+    :root {
+      --primary: #1e40af;
+      --primary-dark: #1e3a8a;
+      --dark: #1f2937;
+      --accent: #f59e0b;
+      --bg: #ffffff;
+      --surface: #f3f4f6;
+      --text: #1f2937;
+      --text-light: #6b7280;
+      --border: #e5e7eb;
+      --success: #10b981;
+      --error: #ef4444;
+    }
+
+    [data-theme="dark"] {
+      --primary: #3b82f6;
+      --primary-dark: #2563eb;
+      --dark: #111827;
+      --bg: #0f172a;
+      --surface: #1e293b;
+      --text: #f1f5f9;
+      --text-light: #94a3b8;
+      --border: #334155;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    /* NAVIGATION */
+    .navbar {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-accent {
+      color: var(--accent);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .nav-links a, .nav-links button {
+      color: white;
+      text-decoration: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: opacity 0.2s;
+    }
+
+    .nav-links a:hover, .nav-links button:hover {
+      opacity: 0.8;
+    }
+
+    .hamburger {
+      display: none;
+      background: none;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    /* CARDS */
+    .card {
+      background: var(--surface);
+      border-radius: 8px;
+      padding: 1.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 1rem;
+      color: var(--text);
+    }
+
+    /* BUTTONS */
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: 6px;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 500;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-accent {
+      background: var(--accent);
+      color: var(--dark);
+    }
+
+    .btn-success {
+      background: var(--success);
+      color: white;
+    }
+
+    .btn-error {
+      background: var(--error);
+      color: white;
+    }
+
+    .btn-secondary {
+      background: var(--surface);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    /* FORMS */
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .form-group input, .form-group select, .form-group textarea {
+      width: 100%;
+      padding: 0.75rem;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--bg);
+      color: var(--text);
+      font-size: 1rem;
+    }
+
+    /* PAGES */
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* AUTH PAGES */
+    .auth-container {
+      max-width: 400px;
+      margin: 4rem auto;
+    }
+
+    /* DASHBOARD */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      color: white;
+      padding: 1.5rem;
+      border-radius: 8px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .stat-value {
+      font-size: 2rem;
+      font-weight: bold;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-label {
+      opacity: 0.9;
+      font-size: 0.9rem;
+    }
+
+    /* VIDEO PLAYER */
+    .video-container {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 1rem;
+    }
+
+    .video-container iframe, .video-container video {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    /* QUIZ */
+    .quiz-option {
+      padding: 1rem;
+      margin-bottom: 0.5rem;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .quiz-option:hover {
+      border-color: var(--primary);
+      background: var(--surface);
+    }
+
+    .quiz-option.correct {
+      border-color: var(--success);
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .quiz-option.incorrect {
+      border-color: var(--error);
+      background: rgba(239, 68, 68, 0.1);
+    }
+
+    /* PROGRESS BAR */
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: var(--border);
+      border-radius: 4px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: var(--primary);
+      transition: width 0.3s;
+    }
+
+    /* TOGGLE SWITCH */
+    .toggle-container {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .toggle {
+      position: relative;
+      width: 50px;
+      height: 26px;
+      background: var(--border);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .toggle.active {
+      background: var(--primary);
+    }
+
+    .toggle-slider {
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 20px;
+      height: 20px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+
+    .toggle.active .toggle-slider {
+      transform: translateX(24px);
+    }
+
+    /* TABLE */
+    .table-container {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      font-weight: 600;
+      background: var(--surface);
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: var(--bg);
+      border-radius: 8px;
+      padding: 2rem;
+      max-width: 500px;
+      width: 90%;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+
+    /* MOBILE */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hamburger {
+        display: block;
+      }
+
+      .mobile-menu {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        background: var(--primary);
+        padding: 1rem;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+      }
+
+      .mobile-menu.active {
+        display: block;
+      }
+
+      .mobile-menu a {
+        display: block;
+        color: white;
+        padding: 0.75rem;
+        text-decoration: none;
+      }
+
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* UTILITIES */
+    .hidden { display: none !important; }
+    .mt-1 { margin-top: 1rem; }
+    .mb-1 { margin-bottom: 1rem; }
+    .text-center { text-align: center; }
+    .text-success { color: var(--success); }
+    .text-error { color: var(--error); }
+    .flex { display: flex; }
+    .gap-1 { gap: 1rem; }
+    .justify-between { justify-content: space-between; }
+    .items-center { align-items: center; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-800 antialiased">
-  <div class="max-w-6xl mx-auto p-4">
-    <header class="flex items-center justify-between mb-4">
-      <div>
-        <h1 class="text-2xl font-semibold">Device Diagnostic — Pro (Client-side)</h1>
-        <p class="muted text-sm">Local-only diagnostics. Nothing is uploaded unless you explicitly export or share.</p>
+<body data-theme="light">
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="nav-content">
+      <div class="logo">
+        <svg width="30" height="30" viewBox="0 0 30 30">
+          <circle cx="15" cy="15" r="15" fill="currentColor" opacity="0.2"/>
+          <text x="15" y="20" text-anchor="middle" fill="var(--accent)" font-size="16" font-weight="bold">K</text>
+        </svg>
+        <span>Korean<span class="logo-accent">Pro</span></span>
       </div>
-      <div class="flex items-center gap-3">
-        <button id="themeToggle" class="px-3 py-2 rounded-md bg-brand text-white text-sm">Dark</button>
-        <button id="downloadReportBtn" class="px-3 py-2 rounded-md border text-sm">Export JSON</button>
+      <div class="nav-links" id="navLinks">
+        <!-- Dynamic nav items loaded by JS -->
       </div>
-    </header>
+      <button class="hamburger" id="hamburgerBtn">☰</button>
+    </div>
+  </nav>
 
-    <main class="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <!-- Left column: summary -->
-      <section class="md:col-span-1">
-        <div class="card mb-4">
-          <h3 class="font-medium">Quick Summary</h3>
-          <div class="mt-2 text-sm muted">Snapshot of your device</div>
-          <div id="summaryCards" class="mt-3 grid grid-cols-2 gap-2"></div>
-        </div>
-
-        <div class="card mb-4">
-          <h3 class="font-medium">Network</h3>
-          <div class="mt-2 muted text-sm">IP, ISP, basic speed & ping</div>
-          <div class="mt-3 space-y-2 text-sm">
-            <div id="ipBox">IP: —</div>
-            <div id="ispBox">ISP: —</div>
-            <div id="speedBox">Speed: —</div>
-            <div id="pingBox">Ping: —</div>
-            <div class="flex gap-2 mt-2">
-              <button id="btnIp" class="px-2 py-1 rounded bg-brand text-white text-sm">Get IP</button>
-              <button id="btnSpeed" class="px-2 py-1 rounded border text-sm">Speed test</button>
-              <button id="btnPing" class="px-2 py-1 rounded border text-sm">Ping</button>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <h3 class="font-medium">Privacy</h3>
-          <div class="mt-2 muted text-sm">This tool is client-only. It will never send data to a server unless you export and choose to share it.</div>
-          <div class="mt-3 text-xs">
-            <label class="flex items-center gap-2"><input type="checkbox" id="optLabels"> Show device labels (requires permission)</label>
-          </div>
-        </div>
-      </section>
-
-      <!-- Middle column: dashboard cards -->
-      <section class="md:col-span-2">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          <!-- Browser & Device -->
-          <div class="card">
-            <div class="flex items-center justify-between">
-              <h3 class="font-medium">Browser & Device</h3>
-              <div class="muted text-sm">non-permissioned info</div>
-            </div>
-            <pre id="basicInfo" class="mt-3">Loading...</pre>
-            <div class="mt-2 flex gap-2">
-              <button id="refreshBasic" class="px-3 py-1 rounded border text-sm">Refresh</button>
-              <button id="btnBattery" class="px-3 py-1 rounded border text-sm">Get Battery</button>
-            </div>
-          </div>
-
-          <!-- Performance -->
-          <div class="card">
-            <h3 class="font-medium">Performance Tests</h3>
-            <div class="muted text-sm mt-1">Run quick CPU / FPS tests</div>
-            <div class="mt-3 flex flex-col gap-2">
-              <div class="flex gap-2">
-                <button id="btnCpu" class="px-3 py-1 rounded border text-sm">CPU stress</button>
-                <button id="btnFps" class="px-3 py-1 rounded border text-sm">FPS Test</button>
-                <button id="btnStorage" class="px-3 py-1 rounded border text-sm">LocalStorage test</button>
-              </div>
-              <div id="perfResult" class="text-sm muted"></div>
-            </div>
-          </div>
-
-          <!-- Camera & Mic -->
-          <div class="card">
-            <h3 class="font-medium">Camera & Microphone</h3>
-            <div class="muted text-sm mt-1">Allow camera/mic to test preview, snapshot & recording</div>
-            <div class="mt-3 grid grid-cols-1 gap-2">
-              <div>
-                <label class="text-sm">Camera</label>
-                <div class="flex gap-2 mt-1">
-                  <select id="videoDevices" class="flex-1 rounded border p-1"></select>
-                  <button id="startCamera" class="px-2 py-1 rounded border text-sm">Start</button>
-                  <button id="snap" class="px-2 py-1 rounded border text-sm">Snapshot</button>
-                </div>
-                <video id="preview" autoplay playsinline muted class="w-full mt-2 h-48 bg-black"></video>
-              </div>
-
-              <div>
-                <label class="text-sm">Microphone</label>
-                <div class="flex gap-2 mt-1">
-                  <select id="audioDevices" class="flex-1 rounded border p-1"></select>
-                  <button id="startMic" class="px-2 py-1 rounded border text-sm">Test</button>
-                </div>
-                <div class="mt-2 flex gap-2">
-                  <button id="startRec" class="px-3 py-1 rounded bg-brand text-white text-sm">Start Rec</button>
-                  <button id="stopRec" class="px-3 py-1 rounded border text-sm" disabled>Stop</button>
-                </div>
-                <div id="recordings" class="mt-2 text-sm muted"></div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Tools: QR, Clipboard, Notepad -->
-          <div class="card">
-            <h3 class="font-medium">Tools</h3>
-            <div class="mt-2 grid grid-cols-1 gap-2">
-              <div>
-                <label class="text-sm">Simple Notepad</label>
-                <textarea id="notepad" class="w-full mt-1 border rounded p-2" rows="3" placeholder="Take notes... (local only)"></textarea>
-                <div class="mt-2 flex gap-2">
-                  <button id="saveNote" class="px-3 py-1 rounded border text-sm">Save</button>
-                  <button id="clearNote" class="px-3 py-1 rounded border text-sm">Clear</button>
-                </div>
-              </div>
-
-              <div>
-                <label class="text-sm">QR Code (from text)</label>
-                <input id="qrText" class="w-full mt-1 border rounded p-1" placeholder="Enter text to generate QR" />
-                <div class="mt-2 flex gap-2 items-center">
-                  <button id="genQr" class="px-3 py-1 rounded border text-sm">Generate</button>
-                  <div id="qrcode" class="ml-2"></div>
-                </div>
-              </div>
-
-              <div>
-                <label class="text-sm">Clipboard</label>
-                <div class="mt-1 flex gap-2">
-                  <input id="clipIn" class="flex-1 border rounded p-1" placeholder="Text to copy" />
-                  <button id="copyBtn" class="px-3 py-1 rounded border text-sm">Copy</button>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-
-        <!-- Device list & advanced -->
-        <div class="card mt-4">
-          <h3 class="font-medium">Devices & Export</h3>
-          <div class="muted text-sm mt-1">Enumerate devices and export a JSON/PDF report</div>
-          <div class="mt-3 flex gap-2">
-            <button id="listDevices" class="px-3 py-1 rounded border text-sm">List Devices</button>
-            <button id="downloadJson" class="px-3 py-1 rounded border text-sm">Download JSON</button>
-            <button id="downloadPdf" class="px-3 py-1 rounded border text-sm">Download PDF</button>
-          </div>
-          <pre id="devicesList" class="mt-3">-</pre>
-        </div>
-
-      </section>
-    </main>
-
-    <footer class="mt-6 text-center muted text-sm">Only use this on your own devices or with consent. This app is client-only — no server uploads by default.</footer>
+  <!-- MOBILE MENU -->
+  <div class="mobile-menu" id="mobileMenu">
+    <!-- Dynamic mobile nav items -->
   </div>
 
-  <!-- Libraries -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <!-- PAGES -->
+  <div id="app">
+    
+    <!-- LOGIN PAGE -->
+    <div id="loginPage" class="page active">
+      <div class="auth-container">
+        <div class="card">
+          <h2 class="card-title text-center">Login to Korean Pro</h2>
+          <form id="loginForm">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="loginUsername" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="loginPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Login</button>
+            <p class="text-center mt-1">
+              Don't have an account? <a href="#" id="showSignupLink">Sign up</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIGNUP PAGE -->
+    <div id="signupPage" class="page">
+      <div class="auth-container">
+        <div class="card">
+          <h2 class="card-title text-center">Create Account</h2>
+          <form id="signupForm">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="signupUsername" required>
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="signupEmail" required>
+            </div>
+            <div class="form-group">
+              <label>Password</label>
+              <input type="password" id="signupPassword" required>
+            </div>
+            <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
+            <p class="text-center mt-1">
+              Already have an account? <a href="#" id="showLoginLink">Login</a>
+            </p>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- DASHBOARD PAGE -->
+    <div id="dashboardPage" class="page">
+      <div class="container">
+        <h1>Dashboard</h1>
+        <div class="dashboard-grid" id="dashboardStats">
+          <!-- Stats cards loaded by JS -->
+        </div>
+        <div class="card">
+          <h3 class="card-title">Your Progress</h3>
+          <div id="progressContent">
+            <!-- Progress info loaded by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RECORDINGS PAGE -->
+    <div id="recordingsPage" class="page">
+      <div class="container">
+        <h1>Video Recordings</h1>
+        <div id="recordingsContent">
+          <!-- Content loaded by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- QUIZZES PAGE -->
+    <div id="quizzesPage" class="page">
+      <div class="container">
+        <div class="flex justify-between items-center mb-1">
+          <h1>Daily Quizzes</h1>
+          <div class="toggle-container">
+            <span>한글</span>
+            <div class="toggle" id="quizLangToggle">
+              <div class="toggle-slider"></div>
+            </div>
+            <span>සිංහල</span>
+          </div>
+        </div>
+        <div id="quizzesContent">
+          <!-- Quizzes loaded by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYMENT PAGE -->
+    <div id="paymentPage" class="page">
+      <div class="container">
+        <h1>Unlock Full Access</h1>
+        <div class="card">
+          <h3 class="card-title">Bank Transfer Payment</h3>
+          <p><strong>Bank Details:</strong></p>
+          <div style="background: var(--bg); padding: 1rem; border-radius: 4px; margin: 1rem 0;">
+            <p><strong>Bank Name:</strong> Commercial Bank of Sri Lanka</p>
+            <p><strong>Account Name:</strong> Korean Pro Education</p>
+            <p><strong>Account Number:</strong> 1234567890</p>
+            <p><strong>Branch:</strong> Colombo Main</p>
+            <p><strong>SWIFT Code:</strong> CCEYLKLX</p>
+          </div>
+          <p><strong>Amount:</strong> LKR 15,000</p>
+          <p class="mt-1">After making the payment, submit the details below:</p>
+          <form id="paymentForm" class="mt-1">
+            <div class="form-group">
+              <label>Your Name</label>
+              <input type="text" id="paymentName" required>
+            </div>
+            <div class="form-group">
+              <label>Amount Paid (LKR)</label>
+              <input type="number" id="paymentAmount" required>
+            </div>
+            <div class="form-group">
+              <label>Transaction Reference</label>
+              <input type="text" id="paymentRef" required>
+            </div>
+            <div class="form-group">
+              <label>Payment Proof (Optional)</label>
+              <input type="file" id="paymentProof" accept="image/*">
+            </div>
+            <button type="submit" class="btn btn-accent">Submit Payment Request</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN PAGE -->
+    <div id="adminPage" class="page">
+      <div class="container">
+        <h1>Admin Panel</h1>
+        
+        <!-- TABS -->
+        <div class="flex gap-1 mb-1" style="border-bottom: 2px solid var(--border);">
+          <button class="btn btn-secondary admin-tab active" data-tab="users">Users</button>
+          <button class="btn btn-secondary admin-tab" data-tab="payments">Payments</button>
+          <button class="btn btn-secondary admin-tab" data-tab="videos">Videos</button>
+          <button class="btn btn-secondary admin-tab" data-tab="quizzes">Quizzes</button>
+        </div>
+
+        <!-- USERS TAB -->
+        <div id="adminUsersTab" class="admin-tab-content">
+          <div class="card">
+            <h3 class="card-title">Manage Users</h3>
+            <div class="table-container">
+              <table id="usersTable">
+                <thead>
+                  <tr>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Paid Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody></tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- PAYMENTS TAB -->
+        <div id="adminPaymentsTab" class="admin-tab-content hidden">
+          <div class="card">
+            <h3 class="card-title">Pending Payments</h3>
+            <div id="paymentsContent"></div>
+          </div>
+        </div>
+
+        <!-- VIDEOS TAB -->
+        <div id="adminVideosTab" class="admin-tab-content hidden">
+          <div class="card">
+            <h3 class="card-title">Manage Videos</h3>
+            <button class="btn btn-primary mb-1" id="addVideoBtn">Add New Video</button>
+            <div id="videosContent"></div>
+          </div>
+        </div>
+
+        <!-- QUIZZES TAB -->
+        <div id="adminQuizzesTab" class="admin-tab-content hidden">
+          <div class="card">
+            <h3 class="card-title">Manage Quizzes</h3>
+            <button class="btn btn-primary mb-1" id="addQuizBtn">Add New Quiz</button>
+            <div id="adminQuizzesContent"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- MODALS -->
+  <div id="quizModal" class="modal">
+    <div class="modal-content">
+      <h3 id="quizTitle"></h3>
+      <div id="quizQuestion" class="mb-1"></div>
+      <div id="quizOptions"></div>
+      <div id="quizResult" class="mt-1"></div>
+      <button class="btn btn-secondary mt-1" id="closeQuizBtn">Close</button>
+    </div>
+  </div>
+
+  <div id="videoModal" class="modal">
+    <div class="modal-content">
+      <h3 id="videoTitle"></h3>
+      <div id="videoPlayer"></div>
+      <div id="videoNotes" class="mt-1"></div>
+      <button class="btn btn-primary mt-1" id="markCompleteBtn">Mark as Complete</button>
+      <button class="btn btn-secondary mt-1" id="closeVideoBtn">Close</button>
+    </div>
+  </div>
 
   <script>
-    // State
-    const state = { basic: {}, ip: null, speed: null, ping: null, devices: [], recordings: [] };
+    /* =================================================================
+       GLOBAL STATE & DATA
+       ================================================================= */
+    
+    const STATE = {
+      currentUser: null,
+      currentPage: 'loginPage',
+      quizLanguage: 'korean', // korean or sinhala
+      theme: 'light'
+    };
 
-    // Basic info
-    function showBasic(){
-      const nav = navigator;
-      const info = {
-        userAgent: nav.userAgent,
-        platform: nav.platform,
-        language: nav.language,
-        cookiesEnabled: nav.cookieEnabled,
-        online: nav.onLine,
-        hardwareConcurrency: nav.hardwareConcurrency || 'n/a',
-        deviceMemory: nav.deviceMemory || 'n/a',
-        vendor: nav.vendor || 'n/a',
-        webdriver: !!nav.webdriver,
-        screen: { width: screen.width, height: screen.height, pixelRatio: window.devicePixelRatio }
+    // DEMO USERS - Replace with backend authentication
+    const USERS = JSON.parse(localStorage.getItem('users') || JSON.stringify([
+      { username: 'admin', password: 'admin123', email: 'admin@koreanpro.com', isAdmin: true, isPaid: true },
+      { username: 'student1', password: 'student123', email: 'student1@test.com', isPaid: false },
+      { username: 'student2', password: 'student123', email: 'student2@test.com', isPaid: false },
+      { username: 'student3', password: 'student123', email: 'student3@test.com', isPaid: false },
+      { username: 'student4', password: 'student123', email: 'student4@test.com', isPaid: false },
+      { username: 'student5', password: 'student123', email: 'student5@test.com', isPaid: false },
+      { username: 'student6', password: 'student123', email: 'student6@test.com', isPaid: false }
+    ]));
+
+    // DEMO VIDEOS - Replace with backend API
+    const VIDEOS = JSON.parse(localStorage.getItem('videos') || JSON.stringify([
+      {
+        id: 1,
+        title: 'Korean Alphabet Basics (한글)',
+        course: 'Beginner',
+        level: 'Level 1',
+        lessonNo: 1,
+        url: 'https://www.youtube.com/embed/s5aobqyEaMQ',
+        type: 'youtube',
+        notes: 'Introduction to Hangul characters',
+        summary: 'Learn the Korean alphabet system and basic pronunciation'
+      },
+      {
+        id: 2,
+        title: 'Basic Greetings (인사말)',
+        course: 'Beginner',
+        level: 'Level 1',
+        lessonNo: 2,
+        url: 'https://www.youtube.com/embed/TpqnNV8QqkU',
+        type: 'youtube',
+        notes: 'Common Korean greetings and responses',
+        summary: 'Master essential greeting phrases for daily conversation'
+      },
+      {
+        id: 3,
+        title: 'EPS-TOPIK Grammar Lesson',
+        course: 'EPS-TOPIK',
+        level: 'Level 2',
+        lessonNo: 1,
+        url: 'https://example.com/video.mp4',
+        type: 'mp4',
+        notes: 'Essential grammar patterns for EPS-TOPIK exam',
+        summary: 'Study key grammar structures frequently tested in EPS-TOPIK'
+      }
+    ]));
+
+    // DEMO QUIZZES - Replace with backend API
+    const QUIZZES = JSON.parse(localStorage.getItem('quizzes') || JSON.stringify([
+      {
+        id: 1,
+        date: '2025-01-01',
+        courseLevel: 'Beginner',
+        question_kor: '안녕하세요는 무슨 뜻입니까?',
+        question_sinhala: '"안녕하세요" යන්නෙන් අදහස් කරන්නේ කුමක්ද?',
+        choices_kor: ['안녕하세요', '감사합니다', '미안합니다', '잘 가세요'],
+        choices_sinhala: ['හෙලෝ / ආයුබෝවන්', 'ස්තූතියි', 'සමාවෙන්න', 'ගිහින් එන්න'],
+        correctIndex: 0
+      },
+      {
+        id: 2,
+        date: '2025-01-02',
+        courseLevel: 'Beginner',
+        question_kor: '"감사합니다"의 의미는?',
+        question_sinhala: '"감사합니다" හි තේරුම කුමක්ද?',
+        choices_kor: ['안녕히 가세요', '감사합니다', '죄송합니다', '네'],
+        choices_sinhala: ['ගිහින් එන්න', 'ස්තූතියි', 'සමාවෙන්න', 'ඔව්'],
+        correctIndex: 1
+      },
+      {
+        id: 3,
+        date: '2025-01-03',
+        courseLevel: 'Beginner',
+        question_kor: '한국어로 "1"은?',
+        question_sinhala: 'කොරියානු භාෂාවෙන් "1" කියන්නේ කෙසේද?',
+        choices_kor: ['하나', '둘', '셋', '넷'],
+        choices_sinhala: ['하나 (හානා)', '둘 (දූල්)', '셋 (සෙට්)', '넷 (නෙට්)'],
+        correctIndex: 0
+      },
+      {
+        id: 4,
+        date: '2025-01-04',
+        courseLevel: 'Beginner',
+        question_kor: '"네"의 뜻은?',
+        question_sinhala: '"네" හි තේරුම කුමක්ද?',
+        choices_kor: ['아니요', '네', '모르겠어요', '아마도'],
+        choices_sinhala: ['නැහැ', 'ඔව්', 'මම දන්නේ නැහැ', 'සමහර විට'],
+        correctIndex: 1
+      },
+      {
+        id: 5,
+        date: '2025-01-05',
+        courseLevel: 'Beginner',
+        question_kor: '한국어로 "물"은 무엇입니까?',
+        question_sinhala: 'කොරියානු භාෂාවෙන් "වතුර" කියන්නේ කෙසේද?',
+        choices_kor: ['물', '밥', '빵', '우유'],
+        choices_sinhala: ['물 (මුල්)', '밥 (බාප්)', '빵 (භාං)', '우유 (උයු)'],
+        correctIndex: 0
+      },
+      {
+        id: 6,
+        date: '2025-01-06',
+        courseLevel: 'EPS-TOPIK',
+        question_kor: '회사에서 일할 때 가장 중요한 것은?',
+        question_sinhala: 'සමාගමක වැඩ කරන විට වැදගත්ම දේ කුමක්ද?',
+        choices_kor: ['안전', '속도', '외모', '나이'],
+        choices_sinhala: ['ආරක්ෂාව', 'වේගය', 'පෙනුම', 'වයස'],
+        correctIndex: 0
+      },
+      {
+        id: 7,
+        date: '2025-01-07',
+        courseLevel: 'EPS-TOPIK',
+        question_kor: '작업장에서 "보호 장비"를 착용해야 합니까?',
+        question_sinhala: 'වැඩ කරන ස්ථානයේදී "ආරක්ෂිත උපකරණ" පැළඳිය යුතුද?',
+        choices_kor: ['네, 반드시', '아니요', '선택 사항', '모르겠습니다'],
+        choices_sinhala: ['ඔව්, අනිවාර්යයෙන්ම', 'නැහැ', 'තේරීමකි', 'මම දන්නේ නැහැ'],
+        correctIndex: 0
+      },
+      {
+        id: 8,
+        date: '2025-01-08',
+        courseLevel: 'EPS-TOPIK',
+        question_kor: '"휴가"의 의미는?',
+        question_sinhala: '"휴가" (හියුගා) හි තේරුම කුමක්ද?',
+        choices_kor: ['일', '휴가', '회의', '식사'],
+        choices_sinhala: ['වැඩ', 'නිවාඩුව', 'රැස්වීම', 'ආහාරය'],
+        correctIndex: 1
+      },
+      {
+        id: 9,
+        date: '2025-01-09',
+        courseLevel: 'EPS-TOPIK',
+        question_kor: '급여는 언제 받습니까?',
+        question_sinhala: 'වැටුප ලබා ගන්නේ කවදාද?',
+        choices_kor: ['매일', '매주', '매월', '매년'],
+        choices_sinhala: ['දිනපතා', 'සතිපතා', 'මාසිකව', 'වාර්ෂිකව'],
+        correctIndex: 2
+      },
+      {
+        id: 10,
+        date: '2025-01-10',
+        courseLevel: 'TOPIK',
+        question_kor: '다음 중 존댓말이 아닌 것은?',
+        question_sinhala: 'පහත සඳහන් වලින් ගෞරවනීය භාෂාව නොවන්නේ කුමක්ද?',
+        choices_kor: ['감사합니다', '고마워', '죄송합니다', '안녕하세요'],
+        choices_sinhala: ['감사합니다 (ගම්සාහාම්නිදා)', '고마워 (ගොමාවෝ)', '죄송합니다 (චෙසොංහාම්නිදා)', '안녕하세요 (අන්න්යොං-හාසෙයෝ)'],
+        correctIndex: 1
+      }
+    ]));
+
+    // USER PROGRESS - Replace with backend API
+    const getUserProgress = () => {
+      return JSON.parse(localStorage.getItem(`progress_${STATE.currentUser.username}`) || JSON.stringify({
+        completedLessons: [],
+        quizScores: {},
+        watchedVideos: []
+      }));
+    };
+
+    const saveUserProgress = (progress) => {
+      localStorage.setItem(`progress_${STATE.currentUser.username}`, JSON.stringify(progress));
+    };
+
+    // PAYMENT REQUESTS - Replace with backend API
+    const PAYMENT_REQUESTS = JSON.parse(localStorage.getItem('paymentRequests') || '[]');
+
+    /* =================================================================
+       AUTHENTICATION
+       ================================================================= */
+
+    const login = (username, password) => {
+      const user = USERS.find(u => u.username === username && u.password === password);
+      if (user) {
+        STATE.currentUser = user;
+        localStorage.setItem('currentUser', JSON.stringify(user));
+        return true;
+      }
+      return false;
+    };
+
+    const signup = (username, email, password) => {
+      if (USERS.find(u => u.username === username)) {
+        return { success: false, message: 'Username already exists' };
+      }
+      const newUser = { username, email, password, isPaid: false, isAdmin: false };
+      USERS.push(newUser);
+      localStorage.setItem('users', JSON.stringify(USERS));
+      return { success: true };
+    };
+
+    const logout = () => {
+      STATE.currentUser = null;
+      localStorage.removeItem('currentUser');
+      showPage('loginPage');
+      updateNav();
+    };
+
+    const checkAuth = () => {
+      const stored = localStorage.getItem('currentUser');
+      if (stored) {
+        STATE.currentUser = JSON.parse(stored);
+        // Sync with latest user data
+        const latestUser = USERS.find(u => u.username === STATE.currentUser.username);
+        if (latestUser) {
+          STATE.currentUser = latestUser;
+          localStorage.setItem('currentUser', JSON.stringify(latestUser));
+        }
+        showPage('dashboardPage');
+        updateNav();
+      }
+    };
+
+    /* =================================================================
+       NAVIGATION
+       ================================================================= */
+
+    const showPage = (pageId) => {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.getElementById(pageId).classList.add('active');
+      STATE.currentPage = pageId;
+      
+      // Load page content
+      if (pageId === 'dashboardPage') loadDashboard();
+      if (pageId === 'recordingsPage') loadRecordings();
+      if (pageId === 'quizzesPage') loadQuizzes();
+      if (pageId === 'adminPage') loadAdmin();
+    };
+
+    const updateNav = () => {
+      const navLinks = document.getElementById('navLinks');
+      const mobileMenu = document.getElementById('mobileMenu');
+      
+      let html = `
+        <div class="toggle-container">
+          <span>☀️</span>
+          <div class="toggle ${STATE.theme === 'dark' ? 'active' : ''}" id="themeToggle">
+            <div class="toggle-slider"></div>
+          </div>
+          <span>🌙</span>
+        </div>
+      `;
+      
+      if (STATE.currentUser) {
+        html += `
+          <a href="#" data-page="dashboardPage">Dashboard</a>
+          <a href="#" data-page="recordingsPage">Recordings</a>
+          <a href="#" data-page="quizzesPage">Quizzes</a>
+        `;
+        
+        if (!STATE.currentUser.isPaid && !STATE.currentUser.isAdmin) {
+          html += `<a href="#" data-page="paymentPage">Upgrade</a>`;
+        }
+        
+        if (STATE.currentUser.isAdmin) {
+          html += `<a href="#" data-page="adminPage">Admin</a>`;
+        }
+        
+        html += `<button id="logoutBtn">Logout</button>`;
+      }
+      
+      navLinks.innerHTML = html;
+      mobileMenu.innerHTML = html;
+      
+      // Attach event listeners
+      document.querySelectorAll('[data-page]').forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          showPage(e.target.dataset.page);
+          document.getElementById('mobileMenu').classList.remove('active');
+        });
+      });
+      
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.addEventListener('click', logout);
+      }
+      
+      const themeToggle = document.getElementById('themeToggle');
+      if (themeToggle) {
+        themeToggle.addEventListener('click', toggleTheme);
+      }
+    };
+
+    const toggleTheme = () => {
+      STATE.theme = STATE.theme === 'light' ? 'dark' : 'light';
+      document.body.dataset.theme = STATE.theme;
+      localStorage.setItem('theme', STATE.theme);
+      updateNav();
+    };
+
+    /* =================================================================
+       DASHBOARD
+       ================================================================= */
+
+    const loadDashboard = () => {
+      const progress = getUserProgress();
+      const stats = document.getElementById('dashboardStats');
+      const progressContent = document.getElementById('progressContent');
+      
+      const completedCount = progress.completedLessons.length;
+      const quizzesTaken = Object.keys(progress.quizScores).length;
+      const avgScore = quizzesTaken > 0 
+        ? Math.round(Object.values(progress.quizScores).reduce((a, b) => a + b, 0) / quizzesTaken)
+        : 0;
+      
+      stats.innerHTML = `
+        <div class="stat-card">
+          <div class="stat-value">${completedCount}</div>
+          <div class="stat-label">Lessons Completed</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--accent), #d97706);">
+          <div class="stat-value">${quizzesTaken}</div>
+          <div class="stat-label">Quizzes Taken</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, var(--success), #059669);">
+          <div class="stat-value">${avgScore}%</div>
+          <div class="stat-label">Average Score</div>
+        </div>
+        <div class="stat-card" style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
+          <div class="stat-value">${STATE.currentUser.isPaid ? 'Premium' : 'Free'}</div>
+          <div class="stat-label">Account Status</div>
+        </div>
+      `;
+      
+      progressContent.innerHTML = `
+        <p><strong>Account:</strong> ${STATE.currentUser.username}</p>
+        <p><strong>Email:</strong> ${STATE.currentUser.email}</p>
+        <p><strong>Status:</strong> ${STATE.currentUser.isPaid ? '✓ Premium Access' : '⚠ Free Account - Upgrade for full access'}</p>
+        ${!STATE.currentUser.isPaid && !STATE.currentUser.isAdmin ? `
+          <button class="btn btn-accent mt-1" onclick="showPage('paymentPage')">Upgrade Now</button>
+        ` : ''}
+      `;
+    };
+
+    /* =================================================================
+       RECORDINGS
+       ================================================================= */
+
+    const loadRecordings = () => {
+      const content = document.getElementById('recordingsContent');
+      
+      if (!STATE.currentUser.isPaid && !STATE.currentUser.isAdmin) {
+        content.innerHTML = `
+          <div class="card text-center">
+            <h3>🔒 Premium Content</h3>
+            <p>Unlock all video recordings with a premium account.</p>
+            <button class="btn btn-accent mt-1" onclick="showPage('paymentPage')">Upgrade Now</button>
+          </div>
+        `;
+        return;
+      }
+      
+      // Group videos by course
+      const grouped = {};
+      VIDEOS.forEach(video => {
+        if (!grouped[video.course]) grouped[video.course] = [];
+        grouped[video.course].push(video);
+      });
+      
+      let html = '';
+      Object.keys(grouped).forEach(course => {
+        html += `<h3 class="mt-1">${course}</h3>`;
+        grouped[course].forEach(video => {
+          html += `
+            <div class="card">
+              <h4>${video.title}</h4>
+              <p><strong>Level:</strong> ${video.level} - Lesson ${video.lessonNo}</p>
+              <p>${video.summary}</p>
+              <button class="btn btn-primary" onclick="playVideo(${video.id})">Watch Lesson</button>
+            </div>
+          `;
+        });
+      });
+      
+      content.innerHTML = html;
+    };
+
+    const playVideo = (videoId) => {
+      const video = VIDEOS.find(v => v.id === videoId);
+      if (!video) return;
+      
+      const modal = document.getElementById('videoModal');
+      const title = document.getElementById('videoTitle');
+      const player = document.getElementById('videoPlayer');
+      const notes = document.getElementById('videoNotes');
+      
+      title.textContent = video.title;
+      notes.innerHTML = `<p><strong>Notes:</strong> ${video.notes}</p>`;
+      
+      if (video.type === 'youtube' || video.url.includes('youtube.com') || video.url.includes('youtu.be')) {
+        player.innerHTML = `<div class="video-container"><iframe src="${video.url}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>`;
+      } else if (video.type === 'mp4' || video.url.endsWith('.mp4')) {
+        player.innerHTML = `<div class="video-container"><video controls controlsList="nodownload" oncontextmenu="return false;"><source src="${video.url}" type="video/mp4">Your browser does not support video.</video></div>`;
+      } else {
+        player.innerHTML = `<div class="video-container"><iframe src="${video.url}" frameborder="0" allowfullscreen></iframe></div>`;
+      }
+      
+      modal.classList.add('active');
+      document.getElementById('markCompleteBtn').onclick = () => markLessonComplete(videoId);
+    };
+
+    const markLessonComplete = (videoId) => {
+      const progress = getUserProgress();
+      if (!progress.completedLessons.includes(videoId)) {
+        progress.completedLessons.push(videoId);
+        saveUserProgress(progress);
+        alert('Lesson marked as complete! ✓');
+        loadDashboard();
+      }
+    };
+
+    /* =================================================================
+       QUIZZES
+       ================================================================= */
+
+    const loadQuizzes = () => {
+      const content = document.getElementById('quizzesContent');
+      const lang = STATE.quizLanguage;
+      
+      let html = '';
+      QUIZZES.forEach(quiz => {
+        const question = lang === 'korean' ? quiz.question_kor : quiz.question_sinhala;
+        const progress = getUserProgress();
+        const score = progress.quizScores[quiz.id];
+        
+        html += `
+          <div class="card">
+            <div class="flex justify-between items-center">
+              <div>
+                <h4>Quiz ${quiz.id}: ${quiz.courseLevel}</h4>
+                <p>${question.substring(0, 50)}...</p>
+                <p><small>Released: ${quiz.date}</small></p>
+              </div>
+              <div>
+                ${score !== undefined ? `<p class="text-success">Score: ${score}%</p>` : ''}
+                <button class="btn btn-primary" onclick="startQuiz(${quiz.id})">
+                  ${score !== undefined ? 'Retake' : 'Start'} Quiz
+                </button>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      
+      content.innerHTML = html;
+    };
+
+    const startQuiz = (quizId) => {
+      const quiz = QUIZZES.find(q => q.id === quizId);
+      if (!quiz) return;
+      
+      const modal = document.getElementById('quizModal');
+      const title = document.getElementById('quizTitle');
+      const question = document.getElementById('quizQuestion');
+      const options = document.getElementById('quizOptions');
+      const result = document.getElementById('quizResult');
+      
+      const lang = STATE.quizLanguage;
+      const questionText = lang === 'korean' ? quiz.question_kor : quiz.question_sinhala;
+      const choices = lang === 'korean' ? quiz.choices_kor : quiz.choices_sinhala;
+      
+      title.textContent = `Quiz ${quiz.id} - ${quiz.courseLevel}`;
+      question.innerHTML = `<h4>${questionText}</h4>`;
+      result.innerHTML = '';
+      
+      let optionsHtml = '';
+      choices.forEach((choice, index) => {
+        optionsHtml += `
+          <div class="quiz-option" onclick="checkAnswer(${quizId}, ${index})">
+            ${index + 1}. ${choice}
+          </div>
+        `;
+      });
+      
+      options.innerHTML = optionsHtml;
+      modal.classList.add('active');
+    };
+
+    const checkAnswer = (quizId, selectedIndex) => {
+      const quiz = QUIZZES.find(q => q.id === quizId);
+      const options = document.querySelectorAll('.quiz-option');
+      const result = document.getElementById('quizResult');
+      
+      options.forEach(opt => opt.style.pointerEvents = 'none');
+      
+      if (selectedIndex === quiz.correctIndex) {
+        options[selectedIndex].classList.add('correct');
+        result.innerHTML = '<p class="text-success"><strong>✓ Correct!</strong></p>';
+        
+        const progress = getUserProgress();
+        progress.quizScores[quizId] = 100;
+        saveUserProgress(progress);
+      } else {
+        options[selectedIndex].classList.add('incorrect');
+        options[quiz.correctIndex].classList.add('correct');
+        result.innerHTML = '<p class="text-error"><strong>✗ Incorrect. The correct answer is highlighted.</strong></p>';
+        
+        const progress = getUserProgress();
+        progress.quizScores[quizId] = 0;
+        saveUserProgress(progress);
+      }
+      
+      setTimeout(() => {
+        loadDashboard();
+      }, 1000);
+    };
+
+    /* =================================================================
+       PAYMENT
+       ================================================================= */
+
+    const submitPayment = (e) => {
+      e.preventDefault();
+      
+      const name = document.getElementById('paymentName').value;
+      const amount = document.getElementById('paymentAmount').value;
+      const ref = document.getElementById('paymentRef').value;
+      const proof = document.getElementById('paymentProof').files[0];
+      
+      const request = {
+        id: Date.now(),
+        username: STATE.currentUser.username,
+        name,
+        amount,
+        ref,
+        proofName: proof ? proof.name : null,
+        status: 'pending',
+        date: new Date().toISOString()
       };
-      state.basic = info;
-      document.getElementById('basicInfo').textContent = JSON.stringify(info,null,2);
-      updateSummaryCards();
-    }
-    document.getElementById('refreshBasic').addEventListener('click', showBasic);
-    showBasic();
+      
+      PAYMENT_REQUESTS.push(request);
+      localStorage.setItem('paymentRequests', JSON.stringify(PAYMENT_REQUESTS));
+      
+      alert('Payment request submitted! Admin will verify and approve your payment.');
+      e.target.reset();
+    };
 
-    function updateSummaryCards(){
-      const box = document.getElementById('summaryCards'); box.innerHTML='';
-      const items = [
-        ['Browser', navigator.userAgent],
-        ['Platform', navigator.platform],
-        ['Resolution', screen.width+'x'+screen.height],
-        ['Cores', navigator.hardwareConcurrency || 'n/a']
-      ];
-      items.forEach(it=>{
-        const el = document.createElement('div'); el.className='p-3 bg-white rounded-lg shadow flex flex-col';
-        el.innerHTML = `<div class="text-xs muted">${it[0]}</div><div class="font-medium text-sm mt-1">${it[1]}</div>`;
-        box.appendChild(el);
+    /* =================================================================
+       ADMIN PANEL
+       ================================================================= */
+
+    const loadAdmin = () => {
+      if (!STATE.currentUser.isAdmin) {
+        showPage('dashboardPage');
+        return;
+      }
+      
+      loadAdminUsers();
+      loadAdminPayments();
+      loadAdminVideos();
+      loadAdminQuizzes();
+    };
+
+    const loadAdminUsers = () => {
+      const tbody = document.querySelector('#usersTable tbody');
+      let html = '';
+      
+      USERS.filter(u => !u.isAdmin).forEach(user => {
+        html += `
+          <tr>
+            <td>${user.username}</td>
+            <td>${user.email}</td>
+            <td>${user.isPaid ? '✓ Paid' : '✗ Free'}</td>
+            <td>
+              <button class="btn btn-success" onclick="toggleUserPaid('${user.username}')">
+                ${user.isPaid ? 'Revoke' : 'Approve'} Access
+              </button>
+            </td>
+          </tr>
+        `;
+      });
+      
+      tbody.innerHTML = html;
+    };
+
+    const toggleUserPaid = (username) => {
+      const user = USERS.find(u => u.username === username);
+      if (user) {
+        user.isPaid = !user.isPaid;
+        localStorage.setItem('users', JSON.stringify(USERS));
+        
+        // TODO: Send email notification (integrate with backend email service)
+        alert(`User ${username} is now ${user.isPaid ? 'PAID' : 'FREE'}. Email notification sent (simulated).`);
+        
+        loadAdminUsers();
+      }
+    };
+
+    const loadAdminPayments = () => {
+      const content = document.getElementById('paymentsContent');
+      const pending = PAYMENT_REQUESTS.filter(r => r.status === 'pending');
+      
+      if (pending.length === 0) {
+        content.innerHTML = '<p>No pending payment requests.</p>';
+        return;
+      }
+      
+      let html = '';
+      pending.forEach(req => {
+        html += `
+          <div class="card">
+            <h4>${req.name} (${req.username})</h4>
+            <p><strong>Amount:</strong> LKR ${req.amount}</p>
+            <p><strong>Reference:</strong> ${req.ref}</p>
+            <p><strong>Date:</strong> ${new Date(req.date).toLocaleString()}</p>
+            ${req.proofName ? `<p><strong>Proof:</strong> ${req.proofName}</p>` : ''}
+            <div class="flex gap-1 mt-1">
+              <button class="btn btn-success" onclick="approvePayment(${req.id})">Approve</button>
+              <button class="btn btn-error" onclick="rejectPayment(${req.id})">Reject</button>
+            </div>
+          </div>
+        `;
+      });
+      
+      content.innerHTML = html;
+    };
+
+    const approvePayment = (requestId) => {
+      const req = PAYMENT_REQUESTS.find(r => r.id === requestId);
+      if (req) {
+        req.status = 'approved';
+        localStorage.setItem('paymentRequests', JSON.stringify(PAYMENT_REQUESTS));
+        
+        toggleUserPaid(req.username);
+        loadAdminPayments();
+      }
+    };
+
+    const rejectPayment = (requestId) => {
+      const req = PAYMENT_REQUESTS.find(r => r.id === requestId);
+      if (req) {
+        req.status = 'rejected';
+        localStorage.setItem('paymentRequests', JSON.stringify(PAYMENT_REQUESTS));
+        alert('Payment request rejected.');
+        loadAdminPayments();
+      }
+    };
+
+    const loadAdminVideos = () => {
+      const content = document.getElementById('videosContent');
+      let html = '<div class="table-container"><table><thead><tr><th>Title</th><th>Course</th><th>Lesson</th><th>Actions</th></tr></thead><tbody>';
+      
+      VIDEOS.forEach(video => {
+        html += `
+          <tr>
+            <td>${video.title}</td>
+            <td>${video.course}</td>
+            <td>${video.level} - #${video.lessonNo}</td>
+            <td><button class="btn btn-error" onclick="deleteVideo(${video.id})">Delete</button></td>
+          </tr>
+        `;
+      });
+      
+      html += '</tbody></table></div>';
+      content.innerHTML = html;
+    };
+
+    const deleteVideo = (videoId) => {
+      if (confirm('Delete this video?')) {
+        const index = VIDEOS.findIndex(v => v.id === videoId);
+        if (index > -1) {
+          VIDEOS.splice(index, 1);
+          localStorage.setItem('videos', JSON.stringify(VIDEOS));
+          loadAdminVideos();
+        }
+      }
+    };
+
+    const loadAdminQuizzes = () => {
+      const content = document.getElementById('adminQuizzesContent');
+      let html = '<div class="table-container"><table><thead><tr><th>ID</th><th>Level</th><th>Date</th><th>Question (KR)</th><th>Actions</th></tr></thead><tbody>';
+      
+      QUIZZES.forEach(quiz => {
+        html += `
+          <tr>
+            <td>${quiz.id}</td>
+            <td>${quiz.courseLevel}</td>
+            <td>${quiz.date}</td>
+            <td>${quiz.question_kor.substring(0, 30)}...</td>
+            <td><button class="btn btn-error" onclick="deleteQuiz(${quiz.id})">Delete</button></td>
+          </tr>
+        `;
+      });
+      
+      html += '</tbody></table></div>';
+      content.innerHTML = html;
+    };
+
+    const deleteQuiz = (quizId) => {
+      if (confirm('Delete this quiz?')) {
+        const index = QUIZZES.findIndex(q => q.id === quizId);
+        if (index > -1) {
+          QUIZZES.splice(index, 1);
+          localStorage.setItem('quizzes', JSON.stringify(QUIZZES));
+          loadAdminQuizzes();
+        }
+      }
+    };
+
+    /* =================================================================
+       EVENT LISTENERS
+       ================================================================= */
+
+    document.getElementById('loginForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('loginUsername').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (login(username, password)) {
+        showPage('dashboardPage');
+        updateNav();
+      } else {
+        alert('Invalid credentials');
+      }
+    });
+
+    document.getElementById('signupForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const username = document.getElementById('signupUsername').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      
+      const result = signup(username, email, password);
+      if (result.success) {
+        alert('Account created! Please login.');
+        showPage('loginPage');
+      } else {
+        alert(result.message);
+      }
+    });
+
+    document.getElementById('showSignupLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      showPage('signupPage');
+    });
+
+    document.getElementById('showLoginLink').addEventListener('click', (e) => {
+      e.preventDefault();
+      showPage('loginPage');
+    });
+
+    document.getElementById('paymentForm').addEventListener('submit', submitPayment);
+
+    document.getElementById('quizLangToggle').addEventListener('click', () => {
+      STATE.quizLanguage = STATE.quizLanguage === 'korean' ? 'sinhala' : 'korean';
+      document.getElementById('quizLangToggle').classList.toggle('active');
+      loadQuizzes();
+    });
+
+    document.getElementById('closeQuizBtn').addEventListener('click', () => {
+      document.getElementById('quizModal').classList.remove('active');
+    });
+
+    document.getElementById('closeVideoBtn').addEventListener('click', () => {
+      document.getElementById('videoModal').classList.remove('active');
+      document.getElementById('videoPlayer').innerHTML = '';
+    });
+
+    document.getElementById('hamburgerBtn').addEventListener('click', () => {
+      document.getElementById('mobileMenu').classList.toggle('active');
+    });
+
+    // Admin tabs
+    document.querySelectorAll('.admin-tab').forEach(tab => {
+      tab.addEventListener('click', (e) => {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+        document.querySelectorAll('.admin-tab-content').forEach(c => c.classList.add('hidden'));
+        
+        e.target.classList.add('active');
+        const tabName = e.target.dataset.tab;
+        document.getElementById(`admin${tabName.charAt(0).toUpperCase() + tabName.slice(1)}Tab`).classList.remove('hidden');
+      });
+    });
+
+    document.getElementById('addVideoBtn').addEventListener('click', () => {
+      const url = prompt('Enter video URL (YouTube, MP4, or embed link):');
+      if (url) {
+        const title = prompt('Enter video title:');
+        const course = prompt('Enter course (Beginner/EPS-TOPIK/TOPIK):');
+        const level = prompt('Enter level (e.g., Level 1):');
+        const lessonNo = parseInt(prompt('Enter lesson number:'));
+        const notes = prompt('Enter lesson notes:');
+        const summary = prompt('Enter lesson summary:');
+        
+        const newVideo = {
+          id: VIDEOS.length + 1,
+          title,
+          course,
+          level,
+          lessonNo,
+          url,
+          type: url.includes('youtube') ? 'youtube' : url.endsWith('.mp4') ? 'mp4' : 'embed',
+          notes,
+          summary
+        };
+        
+        VIDEOS.push(newVideo);
+        localStorage.setItem('videos', JSON.stringify(VIDEOS));
+        loadAdminVideos();
+        alert('Video added successfully!');
+      }
+    });
+
+    document.getElementById('addQuizBtn').addEventListener('click', () => {
+      alert('Quiz creation form would go here. For demo, edit QUIZZES array directly.');
+    });
+
+    /* =================================================================
+       PWA SERVICE WORKER
+       ================================================================= */
+
+    if ('serviceWorker' in navigator) {
+      // Service worker registration
+      const swCode = `
+        const CACHE_NAME = 'korean-pro-v1';
+        const urlsToCache = ['/'];
+        
+        self.addEventListener('install', event => {
+          event.waitUntil(
+            caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
+          );
+        });
+        
+        self.addEventListener('fetch', event => {
+          event.respondWith(
+            caches.match(event.request).then(response => {
+              return response || fetch(event.request);
+            })
+          );
+        });
+      `;
+      
+      const blob = new Blob([swCode], { type: 'application/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      
+      navigator.serviceWorker.register(swUrl).then(() => {
+        console.log('Service Worker registered');
+      }).catch(err => {
+        console.log('Service Worker registration failed:', err);
       });
     }
 
-    // IP & ISP
-    document.getElementById('btnIp').addEventListener('click', async ()=>{
-      const ipBox = document.getElementById('ipBox'); ipBox.textContent='Fetching...';
-      try{
-        const r = await fetch('https://ipapi.co/json/'); if(!r.ok) throw 0; const j = await r.json();
-        state.ip = j; document.getElementById('ipBox').textContent = 'IP: '+j.ip; document.getElementById('ispBox').textContent = 'ISP: '+(j.org||j.company||'-');
-      }catch(e){ ipBox.textContent='IP lookup failed (CORS/offline)'; }
-    });
-
-    // Improved Speed test using progressive downloads (best-effort client-side)
-    async function runSpeedTest(){
-      const box = document.getElementById('speedBox'); box.textContent='Running...';
-      // We'll attempt multiple hosts to improve chance of CORS success.
-      const testFiles = [
-        'https://speed.hetzner.de/100KB.bin',
-        'https://download.samplelib.com/mp4/sample-5s.mp4',
-        'https://ipv4.download.thinkbroadband.com/5MB.zip'
-      ];
-      let results = [];
-      for(const url of testFiles){
-        try{
-          const start = performance.now();
-          const r = await fetch(url, {cache:'no-store'});
-          const blob = await r.blob();
-          const ms = performance.now() - start;
-          const bitsPerSec = (blob.size * 8) / (ms/1000);
-          const mbps = bitsPerSec / (1024*1024);
-          results.push({url, mbps, bytes: blob.size, ms});
-        }catch(e){
-          // ignore failures; continue
+    // Web App Manifest
+    const manifest = {
+      name: 'Korean Pro',
+      short_name: 'KoreanPro',
+      start_url: '/',
+      display: 'standalone',
+      background_color: '#1e40af',
+      theme_color: '#1e40af',
+      icons: [
+        {
+          src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><circle cx="96" cy="96" r="96" fill="%231e40af"/><text x="96" y="130" text-anchor="middle" fill="%23f59e0b" font-size="100" font-weight="bold">K</text></svg>',
+          sizes: '192x192',
+          type: 'image/svg+xml'
         }
-      }
-      if(results.length === 0){ box.textContent = 'Speed test failed (CORS or blocked). Try from a hosted HTTPS site.'; return; }
-      // take average of results
-      const avg = results.reduce((s,r)=>s + r.mbps, 0) / results.length;
-      state.speed = {avgMbps: avg.toFixed(2), details: results};
-      box.textContent = `${avg.toFixed(2)} Mbps (approx, ${results.length} hosts)`;
-    }
-    document.getElementById('btnSpeed').addEventListener('click', runSpeedTest);
+      ]
+    };
 
-    // Ping (approx) - use fetch to public domain and measure latency; CORS may block so it's best-effort
-    document.getElementById('btnPing').addEventListener('click', async ()=>{
-      const box = document.getElementById('pingBox'); box.textContent='Pinging...';
-      const hosts = ['https://example.com', 'https://cloudflare.com', 'https://google.com'];
-      let times=[];
-      for(const h of hosts){
-        try{
-          const start = performance.now();
-          await fetch(h, {method:'HEAD', mode:'no-cors', cache:'no-store'});
-          const ms = performance.now() - start;
-          times.push(ms);
-        }catch(e){
-          // push nothing on fail
-        }
-      }
-      if(times.length===0){ box.textContent = 'Ping test: may be blocked by CORS.'; return; }
-      const avg = times.reduce((s,t)=>s+t,0)/times.length;
-      state.ping = avg;
-      box.textContent = `${avg.toFixed(0)} ms (approx)`;
-    });
+    const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
+    const manifestUrl = URL.createObjectURL(manifestBlob);
+    document.getElementById('manifest-placeholder').setAttribute('href', manifestUrl);
 
-    // Battery
-    document.getElementById('btnBattery').addEventListener('click', async ()=>{
-      try{
-        const bat = await navigator.getBattery();
-        alert('Battery: '+(bat.level*100).toFixed(0)+'% — charging: '+bat.charging);
-      }catch(e){ alert('Battery API not supported'); }
-    });
+    /* =================================================================
+       INITIALIZATION
+       ================================================================= */
 
-    // Enumerate devices
-    async function enumerateMedia(){
-      try{
-        const devices = await navigator.mediaDevices.enumerateDevices(); state.devices = devices;
-        const v = document.getElementById('videoDevices'); const a = document.getElementById('audioDevices'); v.innerHTML=''; a.innerHTML='';
-        devices.forEach(d=>{ const o=document.createElement('option'); o.value=d.deviceId; o.textContent=d.label||d.kind+' '+(d.deviceId||'n/a').slice(0,6); if(d.kind==='videoinput') v.appendChild(o); if(d.kind==='audioinput') a.appendChild(o); });
-        document.getElementById('devicesList').textContent = JSON.stringify(devices.map(x=>({kind:x.kind,label:x.label})),null,2);
-      }catch(e){ document.getElementById('devicesList').textContent='enumerateDevices failed — allow permissions or use https.'; }
-    }
-    document.getElementById('listDevices').addEventListener('click', enumerateMedia);
-    if(navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) enumerateMedia();
+    // Load theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    STATE.theme = savedTheme;
+    document.body.dataset.theme = savedTheme;
 
-    // Camera preview & snapshot
-    let currentStream=null; document.getElementById('startCamera').addEventListener('click', async ()=>{
-      const sel = document.getElementById('videoDevices'); const id = sel.value||undefined; try{ if(currentStream) currentStream.getTracks().forEach(t=>t.stop()); const s = await navigator.mediaDevices.getUserMedia({video: id?{deviceId:{exact:id}}:true}); currentStream=s; document.getElementById('preview').srcObject=s; await enumerateMedia(); }catch(e){ alert('Camera failed: '+(e.message||e)); }
-    });
-    document.getElementById('snap').addEventListener('click', ()=>{
-      const vid = document.getElementById('preview'); if(!vid.srcObject) return alert('Start camera first'); const c=document.createElement('canvas'); c.width=vid.videoWidth||640; c.height=vid.videoHeight||480; c.getContext('2d').drawImage(vid,0,0,c.width,c.height); c.toBlob(b=>{ const url = URL.createObjectURL(b); const a=document.createElement('a'); a.href=url; a.download='snapshot.png'; a.click(); },'image/png');
-    });
+    // Check authentication on load
+    checkAuth();
+    updateNav();
 
-    // Mic test and recording
-    let mediaRecorder=null, recordedChunks=[];
-    document.getElementById('startMic').addEventListener('click', async ()=>{
-      const sel = document.getElementById('audioDevices'); const id = sel.value||undefined; try{ const s = await navigator.mediaDevices.getUserMedia({audio: id?{deviceId:{exact:id}}:true}); const ctx = new AudioContext(); const src = ctx.createMediaStreamSource(s); // create analyser for visualizer
-        const analyser = ctx.createAnalyser(); src.connect(analyser); analyser.connect(ctx.destination);
-        setTimeout(()=>s.getTracks().forEach(t=>t.stop()),800); alert('Mic permission granted (short test)'); await enumerateMedia(); }catch(e){ alert('Mic failed: '+(e.message||e)); }
-    });
-
-    document.getElementById('startRec').addEventListener('click', async ()=>{
-      const vsel = document.getElementById('videoDevices').value; const asel = document.getElementById('audioDevices').value;
-      try{
-        const stream = await navigator.mediaDevices.getUserMedia({video: vsel?{deviceId:{exact:vsel}}:true, audio: asel?{deviceId:{exact:asel}}:true});
-        document.getElementById('preview').srcObject = stream; recordedChunks = [];
-        mediaRecorder = new MediaRecorder(stream);
-        mediaRecorder.ondataavailable = e=>{ if(e.data && e.data.size) recordedChunks.push(e.data); };
-        mediaRecorder.onstop = ()=>{
-          const blob = new Blob(recordedChunks, { type: 'video/webm' }); const url = URL.createObjectURL(blob);
-          const list = document.getElementById('recordings'); const a = document.createElement('a'); a.href = url; a.download='recording.webm'; a.textContent = 'Download recording ('+(blob.size/1024).toFixed(0)+' KB)'; list.prepend(a);
-          stream.getTracks().forEach(t=>t.stop()); state.recordings.push({size:blob.size});
-        };
-        mediaRecorder.start(); document.getElementById('startRec').disabled=true; document.getElementById('stopRec').disabled=false;
-      }catch(e){ alert('Recording failed: '+(e.message||e)); }
-    });
-    document.getElementById('stopRec').addEventListener('click', ()=>{ if(mediaRecorder && mediaRecorder.state!=='inactive') mediaRecorder.stop(); document.getElementById('startRec').disabled=false; document.getElementById('stopRec').disabled=true; });
-
-    // Notepad
-    document.getElementById('saveNote').addEventListener('click', ()=>{ localStorage.setItem('diag_notepad', document.getElementById('notepad').value); alert('Saved locally'); });
-    document.getElementById('clearNote').addEventListener('click', ()=>{ document.getElementById('notepad').value=''; localStorage.removeItem('diag_notepad'); });
-    document.getElementById('notepad').value = localStorage.getItem('diag_notepad')||'';
-
-    // QR generator
-    document.getElementById('genQr').addEventListener('click', ()=>{
-      const t = document.getElementById('qrText').value||' '; document.getElementById('qrcode').innerHTML=''; new QRCode(document.getElementById('qrcode'), { text: t, width: 128, height: 128 });
-    });
-
-    // Clipboard
-    document.getElementById('copyBtn').addEventListener('click', async ()=>{ try{ await navigator.clipboard.writeText(document.getElementById('clipIn').value); alert('Copied'); }catch(e){ alert('Copy failed'); } });
-
-    // Performance tests
-    document.getElementById('btnCpu').addEventListener('click', ()=>{
-      const t0 = performance.now(); let x=0; for(let i=0;i<5e7;i++){ x += i%3; } const ms = performance.now()-t0; document.getElementById('perfResult').textContent = 'CPU test completed: '+ms.toFixed(0)+' ms';
-    });
-    document.getElementById('btnFps').addEventListener('click', ()=>{
-      let frames=0, running=true; const start = performance.now(); function f(){ if(!running) return; frames++; if(performance.now()-start<3000){ requestAnimationFrame(f);} else { const fps = (frames/3).toFixed(0); document.getElementById('perfResult').textContent='FPS approx: '+fps; running=false; } } f();
-    });
-    document.getElementById('btnStorage').addEventListener('click', ()=>{
-      try{ const key='diag_test'; let s='x'.repeat(1024*50); localStorage.setItem(key,s); localStorage.removeItem(key); document.getElementById('perfResult').textContent='LocalStorage test OK (50 KB)'; }catch(e){ document.getElementById('perfResult').textContent='LocalStorage test failed'; }
-    });
-
-    // Export JSON & PDF
-    function buildReport(){
-      return {
-        generatedAt: new Date().toISOString(), basic: state.basic, ip: state.ip, speed: state.speed, ping: state.ping, devices: state.devices.map(d=>({kind:d.kind,label:d.label})), recordings: state.recordings
-      };
-    }
-    document.getElementById('downloadJson').addEventListener('click', ()=>{
-      const blob = new Blob([JSON.stringify(buildReport(),null,2)],{type:'application/json'}); const url = URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download='device-report.json'; a.click();
-    });
-    document.getElementById('downloadReportBtn').addEventListener('click', ()=>{ document.getElementById('downloadJson').click(); });
-
-    document.getElementById('downloadPdf').addEventListener('click', async ()=>{
-      const { jsPDF } = window.jspdf; const doc = new jsPDF(); const r = buildReport(); doc.setFontSize(12); doc.text('Device Diagnostic Report',14,14); doc.setFontSize(9);
-      const lines = JSON.stringify(r,null,2).match(/.{1,800}/g) || []; let y=24; lines.forEach(l=>{ doc.text(l,14,y); y+=6; if(y>270){ doc.addPage(); y=14; } }); doc.save('device-report.pdf');
-    });
-
-    // Theme toggle
-    document.getElementById('themeToggle').addEventListener('click', ()=>{
-      document.documentElement.classList.toggle('dark'); if(document.documentElement.classList.contains('dark')){ document.body.classList.add('bg-slate-900','text-white'); document.getElementById('themeToggle').textContent='Light'; } else { document.body.classList.remove('bg-slate-900','text-white'); document.getElementById('themeToggle').textContent='Dark'; }
-    });
-
-    // Download top-level JSON (no-op placeholder already wired)
-    document.getElementById('downloadJson').addEventListener('click', ()=>{});
-
-    // Initial populate
-    updateSummaryCards();
   </script>
 </body>
 </html>
