@@ -4,11 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Korean Pro - EPS TOPIK Learning Platform</title>
-    <meta name="description" content="Master Korean language with structured courses, bilingual quizzes, and expert video lessons. EPS-TOPIK preparation available.">
-    <meta property="og:title" content="Korean Pro - Korean Learning Platform">
-    <meta property="og:description" content="Comprehensive Korean language courses with bilingual support">
-    <meta property="og:type" content="website">
-    <link rel="manifest" href="#" id="manifest-placeholder">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
@@ -20,23 +15,6 @@
             --text: #333333;
             --success: #28a745;
             --danger: #dc3545;
-            --bg: #ffffff;
-            --surface: #f3f4f6;
-            --text-light: #6b7280;
-            --border: #e5e7eb;
-            --error: #ef4444;
-        }
-
-        [data-theme="dark"] {
-            --primary: #3b82f6;
-            --primary-dark: #2563eb;
-            --dark: #111827;
-            --bg: #0f172a;
-            --surface: #1e293b;
-            --text: #f1f5f9;
-            --text-light: #94a3b8;
-            --border: #334155;
-            --light: #1e293b;
         }
 
         * {
@@ -49,8 +27,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             line-height: 1.6;
             color: var(--text);
-            background-color: var(--bg);
-            transition: background 0.3s, color 0.3s;
+            background-color: var(--white);
         }
 
         .container {
@@ -91,20 +68,15 @@
             display: flex;
             list-style: none;
             gap: 20px;
-            align-items: center;
         }
 
-        .nav-links a, .nav-links button {
+        .nav-links a {
             color: var(--white);
             text-decoration: none;
             transition: color 0.3s;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
         }
 
-        .nav-links a:hover, .nav-links button:hover {
+        .nav-links a:hover {
             color: var(--secondary);
         }
 
@@ -120,42 +92,6 @@
             background-color: var(--white);
             margin: 3px 0;
             transition: 0.3s;
-        }
-
-        /* Theme Toggle */
-        .theme-toggle {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .toggle {
-            position: relative;
-            width: 50px;
-            height: 26px;
-            background: var(--border);
-            border-radius: 13px;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .toggle.active {
-            background: var(--primary);
-        }
-
-        .toggle-slider {
-            position: absolute;
-            top: 3px;
-            left: 3px;
-            width: 20px;
-            height: 20px;
-            background: white;
-            border-radius: 50%;
-            transition: transform 0.3s;
-        }
-
-        .toggle.active .toggle-slider {
-            transform: translateX(24px);
         }
 
         /* Main Content */
@@ -232,19 +168,9 @@
             color: var(--white);
         }
 
-        .btn-success {
-            background-color: var(--success);
-            color: var(--white);
-        }
-
-        .btn-error {
-            background-color: var(--error);
-            color: var(--white);
-        }
-
         /* Cards */
         .card {
-            background-color: var(--surface);
+            background-color: var(--white);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             padding: 1.5rem;
@@ -293,11 +219,9 @@
         .form-control {
             width: 100%;
             padding: 10px;
-            border: 1px solid var(--border);
+            border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 1rem;
-            background-color: var(--bg);
-            color: var(--text);
         }
 
         .form-control:focus {
@@ -315,7 +239,7 @@
         .table th, .table td {
             padding: 12px;
             text-align: left;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #ddd;
         }
 
         .table th {
@@ -325,7 +249,7 @@
 
         /* Notices */
         .notice {
-            background-color: var(--surface);
+            background-color: var(--white);
             border-left: 4px solid var(--primary);
             padding: 1rem;
             margin-bottom: 1rem;
@@ -344,7 +268,7 @@
         }
 
         .notice-date {
-            color: var(--text-light);
+            color: #666;
             font-size: 0.9rem;
         }
 
@@ -368,7 +292,7 @@
             margin-bottom: 1rem;
         }
 
-        .video-container iframe, .video-container video {
+        .video-container iframe {
             position: absolute;
             top: 0;
             left: 0;
@@ -379,7 +303,7 @@
 
         /* Quizzes */
         .quiz-container {
-            background-color: var(--surface);
+            background-color: var(--white);
             border-radius: 8px;
             padding: 1.5rem;
             margin-bottom: 1.5rem;
@@ -414,7 +338,7 @@
         .question {
             margin-bottom: 1.5rem;
             padding-bottom: 1rem;
-            border-bottom: 1px solid var(--border);
+            border-bottom: 1px solid #eee;
         }
 
         .options {
@@ -439,16 +363,6 @@
             margin-right: 10px;
         }
 
-        .option.correct {
-            border-color: var(--success);
-            background: rgba(16, 185, 129, 0.1);
-        }
-
-        .option.incorrect {
-            border-color: var(--error);
-            background: rgba(239, 68, 68, 0.1);
-        }
-
         /* Dashboard */
         .dashboard-stats {
             display: grid;
@@ -458,7 +372,7 @@
         }
 
         .stat-card {
-            background-color: var(--surface);
+            background-color: var(--white);
             padding: 1.5rem;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
@@ -508,7 +422,7 @@
         }
 
         .admin-content {
-            background-color: var(--surface);
+            background-color: var(--white);
             padding: 1.5rem;
             border-radius: 8px;
         }
@@ -523,16 +437,10 @@
             height: 100%;
             background-color: rgba(0,0,0,0.5);
             z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal.active {
-            display: flex;
         }
 
         .modal-content {
-            background-color: var(--bg);
+            background-color: var(--white);
             margin: 10% auto;
             padding: 2rem;
             width: 90%;
@@ -620,36 +528,6 @@
             color: var(--dark);
         }
 
-        /* Login Records */
-        .login-records {
-            background-color: var(--surface);
-            border-radius: 8px;
-            padding: 1.5rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .login-records h3 {
-            color: var(--primary);
-            margin-bottom: 1rem;
-        }
-
-        .login-record {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 0.75rem 0;
-            border-bottom: 1px solid var(--border);
-        }
-
-        .login-record:last-child {
-            border-bottom: none;
-        }
-
-        .login-time {
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
         /* Responsive */
         @media (max-width: 768px) {
             .hamburger {
@@ -687,7 +565,7 @@
         }
     </style>
 </head>
-<body data-theme="light">
+<body>
     <!-- Header -->
     <header>
         <div class="container">
@@ -701,18 +579,9 @@
                     <li><a href="#" onclick="showPage('about')">About</a></li>
                     <li><a href="#" onclick="showPage('contact')">Contact</a></li>
                     <li><a href="#" onclick="showPage('notices')">Notices</a></li>
-                    <li id="loginMenu"><a href="#" onclick="showPage('login')">Login</a></li>
+                    <li><a href="login.html" onclick="showPage('login')">Login</a></li>
                     <li id="userMenu" class="hidden"><a href="#" onclick="showPage('dashboard')">Dashboard</a></li>
                     <li id="adminMenu" class="hidden"><a href="#" onclick="showPage('admin')">Admin</a></li>
-                    <li>
-                        <div class="theme-toggle">
-                            <span>☀️</span>
-                            <div class="toggle" id="themeToggle">
-                                <div class="toggle-slider"></div>
-                            </div>
-                            <span>🌙</span>
-                        </div>
-                    </li>
                 </ul>
                 <div class="hamburger" onclick="toggleMenu()">
                     <span></span>
@@ -729,10 +598,10 @@
         <div id="home-page" class="page active">
             <div class="hero">
                 <div class="container">
-                    <h1>Korean Pro</h1>
+                    <h1>Master Korean with Korean Pro</h1>
                     <p>Your complete online platform for EPS TOPIK preparation and Korean language learning</p>
                     <div>
-                        <a href="#" onclick="showPage('login')" class="btn btn-secondary">Join Now</a>
+                        <a href="login.html" onclick="showPage('login')" class="btn btn-secondary">Join Now</a>
                         <a href="#" onclick="showPage('about')" class="btn btn-outline">Learn More</a>
                     </div>
                 </div>
@@ -865,8 +734,8 @@
                     </div>
                     <div>
                         <h3>Contact Information</h3>
-                        <p><i class="fas fa-map-marker-alt"></i> kalutara, Colombo, Sri Lanka</p>
-                        <p><i class="fas fa-phone"></i> +94 077 50 48 455</p>
+                        <p><i class="fas fa-map-marker-alt"></i> kalutara, Sri Lanka</p>
+                        <p><i class="fas fa-phone"></i> +94 77 50 48 455</p>
                         <p><i class="fas fa-envelope"></i> dmkaawya@gmail.com</p>
                         
                         <h3 class="mt-1">Connect With Us</h3>
@@ -878,7 +747,7 @@
                         </div>
                         
                         <h3 class="mt-1">WhatsApp</h3>
-                        <a href="https://wa.me/94112345678" class="btn btn-secondary" target="_blank">
+                        <a href="https://wa.me/94775048455" class="btn btn-secondary" target="_blank">
                             <i class="fab fa-whatsapp"></i> Chat on WhatsApp
                         </a>
                         
@@ -888,7 +757,7 @@
                             <p><strong>Bank:</strong> Bank of Ceylon</p>
                             <p><strong>Account Name:</strong> Korean Pro (Pvt) Ltd</p>
                             <p><strong>Account Number:</strong> 1234567890</p>
-                            <p><strong>Branch:</strong> kaluatara south</p>
+                            <p><strong>Branch:</strong>kalutara south</p>
                         </div>
                     </div>
                 </div>
@@ -982,17 +851,6 @@
                     <div class="stat-card">
                         <h3 id="daysActive">0</h3>
                         <p>Days Active</p>
-                    </div>
-                </div>
-                
-                <!-- Login Records Section -->
-                <div class="login-records">
-                    <h3><i class="fas fa-history"></i> Login History</h3>
-                    <div id="loginRecordsContainer">
-                        <div class="login-record">
-                            <span>Last Login:</span>
-                            <span class="login-time" id="lastLoginTime">Never</span>
-                        </div>
                     </div>
                 </div>
                 
@@ -1112,7 +970,6 @@
                             <li><a href="#" onclick="showAdminSection('quizzes')">Manage Quizzes</a></li>
                             <li><a href="#" onclick="showAdminSection('notices')">Manage Notices</a></li>
                             <li><a href="#" onclick="showAdminSection('messages')">Messages</a></li>
-                            <li><a href="#" onclick="showAdminSection('loginRecords')">Login Records</a></li>
                         </ul>
                     </div>
                     
@@ -1150,7 +1007,6 @@
                                         <th>Email</th>
                                         <th>Phone</th>
                                         <th>Status</th>
-                                        <th>Last Login</th>
                                         <th>Actions</th>
                                     </tr>
                                 </thead>
@@ -1247,18 +1103,6 @@
                                 <tbody id="messagesTableBody"></tbody>
                             </table>
                         </div>
-                        
-                        <!-- Login Records Section -->
-                        <div id="admin-loginRecords" class="admin-section hidden">
-                            <h2>User Login Records</h2>
-                            <div class="mb-1">
-                                <select id="userSelect" class="form-control" style="width: 300px; display: inline-block;">
-                                    <option value="">Select a user</option>
-                                </select>
-                                <button class="btn btn-primary" onclick="loadUserLoginRecords()">View Records</button>
-                            </div>
-                            <div id="userLoginRecordsContainer"></div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -1279,7 +1123,7 @@
                         <li><a href="#" onclick="showPage('home')">Home</a></li>
                         <li><a href="#" onclick="showPage('about')">About</a></li>
                         <li><a href="#" onclick="showPage('contact')">Contact</a></li>
-                        <li><a href="#" onclick="showPage('login')">Login</a></li>
+                        <li><a href="login.html" onclick="showPage('login')">Login</a></li>
                     </ul>
                 </div>
                 <div class="footer-column">
@@ -1293,13 +1137,13 @@
                 </div>
                 <div class="footer-column">
                     <h3>Contact Info</h3>
-                    <p><i class="fas fa-map-marker-alt"></i> kalutara, Colombo</p>
+                    <p><i class="fas fa-map-marker-alt"></i> kalutara,sri lanka</p>
                     <p><i class="fas fa-phone"></i> +94 77 50 48 455</p>
-                    <p><i class="fas fa-envelope"></i> dmkaawya@gmail.com</p>
+                    <p><i class="fas fa-envelope"></i>dmkaawya@gmail.com</p>
                 </div>
             </div>
-            <div class="text-center mt-2">
-                <p>&copy; 2025 Korean Pro. All Rights Reserved.</p>
+            <div class="copyright">
+                <p>&copy; 2025 Korean Pro. All Rights Reserved. Designed by <span style="color: var(--secondary);">DMC group</span></p>
             </div>
         </div>
     </footer>
@@ -1460,69 +1304,13 @@
         if (!localStorage.getItem('koreanPro')) {
             const initialData = {
                 users: [
-                    { 
-                        username: 'admin', 
-                        password: 'admin123', 
-                        role: 'admin', 
-                        email: 'admin@koreanpro.com', 
-                        phone: '1234567890', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student1', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student1@example.com', 
-                        phone: '1234567891', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student2', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student2@example.com', 
-                        phone: '1234567892', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student3', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student3@example.com', 
-                        phone: '1234567893', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student4', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student4@example.com', 
-                        phone: '1234567894', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student5', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student5@example.com', 
-                        phone: '1234567895', 
-                        approved: true,
-                        loginRecords: []
-                    },
-                    { 
-                        username: 'student6', 
-                        password: 'student123', 
-                        role: 'student', 
-                        email: 'student6@example.com', 
-                        phone: '1234567896', 
-                        approved: true,
-                        loginRecords: []
-                    }
+                    { username: 'admin', password: 'admin123', role: 'admin', email: 'admin@koreanpro.com', phone: '1234567890', approved: true },
+                    { username: 'student1', password: 'student123', role: 'student', email: 'student1@example.com', phone: '1234567891', approved: true },
+                    { username: 'student2', password: 'student123', role: 'student', email: 'student2@example.com', phone: '1234567892', approved: true },
+                    { username: 'student3', password: 'student123', role: 'student', email: 'student3@example.com', phone: '1234567893', approved: true },
+                    { username: 'student4', password: 'student123', role: 'student', email: 'student4@example.com', phone: '1234567894', approved: true },
+                    { username: 'student5', password: 'student123', role: 'student', email: 'student5@example.com', phone: '1234567895', approved: true },
+                    { username: 'student6', password: 'student123', role: 'student', email: 'student6@example.com', phone: '1234567896', approved: true }
                 ],
                 notices: [
                     {
@@ -1645,11 +1433,6 @@
 
         // Initialize app
         function initApp() {
-            // Load theme
-            const savedTheme = localStorage.getItem('theme') || 'light';
-            document.body.dataset.theme = savedTheme;
-            updateThemeToggle();
-            
             checkAuth();
             loadHomeNotices();
             loadNotices();
@@ -1673,7 +1456,6 @@
                     document.getElementById('adminMenu').classList.remove('hidden');
                 }
                 document.getElementById('userMenu').classList.remove('hidden');
-                document.getElementById('loginMenu').classList.add('hidden');
                 
                 // Update payment status
                 const paymentStatus = document.getElementById('paymentStatus');
@@ -1682,24 +1464,7 @@
                     paymentStatus.style.backgroundColor = '#d4edda';
                     paymentStatus.style.color = '#155724';
                 }
-                
-                // Update last login time
-                updateLastLoginTime();
             }
-        }
-
-        // Update last login time display
-        function updateLastLoginTime() {
-            if (currentUser && currentUser.loginRecords && currentUser.loginRecords.length > 0) {
-                const lastLogin = currentUser.loginRecords[currentUser.loginRecords.length - 1];
-                document.getElementById('lastLoginTime').textContent = formatDateTime(lastLogin.timestamp);
-            }
-        }
-
-        // Format date and time
-        function formatDateTime(timestamp) {
-            const date = new Date(timestamp);
-            return date.toLocaleString();
         }
 
         // Show page
@@ -1740,25 +1505,6 @@
             navLinks.classList.toggle('active');
         }
 
-        // Toggle theme
-        function toggleTheme() {
-            const currentTheme = document.body.dataset.theme;
-            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
-            document.body.dataset.theme = newTheme;
-            localStorage.setItem('theme', newTheme);
-            updateThemeToggle();
-        }
-
-        function updateThemeToggle() {
-            const theme = document.body.dataset.theme;
-            const toggle = document.getElementById('themeToggle');
-            if (theme === 'dark') {
-                toggle.classList.add('active');
-            } else {
-                toggle.classList.remove('active');
-            }
-        }
-
         // Handle login
         function handleLogin(event) {
             event.preventDefault();
@@ -1770,22 +1516,8 @@
             const user = data.users.find(u => u.username === username && u.password === password);
             
             if (user) {
-                // Record login time
-                const loginTime = new Date().toISOString();
-                if (!user.loginRecords) {
-                    user.loginRecords = [];
-                }
-                user.loginRecords.push({
-                    timestamp: loginTime,
-                    ip: '127.0.0.1' // In a real app, get actual IP
-                });
-                
-                // Update localStorage
-                localStorage.setItem('koreanPro', JSON.stringify(data));
-                
                 currentUser = user;
                 localStorage.setItem('currentUser', JSON.stringify(user));
-                
                 alert('Login successful!');
                 showPage(user.role === 'admin' ? 'admin' : 'dashboard');
                 location.reload();
@@ -1815,8 +1547,7 @@
                 email: formData.get('email'),
                 phone: formData.get('phone'),
                 role: 'student',
-                approved: false,
-                loginRecords: []
+                approved: false
             };
             
             data.users.push(newUser);
@@ -1975,7 +1706,7 @@
             document.getElementById('viewNoticeCategory').textContent = notice.category;
             document.getElementById('viewNoticeDate').textContent = notice.date;
             document.getElementById('viewNoticeContent').textContent = notice.content;
-            document.getElementById('viewNoticeModal').style.display = 'flex';
+            document.getElementById('viewNoticeModal').style.display = 'block';
         }
 
         // Load recordings
@@ -2203,67 +1934,7 @@
                 document.getElementById('adminPaperBtn').classList.remove('hidden');
                 document.getElementById('adminExtraBtn').classList.remove('hidden');
                 document.getElementById('adminQuizBtn').classList.remove('hidden');
-                
-                // Populate user select for login records
-                populateUserSelect();
             }
-        }
-
-        // Populate user select dropdown
-        function populateUserSelect() {
-            const data = JSON.parse(localStorage.getItem('koreanPro'));
-            const userSelect = document.getElementById('userSelect');
-            
-            userSelect.innerHTML = '<option value="">Select a user</option>';
-            
-            data.users.filter(u => u.role === 'student').forEach(user => {
-                const option = document.createElement('option');
-                option.value = user.username;
-                option.textContent = user.username;
-                userSelect.appendChild(option);
-            });
-        }
-
-        // Load user login records
-        function loadUserLoginRecords() {
-            const selectedUser = document.getElementById('userSelect').value;
-            if (!selectedUser) {
-                alert('Please select a user');
-                return;
-            }
-            
-            const data = JSON.parse(localStorage.getItem('koreanPro'));
-            const user = data.users.find(u => u.username === selectedUser);
-            
-            if (!user || !user.loginRecords || user.loginRecords.length === 0) {
-                document.getElementById('userLoginRecordsContainer').innerHTML = '<p>No login records found for this user.</p>';
-                return;
-            }
-            
-            const container = document.getElementById('userLoginRecordsContainer');
-            container.innerHTML = `
-                <h3>Login Records for ${user.username}</h3>
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Date & Time</th>
-                                <th>IP Address</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${user.loginRecords.map((record, index) => `
-                                <tr>
-                                    <td>${index + 1}</td>
-                                    <td>${formatDateTime(record.timestamp)}</td>
-                                    <td>${record.ip}</td>
-                                </tr>
-                            `).join('')}
-                        </tbody>
-                    </table>
-                </div>
-            `;
         }
 
         // Show admin section
@@ -2302,17 +1973,12 @@
             
             tbody.innerHTML = '';
             students.forEach(student => {
-                const lastLogin = student.loginRecords && student.loginRecords.length > 0 
-                    ? formatDateTime(student.loginRecords[student.loginRecords.length - 1].timestamp)
-                    : 'Never';
-                
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${student.username}</td>
                     <td>${student.email}</td>
                     <td>${student.phone}</td>
                     <td>${student.approved ? '<span class="badge badge-success">Approved</span>' : '<span class="badge badge-warning">Pending</span>'}</td>
-                    <td>${lastLogin}</td>
                     <td>
                         <button class="btn btn-small" onclick="resetPassword('${student.username}')">Reset Password</button>
                     </td>
@@ -2496,24 +2162,24 @@
                 document.getElementById('viewMessageSubject').textContent = message.subject;
                 document.getElementById('viewMessageDate').textContent = message.date;
                 document.getElementById('viewMessageContent').textContent = message.message;
-                document.getElementById('viewMessageModal').style.display = 'flex';
+                document.getElementById('viewMessageModal').style.display = 'block';
             }
         }
 
         // Show add notice modal
         function showAddNoticeModal() {
-            document.getElementById('addNoticeModal').style.display = 'flex';
+            document.getElementById('addNoticeModal').style.display = 'block';
         }
 
         // Show add recording modal
         function showAddRecordingModal(type) {
             document.getElementById('recordingType').value = type;
-            document.getElementById('addRecordingModal').style.display = 'flex';
+            document.getElementById('addRecordingModal').style.display = 'block';
         }
 
         // Show add quiz modal
         function showAddQuizModal() {
-            document.getElementById('addQuizModal').style.display = 'flex';
+            document.getElementById('addQuizModal').style.display = 'block';
         }
 
         // Close modal
@@ -2530,63 +2196,8 @@
             location.reload();
         }
 
-        // Event Listeners
-        document.getElementById('themeToggle').addEventListener('click', toggleTheme);
-
         // Initialize app on load
         window.onload = initApp;
-
-        // Web App Manifest
-        const manifest = {
-            name: 'Korean Pro',
-            short_name: 'KoreanPro',
-            start_url: '/',
-            display: 'standalone',
-            background_color: '#1a4b8c',
-            theme_color: '#1a4b8c',
-            icons: [
-                {
-                    src: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><circle cx="96" cy="96" r="96" fill="%231a4b8c"/><text x="96" y="130" text-anchor="middle" fill="%23d4af37" font-size="100" font-weight="bold">K</text></svg>',
-                    sizes: '192x192',
-                    type: 'image/svg+xml'
-                }
-            ]
-        };
-
-        const manifestBlob = new Blob([JSON.stringify(manifest)], { type: 'application/json' });
-        const manifestUrl = URL.createObjectURL(manifestBlob);
-        document.getElementById('manifest-placeholder').setAttribute('href', manifestUrl);
-
-        // Service Worker for PWA
-        if ('serviceWorker' in navigator) {
-            const swCode = `
-                const CACHE_NAME = 'korean-pro-v1';
-                const urlsToCache = ['/'];
-                
-                self.addEventListener('install', event => {
-                    event.waitUntil(
-                        caches.open(CACHE_NAME).then(cache => cache.addAll(urlsToCache))
-                    );
-                });
-                
-                self.addEventListener('fetch', event => {
-                    event.respondWith(
-                        caches.match(event.request).then(response => {
-                            return response || fetch(event.request);
-                        })
-                    );
-                });
-            `;
-            
-            const blob = new Blob([swCode], { type: 'application/javascript' });
-            const swUrl = URL.createObjectURL(blob);
-            
-            navigator.serviceWorker.register(swUrl).then(() => {
-                console.log('Service Worker registered');
-            }).catch(err => {
-                console.log('Service Worker registration failed:', err);
-            });
-        }
     </script>
 </body>
 </html>
