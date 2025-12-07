@@ -3,21 +3,42 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp Channel Ads - Premium Promotion Services</title>
+    <title>M&K Promotions - WhatsApp Channel Advertising</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
+        :root {
+            --primary-color: #667eea;
+            --secondary-color: #764ba2;
+            --text-color: #333;
+            --bg-color: #f9fafb;
+            --card-bg: #ffffff;
+            --border-color: #e5e7eb;
+        }
+        
+        [data-theme="dark"] {
+            --text-color: #f3f4f6;
+            --bg-color: #1f2937;
+            --card-bg: #374151;
+            --border-color: #4b5563;
+        }
+        
         body {
             font-family: 'Poppins', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
         
         .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
         }
         
         .package-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
             transition: all 0.3s ease;
         }
         
@@ -45,8 +66,8 @@
         }
         
         .tab-active {
-            border-bottom: 3px solid #667eea;
-            color: #667eea;
+            border-bottom: 3px solid var(--primary-color);
+            color: var(--primary-color);
         }
         
         @keyframes pulse {
@@ -64,22 +85,102 @@
         .pulse {
             animation: pulse 2s infinite;
         }
+        
+        .booking-form {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+        
+        .modal-content {
+            background-color: var(--card-bg);
+            margin: 5% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        
+        .close:hover {
+            color: var(--text-color);
+        }
+        
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-panel.active {
+            display: block;
+        }
+        
+        .login-form {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            max-width: 400px;
+            margin: 100px auto;
+            padding: 30px;
+            border-radius: 10px;
+        }
+        
+        .booking-row {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+        }
+        
+        .paid-badge {
+            background-color: #10b981;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
+        
+        .unpaid-badge {
+            background-color: #ef4444;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+        }
     </style>
 </head>
-<body class="bg-gray-50">
+<body>
     <!-- Header -->
     <header class="gradient-bg text-white py-4 px-4 sticky top-0 z-50 shadow-lg">
         <div class="container mx-auto flex justify-between items-center">
             <div class="flex items-center space-x-2">
                 <i class="fab fa-whatsapp text-3xl"></i>
-                <h1 class="text-xl md:text-2xl font-bold">
-                    <span class="english">WhatsApp Channel Ads</span>
-                    <span class="sinhala">වට්සැප් චැනල් දැන්වීම්</span>
-                </h1>
+                <h1 class="text-xl md:text-2xl font-bold">M&K Promotions</h1>
             </div>
-            <div class="flex space-x-2">
+            <div class="flex items-center space-x-4">
                 <button onclick="toggleLanguage('en')" class="lang-btn px-3 py-1 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition" id="en-btn">EN</button>
                 <button onclick="toggleLanguage('si')" class="lang-btn px-3 py-1 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition" id="si-btn">සිං</button>
+                <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">
+                    <i class="fas fa-moon" id="dark-mode-icon"></i>
+                </button>
+                <button onclick="showAdminLogin()" class="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">
+                    <i class="fas fa-user-shield"></i>
+                </button>
             </div>
         </div>
     </header>
@@ -103,659 +204,911 @@
         </div>
     </section>
 
-    <!-- Benefits Section -->
-    <section class="py-12 px-4 bg-white">
-        <div class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
-                <span class="english">Why Promote With Us?</span>
-                <span class="sinhala">අපසමඟ ප්‍රචාරණය කරන්නේ ඇයි?</span>
-            </h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <div class="text-center p-4">
-                    <div class="text-4xl text-purple-600 mb-3">
-                        <i class="fas fa-users"></i>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">
-                        <span class="english">200K+ Reach</span>
-                        <span class="sinhala">200K+ ක් වෙත ළඟාවීම</span>
-                    </h3>
-                    <p class="text-gray-600">
-                        <span class="english">Massive daily visibility</span>
-                        <span class="sinhala">විශාල දෛනික දෘශ්‍යතාව</span>
-                    </p>
-                </div>
-                <div class="text-center p-4">
-                    <div class="text-4xl text-purple-600 mb-3">
-                        <i class="fas fa-chart-line"></i>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">
-                        <span class="english">High Engagement</span>
-                        <span class="sinhala">ඉහළ සහභාගීත්වය</span>
-                    </h3>
-                    <p class="text-gray-600">
-                        <span class="english">Real traffic & inquiries</span>
-                        <span class="sinhala">සැබෑ ප්‍රවාහය සහ විමසුම්</span>
-                    </p>
-                </div>
-                <div class="text-center p-4">
-                    <div class="text-4xl text-purple-600 mb-3">
-                        <i class="fas fa-bolt"></i>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">
-                        <span class="english">Fast Conversions</span>
-                        <span class="sinhala">ඉක්මන් පරිවර්තන</span>
-                    </h3>
-                    <p class="text-gray-600">
-                        <span class="english">Quick sales & leads</span>
-                        <span class="sinhala">ඉක්මන් විකුණුම් සහ අවස්ථාවන්</span>
-                    </p>
-                </div>
-                <div class="text-center p-4">
-                    <div class="text-4xl text-purple-600 mb-3">
-                        <i class="fas fa-clock"></i>
-                    </div>
-                    <h3 class="font-semibold text-lg mb-2">
-                        <span class="english">24h Placement</span>
-                        <span class="sinhala">24 පැය තැබීම</span>
-                    </h3>
-                    <p class="text-gray-600">
-                        <span class="english">Full day visibility</span>
-                        <span class="sinhala">පූර්ණ දින දෘශ්‍යතාව</span>
-                    </p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Packages Section -->
-    <section class="py-12 px-4 bg-gray-50">
-        <div class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
-                <span class="english">Advertising Packages</span>
-                <span class="sinhala">දැන්වීම් පැකේජ</span>
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <!-- Basic Package -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-green-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">BASIC PACKAGE</span>
-                            <span class="sinhala">මූලික පැකේජය</span>
+    <!-- Main Content -->
+    <div id="main-content">
+        <!-- Benefits Section -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Why Promote With Us?</span>
+                    <span class="sinhala">අපසමඟ ප්‍රචාරණය කරන්නේ ඇයි?</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div class="text-center p-4 package-card rounded-xl">
+                        <div class="text-4xl text-purple-600 mb-3">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="english">200K+ Reach</span>
+                            <span class="sinhala">200K+ ක් වෙත ළඟාවීම</span>
                         </h3>
-                        <p class="text-2xl font-bold">Rs.500</p>
+                        <p class="text-gray-600">
+                            <span class="english">Massive daily visibility</span>
+                            <span class="sinhala">විශාල දෛනික දෘශ්‍යතාව</span>
+                        </p>
                     </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span class="english">5K+ Followers</span>
-                                <span class="sinhala">5K+ අනුගාමිකයින්</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span class="english">1K+ Followers</span>
-                                <span class="sinhala">1K+ අනුගාමිකයින්</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-green-500 mr-2"></i>
-                                <span class="english">3K+ Channel</span>
-                                <span class="sinhala">3K+ චැනලය</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Basic Package - Rs.500')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Standard Package -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-blue-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">STANDARD PACKAGE</span>
-                            <span class="sinhala">සම්මත පැකේජය</span>
+                    <div class="text-center p-4 package-card rounded-xl">
+                        <div class="text-4xl text-purple-600 mb-3">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="english">High Engagement</span>
+                            <span class="sinhala">ඉහළ සහභාගීත්වය</span>
                         </h3>
-                        <p class="text-2xl font-bold">Rs.1,000</p>
+                        <p class="text-gray-600">
+                            <span class="english">Real traffic & inquiries</span>
+                            <span class="sinhala">සැබෑ ප්‍රවාහය සහ විමසුම්</span>
+                        </p>
                     </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-blue-500 mr-2"></i>
-                                <span class="english">35K+ Followers</span>
-                                <span class="sinhala">35K+ අනුගාමිකයින්</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-blue-500 mr-2"></i>
-                                <span class="english">5K+ Channel</span>
-                                <span class="sinhala">5K+ චැනලය</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Standard Package - Rs.1,000')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Funny/Buddhist Special -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-yellow-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">FUNNY / BUDDHIST SPECIAL</span>
-                            <span class="sinhala">විනෝදාත්මක / බෞද්ධ විශේෂ</span>
+                    <div class="text-center p-4 package-card rounded-xl">
+                        <div class="text-4xl text-purple-600 mb-3">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="english">Fast Conversions</span>
+                            <span class="sinhala">ඉක්මන් පරිවර්තන</span>
                         </h3>
-                        <p class="text-2xl font-bold">Rs.1,500</p>
+                        <p class="text-gray-600">
+                            <span class="english">Quick sales & leads</span>
+                            <span class="sinhala">ඉක්මන් විකුණුම් සහ අවස්ථාවන්</span>
+                        </p>
                     </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
-                                <span class="english">35K+ Funny Video Channel</span>
-                                <span class="sinhala">35K+ විනෝදාත්මක වීඩියෝ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
-                                <span class="english">OR</span>
-                                <span class="sinhala">හෝ</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
-                                <span class="english">35K+ Buddhist Channel</span>
-                                <span class="sinhala">35K+ බෞද්ධ චැනලය</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Funny/Buddhist Special - Rs.1,500')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Dual Digital Boost -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-orange-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">DUAL DIGITAL BOOST</span>
-                            <span class="sinhala">ද්විත්ව ඩිජිටල් බූස්ට්</span>
+                    <div class="text-center p-4 package-card rounded-xl">
+                        <div class="text-4xl text-purple-600 mb-3">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <h3 class="font-semibold text-lg mb-2">
+                            <span class="english">24h Placement</span>
+                            <span class="sinhala">24 පැය තැබීම</span>
                         </h3>
-                        <p class="text-2xl font-bold">Rs.2,000</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-orange-500 mr-2"></i>
-                                <span class="english">35K+ Channel</span>
-                                <span class="sinhala">35K+ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-orange-500 mr-2"></i>
-                                <span class="english">36K+ Channel</span>
-                                <span class="sinhala">36K+ චැනලය</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Dual Digital Boost - Rs.2,000')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Funny Premium -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-red-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">FUNNY PREMIUM</span>
-                            <span class="sinhala">විනෝදාත්මක ප්‍රිමියම්</span>
-                        </h3>
-                        <p class="text-2xl font-bold">Rs.2,500</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-red-500 mr-2"></i>
-                                <span class="english">Only 82K+ Funny Channel</span>
-                                <span class="sinhala">82K+ විනෝදාත්මක චැනලය පමණක්</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Funny Premium - Rs.2,500')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Funny Dual Pack -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-purple-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">FUNNY DUAL PACK</span>
-                            <span class="sinhala">විනෝදාත්මක ද්විත්ව පැක්</span>
-                        </h3>
-                        <p class="text-2xl font-bold">Rs.3,000</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-purple-500 mr-2"></i>
-                                <span class="english">82K+ Funny Channel</span>
-                                <span class="sinhala">82K+ විනෝදාත්මක චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-purple-500 mr-2"></i>
-                                <span class="english">35K+ Funny Channel</span>
-                                <span class="sinhala">35K+ විනෝදාත්මක චැනලය</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Funny Dual Pack - Rs.3,000')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Triple Boost -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-cyan-500 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">TRIPLE BOOST</span>
-                            <span class="sinhala">ත්‍රිත්ව බූස්ට්</span>
-                        </h3>
-                        <p class="text-2xl font-bold">Rs.4,000</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
-                                <span class="english">82K+ Funny</span>
-                                <span class="sinhala">82K+ විනෝදාත්මක</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
-                                <span class="english">35K+ Funny</span>
-                                <span class="sinhala">35K+ විනෝදාත්මක</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
-                                <span class="english">36K+ Buddhist</span>
-                                <span class="sinhala">36K+ බෞද්ධ</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Triple Boost - Rs.4,000')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- All In One Pack -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden">
-                    <div class="bg-gray-600 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">ALL IN ONE PACK</span>
-                            <span class="sinhala">සියල්ල එකට පැක්</span>
-                        </h3>
-                        <p class="text-2xl font-bold">Rs.6,000</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-gray-600 mr-2"></i>
-                                <span class="english">82K+ Channel</span>
-                                <span class="sinhala">82K+ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-gray-600 mr-2"></i>
-                                <span class="english">35K+ Channel</span>
-                                <span class="sinhala">35K+ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-gray-600 mr-2"></i>
-                                <span class="english">36K+ Channel</span>
-                                <span class="sinhala">36K+ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-gray-600 mr-2"></i>
-                                <span class="english">5K+ Channel</span>
-                                <span class="sinhala">5K+ චැනලය</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-check-circle text-gray-600 mr-2"></i>
-                                <span class="english">Two 1K+ Channels</span>
-                                <span class="sinhala">1K+ චැනල් දෙකක්</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('All In One Pack - Rs.6,000')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
-                    </div>
-                </div>
-
-                <!-- Premium Pack -->
-                <div class="package-card bg-white rounded-xl shadow-lg overflow-hidden border-4 border-yellow-400">
-                    <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 px-4">
-                        <h3 class="text-xl font-bold">
-                            <span class="english">PREMIUM PACK</span>
-                            <span class="sinhala">ප්‍රිමියම් පැක්</span>
-                        </h3>
-                        <p class="text-2xl font-bold">Rs.6,500</p>
-                    </div>
-                    <div class="p-5">
-                        <ul class="space-y-3">
-                            <li class="flex items-center">
-                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                <span class="english">Funny Video Edit + Ad Extra</span>
-                                <span class="sinhala">විනෝදාත්මක වීඩියෝ සංස්කරණය + දැන්වීම් අමතර</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                <span class="english">Your Ad edited into a funny video</span>
-                                <span class="sinhala">ඔබේ දැන්වීම විනෝදාත්මක වීඩියෝවකට සංස්කරණය කිරීම</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                <span class="english">Link added to caption</span>
-                                <span class="sinhala">සටහනට සබැඳිය එක් කිරීම</span>
-                            </li>
-                            <li class="flex items-center">
-                                <i class="fas fa-star text-yellow-500 mr-2"></i>
-                                <span class="english">Not deleted - permanent post</span>
-                                <span class="sinhala">මකා නොදමනු ලැබේ - ස්ථිර පෝස්ට් එකක්</span>
-                            </li>
-                        </ul>
-                        <button onclick="bookPackage('Premium Pack - Rs.6,500')" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                            <span class="english">Book Now</span>
-                            <span class="sinhala">දැන් වෙන්කර ගන්න</span>
-                        </button>
+                        <p class="text-gray-600">
+                            <span class="english">Full day visibility</span>
+                            <span class="sinhala">පූර්ණ දින දෘශ්‍යතාව</span>
+                        </p>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Additional Information -->
-    <section class="py-12 px-4 bg-white">
-        <div class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
-                <span class="english">Important Information</span>
-                <span class="sinhala">වැදගත් තොරතුරු</span>
-            </h2>
-            
-            <div class="bg-gray-50 rounded-xl p-6 mb-8">
-                <h3 class="text-xl font-semibold mb-4 text-purple-600">
-                    <span class="english">Ad Duration & Extension</span>
-                    <span class="sinhala">දැන්වීම් කාලසීමාව සහ දීර්ඝ කිරීම</span>
-                </h3>
-                <p class="mb-4">
-                    <span class="english">All packages include 24 hours of channel placement. If you need to extend the duration or repost, additional payment is required.</span>
-                    <span class="sinhala">සියලුම පැකේජවලට පැය 24ක චැනල් තැබීමක් ඇතුළත් වේ. ඔබට කාලසීමාව දීර්ඝ කිරීමට හෝ නැවත පළ කිරීමට අවශ්‍ය නම්, අමතර ගෙවීමක් අවශ්‍ය වේ.</span>
-                </p>
-                <p class="mb-4">
-                    <span class="english">There is a 2-hour last update period, after which 2-3 updates may drop.</span>
-                    <span class="sinhala">පැය 2ක අවසාන යාවත්කාලීන කාලයක් ඇත, ඉන්පසු යාවත්කාලීන 2-3ක් පත්විය හැක.</span>
-                </p>
-                <p>
-                    <span class="english">To extend the hours, add Rs.100 per package.</span>
-                    <span class="sinhala">පැය දීර්ඝ කිරීමට, පැකේජයකට රුපියල් 100ක් එකතු කරන්න.</span>
-                </p>
-            </div>
-
-            <div class="bg-gray-50 rounded-xl p-6">
-                <h3 class="text-xl font-semibold mb-4 text-purple-600">
-                    <span class="english">Ad Extension Prices</span>
-                    <span class="sinhala">දැන්වීම් දීර්ඝ කිරීමේ මිල ගණන්</span>
-                </h3>
-                <p class="mb-4">
-                    <span class="english">Applies to any package:</span>
-                    <span class="sinhala">ඕනෑම පැකේජයකට අදාළ වේ:</span>
-                </p>
-                <ul class="space-y-2">
-                    <li class="flex items-center">
-                        <i class="fas fa-calendar-day text-purple-600 mr-2"></i>
-                        <span class="english">1 Day = Rs.250</span>
-                        <span class="sinhala">1 දිනය = රු.250</span>
-                    </li>
-                    <li class="flex items-center">
-                        <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
-                        <span class="english">2 Days = Rs.500</span>
-                        <span class="sinhala">2 දින = රු.500</span>
-                    </li>
-                </ul>
+        <!-- Packages Section -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Advertising Packages</span>
+                    <span class="sinhala">දැන්වීම් පැකේජ</span>
+                </h2>
                 
-                <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
-                    <h4 class="font-semibold text-yellow-700 mb-2">
-                        <span class="english">Special Offer</span>
-                        <span class="sinhala">විශේෂ ලංසුව</span>
-                    </h4>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Basic Package -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-green-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">BASIC PACKAGE</span>
+                                <span class="sinhala">මූලික පැකේජය</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.500</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="english">5K+ Followers</span>
+                                    <span class="sinhala">5K+ අනුගාමිකයින්</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="english">1K+ Followers</span>
+                                    <span class="sinhala">1K+ අනුගාමිකයින්</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-green-500 mr-2"></i>
+                                    <span class="english">3K+ Channel</span>
+                                    <span class="sinhala">3K+ චැනලය</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Basic Package', 500)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Standard Package -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-blue-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">STANDARD PACKAGE</span>
+                                <span class="sinhala">සම්මත පැකේජය</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.1,000</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-blue-500 mr-2"></i>
+                                    <span class="english">35K+ Followers</span>
+                                    <span class="sinhala">35K+ අනුගාමිකයින්</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-blue-500 mr-2"></i>
+                                    <span class="english">5K+ Channel</span>
+                                    <span class="sinhala">5K+ චැනලය</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Standard Package', 1000)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Funny/Buddhist Special -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-yellow-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">FUNNY / BUDDHIST SPECIAL</span>
+                                <span class="sinhala">විනෝදාත්මක / බෞද්ධ විශේෂ</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.1,500</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
+                                    <span class="english">35K+ Funny Video Channel</span>
+                                    <span class="sinhala">35K+ විනෝදාත්මක වීඩියෝ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
+                                    <span class="english">OR</span>
+                                    <span class="sinhala">හෝ</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-yellow-500 mr-2"></i>
+                                    <span class="english">35K+ Buddhist Channel</span>
+                                    <span class="sinhala">35K+ බෞද්ධ චැනලය</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Funny/Buddhist Special', 1500)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Dual Digital Boost -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-orange-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">DUAL DIGITAL BOOST</span>
+                                <span class="sinhala">ද්විත්ව ඩිජිටල් බූස්ට්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.2,000</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-orange-500 mr-2"></i>
+                                    <span class="english">35K+ Channel</span>
+                                    <span class="sinhala">35K+ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-orange-500 mr-2"></i>
+                                    <span class="english">36K+ Channel</span>
+                                    <span class="sinhala">36K+ චැනලය</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Dual Digital Boost', 2000)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Funny Premium -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-red-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">FUNNY PREMIUM</span>
+                                <span class="sinhala">විනෝදාත්මක ප්‍රිමියම්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.2,500</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-red-500 mr-2"></i>
+                                    <span class="english">Only 82K+ Funny Channel</span>
+                                    <span class="sinhala">82K+ විනෝදාත්මක චැනලය පමණක්</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Funny Premium', 2500)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Funny Dual Pack -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-purple-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">FUNNY DUAL PACK</span>
+                                <span class="sinhala">විනෝදාත්මක ද්විත්ව පැක්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.3,000</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-purple-500 mr-2"></i>
+                                    <span class="english">82K+ Funny Channel</span>
+                                    <span class="sinhala">82K+ විනෝදාත්මක චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-purple-500 mr-2"></i>
+                                    <span class="english">35K+ Funny Channel</span>
+                                    <span class="sinhala">35K+ විනෝදාත්මක චැනලය</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Funny Dual Pack', 3000)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Triple Boost -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-cyan-500 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">TRIPLE BOOST</span>
+                                <span class="sinhala">ත්‍රිත්ව බූස්ට්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.4,000</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
+                                    <span class="english">82K+ Funny</span>
+                                    <span class="sinhala">82K+ විනෝදාත්මක</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
+                                    <span class="english">35K+ Funny</span>
+                                    <span class="sinhala">35K+ විනෝදාත්මක</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-cyan-500 mr-2"></i>
+                                    <span class="english">36K+ Buddhist</span>
+                                    <span class="sinhala">36K+ බෞද්ධ</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Triple Boost', 4000)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- All In One Pack -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden">
+                        <div class="bg-gray-600 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">ALL IN ONE PACK</span>
+                                <span class="sinhala">සියල්ල එකට පැක්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.6,000</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-gray-600 mr-2"></i>
+                                    <span class="english">82K+ Channel</span>
+                                    <span class="sinhala">82K+ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-gray-600 mr-2"></i>
+                                    <span class="english">35K+ Channel</span>
+                                    <span class="sinhala">35K+ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-gray-600 mr-2"></i>
+                                    <span class="english">36K+ Channel</span>
+                                    <span class="sinhala">36K+ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-gray-600 mr-2"></i>
+                                    <span class="english">5K+ Channel</span>
+                                    <span class="sinhala">5K+ චැනලය</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-check-circle text-gray-600 mr-2"></i>
+                                    <span class="english">Two 1K+ Channels</span>
+                                    <span class="sinhala">1K+ චැනල් දෙකක්</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('All In One Pack', 6000)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Premium Pack -->
+                    <div class="package-card rounded-xl shadow-lg overflow-hidden border-4 border-yellow-400">
+                        <div class="bg-gradient-to-r from-yellow-500 to-yellow-600 text-white py-3 px-4">
+                            <h3 class="text-xl font-bold">
+                                <span class="english">PREMIUM PACK</span>
+                                <span class="sinhala">ප්‍රිමියම් පැක්</span>
+                            </h3>
+                            <p class="text-2xl font-bold">Rs.6,500</p>
+                        </div>
+                        <div class="p-5">
+                            <ul class="space-y-3">
+                                <li class="flex items-center">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                    <span class="english">Funny Video Edit + Ad Extra</span>
+                                    <span class="sinhala">විනෝදාත්මක වීඩියෝ සංස්කරණය + දැන්වීම් අමතර</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                    <span class="english">Your Ad edited into a funny video</span>
+                                    <span class="sinhala">ඔබේ දැන්වීම විනෝදාත්මක වීඩියෝවකට සංස්කරණය කිරීම</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                    <span class="english">Link added to caption</span>
+                                    <span class="sinhala">සටහනට සබැඳිය එක් කිරීම</span>
+                                </li>
+                                <li class="flex items-center">
+                                    <i class="fas fa-star text-yellow-500 mr-2"></i>
+                                    <span class="english">Not deleted - permanent post</span>
+                                    <span class="sinhala">මකා නොදමනු ලැබේ - ස්ථිර පෝස්ට් එකක්</span>
+                                </li>
+                            </ul>
+                            <button onclick="openBookingModal('Premium Pack', 6500)" class="w-full mt-6 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                                <span class="english">Book Now</span>
+                                <span class="sinhala">දැන් වෙන්කර ගන්න</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Additional Information -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Important Information</span>
+                    <span class="sinhala">වැදගත් තොරතුරු</span>
+                </h2>
+                
+                <div class="booking-form rounded-xl p-6 mb-8">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-600">
+                        <span class="english">Ad Duration & Extension</span>
+                        <span class="sinhala">දැන්වීම් කාලසීමාව සහ දීර්ඝ කිරීම</span>
+                    </h3>
+                    <p class="mb-4">
+                        <span class="english">All packages include 24 hours of channel placement. If you need to extend the duration or repost, additional payment is required.</span>
+                        <span class="sinhala">සියලුම පැකේජවලට පැය 24ක චැනල් තැබීමක් ඇතුළත් වේ. ඔබට කාලසීමාව දීර්ඝ කිරීමට හෝ නැවත පළ කිරීමට අවශ්‍ය නම්, අමතර ගෙවීමක් අවශ්‍ය වේ.</span>
+                    </p>
+                    <p class="mb-4">
+                        <span class="english">There is a 2-hour last update period, after which 2-3 updates may drop.</span>
+                        <span class="sinhala">පැය 2ක අවසාන යාවත්කාලීන කාලයක් ඇත, ඉන්පසු යාවත්කාලීන 2-3ක් පත්විය හැක.</span>
+                    </p>
                     <p>
-                        <span class="english">If you repost on the day after the ad was posted, get a 20% discount on all packages!</span>
-                        <span class="sinhala">දැන්වීම පළ කළ දිනට පසු දින නැවත පළ කළහොත්, සියලුම පැකේජවලට 20% වට්ටමක්!</span>
+                        <span class="english">To extend the hours, add Rs.100 per package.</span>
+                        <span class="sinhala">පැය දීර්ඝ කිරීමට, පැකේජයකට රුපියල් 100ක් එකතු කරන්න.</span>
+                    </p>
+                </div>
+
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-600">
+                        <span class="english">Ad Extension Prices</span>
+                        <span class="sinhala">දැන්වීම් දීර්ඝ කිරීමේ මිල ගණන්</span>
+                    </h3>
+                    <p class="mb-4">
+                        <span class="english">Applies to any package:</span>
+                        <span class="sinhala">ඕනෑම පැකේජයකට අදා෽ වේ:</span>
+                    </p>
+                    <ul class="space-y-2">
+                        <li class="flex items-center">
+                            <i class="fas fa-calendar-day text-purple-600 mr-2"></i>
+                            <span class="english">1 Day = Rs.250</span>
+                            <span class="sinhala">1 දිනය = රු.250</span>
+                        </li>
+                        <li class="flex items-center">
+                            <i class="fas fa-calendar-alt text-purple-600 mr-2"></i>
+                            <span class="english">2 Days = Rs.500</span>
+                            <span class="sinhala">2 දින = රු.500</span>
+                        </li>
+                    </ul>
+                    
+                    <div class="mt-6 p-4 bg-yellow-50 rounded-lg border border-yellow-200">
+                        <h4 class="font-semibold text-yellow-700 mb-2">
+                            <span class="english">Special Offer</span>
+                            <span class="sinhala">විශේෂ ලංසුව</span>
+                        </h4>
+                        <p>
+                            <span class="english">If you repost on the day after the ad was posted, get a 20% discount on all packages!</span>
+                            <span class="sinhala">දැන්වීම පළ කළ දිනට පසු දින නැවත පළ කළහොත්, සියලුම පැකේජවලට 20% වට්ටමක්!</span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bank Details -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Bank Details</span>
+                    <span class="sinhala">බැංකු විස්තර</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
+                    <div class="booking-form rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-600">
+                            <span class="english">Commercial Bank</span>
+                            <span class="sinhala">වාණිජ බැංකුව</span>
+                        </h3>
+                        <ul class="space-y-2">
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">AC No:</span>
+                                    <span class="sinhala">ගිණුම් අංකය:</span>
+                                </span>
+                                <span>8019226176</span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Name:</span>
+                                    <span class="sinhala">නම:</span>
+                                </span>
+                                <span>N. Malindu Nethmina Noragalla</span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Bank:</span>
+                                    <span class="sinhala">බැංකුව:</span>
+                                </span>
+                                <span>
+                                    <span class="english">Commercial Bank</span>
+                                    <span class="sinhala">වාණිජ බැංකුව</span>
+                                </span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Branch:</span>
+                                    <span class="sinhala">ශාඛාව:</span>
+                                </span>
+                                <span>Rathnapura</span>
+                            </li>
+                        </ul>
+                    </div>
+                    
+                    <div class="booking-form rounded-xl shadow-md p-6">
+                        <h3 class="text-xl font-semibold mb-4 text-green-600">
+                            <span class="english">People's Bank</span>
+                            <span class="sinhala">ජනතා බැංකුව</span>
+                        </h3>
+                        <ul class="space-y-2">
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">AC No:</span>
+                                    <span class="sinhala">ගිණුම් අංකය:</span>
+                                </span>
+                                <span>088200190088965</span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Name:</span>
+                                    <span class="sinhala">නම:</span>
+                                </span>
+                                <span>N. Malindu Nethmina Noragalla</span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Bank:</span>
+                                    <span class="sinhala">බැංකුව:</span>
+                                </span>
+                                <span>
+                                    <span class="english">People's Bank</span>
+                                    <span class="sinhala">ජනතා බැංකුව</span>
+                                </span>
+                            </li>
+                            <li class="flex">
+                                <span class="font-medium w-24">
+                                    <span class="english">Branch:</span>
+                                    <span class="sinhala">ශාඛාව:</span>
+                                </span>
+                                <span>Rathnapura</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- WhatsApp Channels -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Our WhatsApp Channels</span>
+                    <span class="sinhala">අපගේ වට්සැප් චැනල්</span>
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <a href="https://whatsapp.com/channel/0029Vb6n24M05MUYH9tZZ022" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Free Data Offers</span>
+                                <span class="sinhala">නොමිලේ දත්ත ලබා දීම්</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029Vb6ogyEFXUufM9dLsa3A" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">English Status</span>
+                                <span class="sinhala">ඉංග්‍රීසි තත්ත්වය</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029VbBxyuG0Vyc7iTdPEa1U" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Sindu Videos</span>
+                                <span class="sinhala">සිංදු වීඩියෝ</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029VbBmvNYEQIakOTBz540d" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Pirith Deshana</span>
+                                <span class="sinhala">පිරිත් දේශනා</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029VbCLmjlC1FuCHrwvEy1M" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Sindu Videos 02</span>
+                                <span class="sinhala">සිංදු වීඩියෝ 02</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029Vb6rRMzLI8YVlEM7IA3O" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Athal Videos 02</span>
+                                <span class="sinhala">ආතල් වීඩියෝ 02</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029Vb6EyI21Hsq4faGGvE1V" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Athal Videos</span>
+                                <span class="sinhala">ආතල් වීඩියෝ</span>
+                            </h3>
+                        </div>
+                    </a>
+                    
+                    <a href="https://whatsapp.com/channel/0029Vb6BBoK3LdQaKQVbhP1p" target="_blank" class="booking-form hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
+                        <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
+                        <div>
+                            <h3 class="font-semibold">
+                                <span class="english">Kathnoruwe Siridhamma</span>
+                                <span class="sinhala">කත්නොරුවේ සිරිධම්ම</span>
+                            </h3>
+                        </div>
+                    </a>
+                </div>
+                
+                <div class="mt-8 text-center">
+                    <p class="text-gray-600 mb-2">
+                        <span class="english">Owner by Malindu Nethmitha</span>
+                        <span class="sinhala">මලින්දු නෙත්මිත විසින් හිමිකරගෙන ඇත</span>
+                    </p>
+                    <p class="text-gray-600">
+                        <span class="english">Promotion admin by D.M. Kaawya</span>
+                        <span class="sinhala">ප්‍රචාරණ පරිපාලක D.M. කාව්යා</span>
                     </p>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <!-- Bank Details -->
-    <section class="py-12 px-4 bg-gray-50">
-        <div class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
-                <span class="english">Bank Details</span>
-                <span class="sinhala">බැංකු විස්තර</span>
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-xl font-semibold mb-4 text-green-600">
-                        <span class="english">Commercial Bank</span>
-                        <span class="sinhala">වාණිජ බැංකුව</span>
+        <!-- Footer -->
+        <footer class="gradient-bg text-white py-8 px-4">
+            <div class="container mx-auto text-center">
+                <div class="mb-4">
+                    <h3 class="text-xl font-bold mb-2">
+                        <span class="english">Contact Us</span>
+                        <span class="sinhala">අප අමතන්න</span>
                     </h3>
-                    <ul class="space-y-2">
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">AC No:</span>
-                                <span class="sinhala">ගිණුම් අංකය:</span>
-                            </span>
-                            <span>8019226176</span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Name:</span>
-                                <span class="sinhala">නම:</span>
-                            </span>
-                            <span>N. Malindu Nethmina Noragalla</span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Bank:</span>
-                                <span class="sinhala">බැංකුව:</span>
-                            </span>
-                            <span>
-                                <span class="english">Commercial Bank</span>
-                                <span class="sinhala">වාණිජ බැංකුව</span>
-                            </span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Branch:</span>
-                                <span class="sinhala">ශාඛාව:</span>
-                            </span>
-                            <span>Rathnapura</span>
-                        </li>
-                    </ul>
+                    <p class="text-lg">0775048455</p>
+                    <p class="text-lg">dmkaawya@gmail.com</p>
                 </div>
-                
-                <div class="bg-white rounded-xl shadow-md p-6">
-                    <h3 class="text-xl font-semibold mb-4 text-green-600">
-                        <span class="english">People's Bank</span>
-                        <span class="sinhala">ජනතා බැංකුව</span>
-                    </h3>
-                    <ul class="space-y-2">
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">AC No:</span>
-                                <span class="sinhala">ගිණුම් අංකය:</span>
-                            </span>
-                            <span>088200190088965</span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Name:</span>
-                                <span class="sinhala">නම:</span>
-                            </span>
-                            <span>N. Malindu Nethmina Noragalla</span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Bank:</span>
-                                <span class="sinhala">බැංකුව:</span>
-                            </span>
-                            <span>
-                                <span class="english">People's Bank</span>
-                                <span class="sinhala">ජනතා බැංකුව</span>
-                            </span>
-                        </li>
-                        <li class="flex">
-                            <span class="font-medium w-24">
-                                <span class="english">Branch:</span>
-                                <span class="sinhala">ශාඛාව:</span>
-                            </span>
-                            <span>Rathnapura</span>
-                        </li>
-                    </ul>
+                <div class="flex justify-center space-x-4 mb-4">
+                    <a href="https://wa.me/94775048455" target="_blank" class="text-white hover:text-green-200 transition">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </a>
                 </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- WhatsApp Channels -->
-    <section class="py-12 px-4 bg-white">
-        <div class="container mx-auto">
-            <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
-                <span class="english">Our WhatsApp Channels</span>
-                <span class="sinhala">අපගේ වට්සැප් චැනල්</span>
-            </h2>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                <a href="https://whatsapp.com/channel/0029Vb6n24M05MUYH9tZZ022" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Free Data Offers</span>
-                            <span class="sinhala">නොමිලේ දත්ත ලබා දීම්</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029Vb6ogyEFXUufM9dLsa3A" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">English Status</span>
-                            <span class="sinhala">ඉංග්‍රීසි තත්ත්වය</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029VbBxyuG0Vyc7iTdPEa1U" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Sindu Videos</span>
-                            <span class="sinhala">සිංදු වීඩියෝ</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029VbBmvNYEQIakOTBz540d" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Pirith Deshana</span>
-                            <span class="sinhala">පිරිත් දේශනා</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029VbCLmjlC1FuCHrwvEy1M" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Sindu Videos 02</span>
-                            <span class="sinhala">සිංදු වීඩියෝ 02</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029Vb6rRMzLI8YVlEM7IA3O" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Athal Videos 02</span>
-                            <span class="sinhala">ආතල් වීඩියෝ 02</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029Vb6EyI21Hsq4faGGvE1V" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Athal Videos</span>
-                            <span class="sinhala">ආතල් වීඩියෝ</span>
-                        </h3>
-                    </div>
-                </a>
-                
-                <a href="https://whatsapp.com/channel/0029Vb6BBoK3LdQaKQVbhP1p" target="_blank" class="bg-green-50 hover:bg-green-100 rounded-lg p-4 flex items-center space-x-3 transition">
-                    <i class="fab fa-whatsapp text-green-600 text-2xl"></i>
-                    <div>
-                        <h3 class="font-semibold">
-                            <span class="english">Kathnoruwe Siridhamma</span>
-                            <span class="sinhala">කත්නොරුවේ සිරිධම්ම</span>
-                        </h3>
-                    </div>
-                </a>
-            </div>
-            
-            <div class="mt-8 text-center">
-                <p class="text-gray-600 mb-2">
-                    <span class="english">Owner by Malindu Nethmitha</span>
-                    <span class="sinhala">මලින්දු නෙත්මිත විසින් හිමිකරගෙන ඇත</span>
-                </p>
-                <p class="text-gray-600">
-                    <span class="english">Promotion admin by D.M. Kaawya</span>
-                    <span class="sinhala">ප්‍රචාරණ පරිපාලක D.M. කාව්යා</span>
+                <p class="text-sm opacity-75">
+                    <span class="english">© 2023 M&K Promotions. All rights reserved.</span>
+                    <span class="sinhala">© 2023 M&K ප්‍රචාරණ. සියලු හිමිකම් ඇවිරිණි.</span>
                 </p>
             </div>
-        </div>
-    </section>
+        </footer>
+    </div>
 
-    <!-- Footer -->
-    <footer class="gradient-bg text-white py-8 px-4">
-        <div class="container mx-auto text-center">
-            <div class="mb-4">
-                <h3 class="text-xl font-bold mb-2">
-                    <span class="english">Contact Us</span>
-                    <span class="sinhala">අප අමතන්න</span>
+    <!-- Admin Login Form -->
+    <div id="admin-login" class="admin-panel">
+        <div class="login-form">
+            <h2 class="text-2xl font-bold text-center mb-6">
+                <span class="english">Admin Login</span>
+                <span class="sinhala">පරිපාලක පිවිසුම</span>
+            </h2>
+            <form onsubmit="adminLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Username</span>
+                        <span class="sinhala">පරිශීලක නාමය</span>
+                    </label>
+                    <input type="text" id="admin-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Password</span>
+                        <span class="sinhala">මුරපදය</span>
+                    </label>
+                    <input type="password" id="admin-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <button type="submit" class="w-full whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Login</span>
+                    <span class="sinhala">පිවිසෙන්න</span>
+                </button>
+                <button type="button" onclick="hideAdminLogin()" class="w-full mt-2 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Cancel</span>
+                    <span class="sinhala">අවලංගු කරන්න</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-panel">
+        <div class="container mx-auto py-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">
+                    <span class="english">Admin Dashboard</span>
+                    <span class="sinhala">පරිපාලක පැනලය</span>
+                </h2>
+                <button onclick="logoutAdmin()" class="bg-red-500 text-white px-4 py-2 rounded-lg">
+                    <span class="english">Logout</span>
+                    <span class="sinhala">නික්මෙන්න</span>
+                </button>
+            </div>
+            
+            <div class="booking-form rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">
+                    <span class="english">Booking Statistics</span>
+                    <span class="sinhala">වෙන්කිරීම් සංඛ්‍යාලේඛන</span>
                 </h3>
-                <p class="text-lg">0775048455</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div class="bg-blue-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-800">
+                            <span class="english">Total Bookings</span>
+                            <span class="sinhala">මුළු වෙන්කිරීම්</span>
+                        </h4>
+                        <p class="text-2xl font-bold text-blue-600" id="total-bookings">0</p>
+                    </div>
+                    <div class="bg-green-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-green-800">
+                            <span class="english">Paid Bookings</span>
+                            <span class="sinhala">ගෙවූ වෙන්කිරීම්</span>
+                        </h4>
+                        <p class="text-2xl font-bold text-green-600" id="paid-bookings">0</p>
+                    </div>
+                    <div class="bg-red-100 p-4 rounded-lg">
+                        <h4 class="font-semibold text-red-800">
+                            <span class="english">Unpaid Bookings</span>
+                            <span class="sinhala">ගෙවීමට ඇති වෙන්කිරීම්</span>
+                        </h4>
+                        <p class="text-2xl font-bold text-red-600" id="unpaid-bookings">0</p>
+                    </div>
+                </div>
             </div>
-            <div class="flex justify-center space-x-4 mb-4">
-                <a href="https://wa.me/94775048455" target="_blank" class="text-white hover:text-green-200 transition">
-                    <i class="fab fa-whatsapp text-2xl"></i>
-                </a>
+            
+            <div class="booking-form rounded-xl p-6">
+                <h3 class="text-xl font-semibold mb-4">
+                    <span class="english">All Bookings</span>
+                    <span class="sinhala">සියලුම වෙන්කිරීම්</span>
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">
+                                    <span class="english">Name</span>
+                                    <span class="sinhala">නම</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Contact</span>
+                                    <span class="sinhala">අමතන්න</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Package</span>
+                                    <span class="sinhala">පැකේජය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Date & Time</span>
+                                    <span class="sinhala">දිනය සහ වේලාව</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Extra Days</span>
+                                    <span class="sinhala">අමතර දින</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Total</span>
+                                    <span class="sinhala">මුළු</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Status</span>
+                                    <span class="sinhala">තත්වය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Actions</span>
+                                    <span class="sinhala">ක්‍රියා</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-table">
+                            <!-- Bookings will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
             </div>
-            <p class="text-sm opacity-75">
-                <span class="english">© 2023 WhatsApp Channel Ads. All rights reserved.</span>
-                <span class="sinhala">© 2023 වට්සැප් චැනල් දැන්වීම්. සියලු හිමිකම් ඇවිරිණි.</span>
-            </p>
         </div>
-    </footer>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-6">
+                <span class="english">Book Your Package</span>
+                <span class="sinhala">ඔබගේ පැකේජය වෙන්කර ගන්න</span>
+            </h2>
+            <form onsubmit="submitBooking(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Selected Package</span>
+                        <span class="sinhala">තෝරාගත් පැකේජය</span>
+                    </label>
+                    <input type="text" id="selected-package" class="w-full px-3 py-2 border rounded-lg bg-gray-100" readonly>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Booking Date</span>
+                            <span class="sinhala">වෙන්කිරීම් දිනය</span>
+                        </label>
+                        <input type="date" id="booking-date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Booking Time</span>
+                            <span class="sinhala">වෙන්කිරීම් වේලාව</span>
+                        </label>
+                        <input type="time" id="booking-time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Extra Days</span>
+                        <span class="sinhala">අමතර දින</span>
+                    </label>
+                    <select id="extra-days" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" onchange="calculateTotal()">
+                        <option value="0">
+                            <span class="english">No Extra Days</span>
+                            <span class="sinhala">අමතර දින නැත</span>
+                        </option>
+                        <option value="1">
+                            <span class="english">1 Day (+Rs.250)</span>
+                            <span class="sinhala">1 දිනය (+රු.250)</span>
+                        </option>
+                        <option value="2">
+                            <span class="english">2 Days (+Rs.500)</span>
+                            <span class="sinhala">2 දින (+රු.500)</span>
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Your Name</span>
+                            <span class="sinhala">ඔබගේ නම</span>
+                        </label>
+                        <input type="text" id="customer-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Contact Number</span>
+                            <span class="sinhala">අමතන අංකය</span>
+                        </label>
+                        <input type="tel" id="contact-number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Payment Status</span>
+                        <span class="sinhala">ගෙවීම් තත්වය</span>
+                    </label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-status" value="paid" class="mr-2">
+                            <span class="english">Paid</span>
+                            <span class="sinhala">ගෙවා ඇත</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-status" value="unpaid" class="mr-2" checked>
+                            <span class="english">Will Pay Later</span>
+                            <span class="sinhala">පසුව ගෙවන්න</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mb-6 p-4 bg-gray-100 rounded-lg">
+                    <h3 class="font-semibold mb-2">
+                        <span class="english">Total Amount</span>
+                        <span class="sinhala">මුළු මුදල</span>
+                    </h3>
+                    <p class="text-2xl font-bold text-purple-600" id="total-amount">Rs.0</p>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                        <span class="english">Confirm Booking</span>
+                        <span class="sinhala">වෙන්කිරීම තහවුරු කරන්න</span>
+                    </button>
+                    <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                        <span class="english">Cancel</span>
+                        <span class="sinhala">අවලංගු කරන්න</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
+        // Initialize variables
+        let currentPackage = '';
+        let currentPrice = 0;
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        
         // Language toggle functionality
         function toggleLanguage(lang) {
             const englishElements = document.querySelectorAll('.english');
@@ -780,25 +1133,170 @@
             }
         }
         
+        // Dark mode toggle
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('dark-mode-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+        
+        // Admin panel functions
+        function showAdminLogin() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('admin-login').classList.add('active');
+        }
+        
+        function hideAdminLogin() {
+            document.getElementById('admin-login').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function adminLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                document.getElementById('admin-login').classList.remove('active');
+                document.getElementById('admin-dashboard').classList.add('active');
+                loadAdminDashboard();
+            } else {
+                alert('Invalid username or password');
+            }
+        }
+        
+        function logoutAdmin() {
+            document.getElementById('admin-dashboard').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function loadAdminDashboard() {
+            // Update statistics
+            const totalBookings = bookings.length;
+            const paidBookings = bookings.filter(b => b.paymentStatus === 'paid').length;
+            const unpaidBookings = totalBookings - paidBookings;
+            
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('paid-bookings').textContent = paidBookings;
+            document.getElementById('unpaid-bookings').textContent = unpaidBookings;
+            
+            // Populate bookings table
+            const tableBody = document.getElementById('bookings-table');
+            tableBody.innerHTML = '';
+            
+            bookings.forEach((booking, index) => {
+                const row = document.createElement('tr');
+                row.className = 'booking-row border-b';
+                
+                row.innerHTML = `
+                    <td class="py-2">${booking.name}</td>
+                    <td class="py-2">${booking.contact}</td>
+                    <td class="py-2">${booking.package}</td>
+                    <td class="py-2">${booking.date} ${booking.time}</td>
+                    <td class="py-2">${booking.extraDays}</td>
+                    <td class="py-2">Rs.${booking.total}</td>
+                    <td class="py-2">
+                        ${booking.paymentStatus === 'paid' 
+                            ? '<span class="paid-badge">Paid</span>' 
+                            : '<span class="unpaid-badge">Unpaid</span>'}
+                    </td>
+                    <td class="py-2">
+                        ${booking.paymentStatus === 'unpaid' 
+                            ? `<button onclick="markAsPaid(${index})" class="bg-green-500 text-white px-2 py-1 rounded text-sm">Mark as Paid</button>`
+                            : '-'}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function markAsPaid(index) {
+            bookings[index].paymentStatus = 'paid';
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            loadAdminDashboard();
+        }
+        
+        // Booking modal functions
+        function openBookingModal(packageName, price) {
+            currentPackage = packageName;
+            currentPrice = price;
+            
+            document.getElementById('selected-package').value = packageName;
+            document.getElementById('booking-date').value = '';
+            document.getElementById('booking-time').value = '';
+            document.getElementById('extra-days').value = '0';
+            document.getElementById('customer-name').value = '';
+            document.getElementById('contact-number').value = '';
+            document.querySelector('input[name="payment-status"][value="unpaid"]').checked = true;
+            
+            calculateTotal();
+            document.getElementById('booking-modal').style.display = 'block';
+        }
+        
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+        
+        function calculateTotal() {
+            const extraDays = parseInt(document.getElementById('extra-days').value);
+            const extraCost = extraDays * 250;
+            const total = currentPrice + extraCost;
+            
+            document.getElementById('total-amount').textContent = `Rs.${total}`;
+        }
+        
+        function submitBooking(event) {
+            event.preventDefault();
+            
+            const booking = {
+                id: Date.now(),
+                package: currentPackage,
+                date: document.getElementById('booking-date').value,
+                time: document.getElementById('booking-time').value,
+                extraDays: document.getElementById('extra-days').value,
+                name: document.getElementById('customer-name').value,
+                contact: document.getElementById('contact-number').value,
+                paymentStatus: document.querySelector('input[name="payment-status"]:checked').value,
+                total: currentPrice + (parseInt(document.getElementById('extra-days').value) * 250)
+            };
+            
+            // Save booking
+            bookings.push(booking);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            
+            // Send WhatsApp message
+            const message = `Hi, I'd like to book the following package:\n\n` +
+                `Package: ${booking.package}\n` +
+                `Date: ${booking.date}\n` +
+                `Time: ${booking.time}\n` +
+                `Extra Days: ${booking.extraDays}\n` +
+                `Name: ${booking.name}\n` +
+                `Contact: ${booking.contact}\n` +
+                `Payment Status: ${booking.paymentStatus}\n` +
+                `Total Amount: Rs.${booking.total}\n\n` +
+                `Please confirm my booking.`;
+            
+            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            closeBookingModal();
+        }
+        
         // Initialize with English
         toggleLanguage('en');
         
-        // Book package function
-        function bookPackage(packageName) {
-            const message = `Hi, I'm interested in booking the ${packageName}. Please provide more details.`;
-            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        // Add smooth scrolling
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                document.querySelector(this.getAttribute('href')).scrollIntoView({
-                    behavior: 'smooth'
-                });
-            });
-        });
+        // Set minimum date to today
+        document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
     </script>
 </body>
 </html>
