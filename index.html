@@ -1452,3 +1452,1211 @@
                         <span class="sinhala">සම්පූර්ණ නම</span>
                     </label>
                     <input type="text" id="register-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Email</span>
+                        <span class="sinhala">විද්‍යුත් තැපැල්</span>
+                    </label>
+                    <input type="email" id="register-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Phone Number</span>
+                        <span class="sinhala">දුරකථන අංකය</span>
+                    </label>
+                    <input type="tel" id="register-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Password</span>
+                        <span class="sinhala">මුරපදය</span>
+                    </label>
+                    <input type="password" id="register-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Confirm Password</span>
+                        <span class="sinhala">මුරපදය තහවුරු කරන්න</span>
+                    </label>
+                    <input type="password" id="register-confirm-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <button type="submit" class="w-full whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Register</span>
+                    <span class="sinhala">ලියාපදිංචි වන්න</span>
+                </button>
+                <button type="button" onclick="hideCustomerRegister()" class="w-full mt-2 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Cancel</span>
+                    <span class="sinhala">අවලංගු කරන්න</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Customer Dashboard -->
+    <div id="customer-dashboard" class="admin-panel">
+        <div class="container mx-auto py-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">
+                    <span class="english">Customer Dashboard</span>
+                    <span class="sinhala">පාරිභෝගික පැනලය</span>
+                </h2>
+                <button onclick="logoutCustomer()" class="bg-red-500 text-white px-4 py-2 rounded-lg">
+                    <span class="english">Logout</span>
+                    <span class="sinhala">නික්මෙන්න</span>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-600">
+                        <span class="english">My Bookings</span>
+                        <span class="sinhala">මගේ වෙන්කිරීම්</span>
+                    </h3>
+                    <p class="text-3xl font-bold text-purple-600" id="customer-bookings-count">0</p>
+                </div>
+                
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-600">
+                        <span class="english">Referral Code</span>
+                        <span class="sinhala">යොමු කිරීම් කේතය</span>
+                    </h3>
+                    <div class="referral-code" id="customer-referral-code">MK-XXXXX</div>
+                    <p class="text-sm text-gray-600 mt-2">
+                        <span class="english">Share this code with friends for discounts!</span>
+                        <span class="sinhala">මිතුරන් සමඟ මෙම කේතය බෙදා වට්ටම් ලබාගන්න!</span>
+                    </p>
+                </div>
+                
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4 text-purple-600">
+                        <span class="english">Rewards Points</span>
+                        <span class="sinhala">ත්‍යාග ලකුණු</span>
+                    </h3>
+                    <p class="text-3xl font-bold text-purple-600" id="customer-rewards-points">0</p>
+                </div>
+            </div>
+            
+            <div class="booking-form rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">
+                    <span class="english">My Booking History</span>
+                    <span class="sinhala">මගේ වෙන්කිරීම් ඉතිහාසය</span>
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">
+                                    <span class="english">Package</span>
+                                    <span class="sinhala">පැකේජය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Date & Time</span>
+                                    <span class="sinhala">දිනය සහ වේලාව</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Status</span>
+                                    <span class="sinhala">තත්වය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Actions</span>
+                                    <span class="sinhala">ක්‍රියා</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="customer-bookings-table">
+                            <!-- Bookings will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="booking-form rounded-xl p-6">
+                <h3 class="text-xl font-semibold mb-4">
+                    <span class="english">My Profile</span>
+                    <span class="sinhala">මගේ පැතිකඩ</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Full Name</span>
+                            <span class="sinhala">සම්පූර්ණ නම</span>
+                        </label>
+                        <input type="text" id="profile-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Email</span>
+                            <span class="sinhala">විද්‍යුත් තැපැල්</span>
+                        </label>
+                        <input type="email" id="profile-email" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Phone Number</span>
+                            <span class="sinhala">දුරකථන අංකය</span>
+                        </label>
+                        <input type="tel" id="profile-phone" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Password</span>
+                            <span class="sinhala">මුරපදය</span>
+                        </label>
+                        <input type="password" id="profile-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                    </div>
+                </div>
+                <button onclick="updateProfile()" class="mt-4 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Update Profile</span>
+                    <span class="sinhala">පැතිකඩ යාවත්කාලීන කරන්න</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Form -->
+    <div id="admin-login" class="admin-panel">
+        <div class="login-form">
+            <h2 class="text-2xl font-bold text-center mb-6">
+                <span class="english">Admin Login</span>
+                <span class="sinhala">පරිපාලක පිවිසුම</span>
+            </h2>
+            <form onsubmit="adminLogin(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Username</span>
+                        <span class="sinhala">පරිශීලක නාමය</span>
+                    </label>
+                    <input type="text" id="admin-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Password</span>
+                        <span class="sinhala">මුරපදය</span>
+                    </label>
+                    <input type="password" id="admin-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                </div>
+                <button type="submit" class="w-full whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Login</span>
+                    <span class="sinhala">පිවිසෙන්න</span>
+                </button>
+                <button type="button" onclick="hideAdminLogin()" class="w-full mt-2 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                    <span class="english">Cancel</span>
+                    <span class="sinhala">අවලංගු කරන්න</span>
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dashboard" class="admin-panel">
+        <div class="container mx-auto py-8 px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-2xl font-bold">
+                    <span class="english">Admin Dashboard</span>
+                    <span class="sinhala">පරිපාලක පැනලය</span>
+                </h2>
+                <button onclick="logoutAdmin()" class="bg-red-500 text-white px-4 py-2 rounded-lg">
+                    <span class="english">Logout</span>
+                    <span class="sinhala">නික්මෙන්න</span>
+                </button>
+            </div>
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
+                <div class="booking-form rounded-xl p-4">
+                    <h4 class="font-semibold text-blue-800">
+                        <span class="english">Total Bookings</span>
+                        <span class="sinhala">මුළු වෙන්කිරීම්</span>
+                    </h4>
+                    <p class="text-2xl font-bold text-blue-600" id="total-bookings">0</p>
+                </div>
+                <div class="booking-form rounded-xl p-4">
+                    <h4 class="font-semibold text-green-800">
+                        <span class="english">Paid Bookings</span>
+                        <span class="sinhala">ගෙවූ වෙන්කිරීම්</span>
+                    </h4>
+                    <p class="text-2xl font-bold text-green-600" id="paid-bookings">0</p>
+                </div>
+                <div class="booking-form rounded-xl p-4">
+                    <h4 class="font-semibold text-red-800">
+                        <span class="english">Unpaid Bookings</span>
+                        <span class="sinhala">ගෙවීමට ඇති වෙන්කිරීම්</span>
+                    </h4>
+                    <p class="text-2xl font-bold text-red-600" id="unpaid-bookings">0</p>
+                </div>
+                <div class="booking-form rounded-xl p-4">
+                    <h4 class="font-semibold text-purple-800">
+                        <span class="english">Total Revenue</span>
+                        <span class="sinhala">මුළු ආදායම</span>
+                    </h4>
+                    <p class="text-2xl font-bold text-purple-600" id="total-revenue">Rs.0</p>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">
+                        <span class="english">Revenue Chart</span>
+                        <span class="sinhala">ආදායම් ප්‍රස්තාරය</span>
+                    </h3>
+                    <canvas id="revenue-chart" width="400" height="200"></canvas>
+                </div>
+                
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">
+                        <span class="english">Package Popularity</span>
+                        <span class="sinhala">පැකේජ ජනප්‍රියතාව</span>
+                    </h3>
+                    <canvas id="package-chart" width="400" height="200"></canvas>
+                </div>
+            </div>
+            
+            <div class="booking-form rounded-xl p-6 mb-8">
+                <h3 class="text-xl font-semibold mb-4">
+                    <span class="english">All Bookings</span>
+                    <span class="sinhala">සියලුම වෙන්කිරීම්</span>
+                </h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b">
+                                <th class="text-left py-2">
+                                    <span class="english">Name</span>
+                                    <span class="sinhala">නම</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Contact</span>
+                                    <span class="sinhala">අමතන්න</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Package</span>
+                                    <span class="sinhala">පැකේජය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Date & Time</span>
+                                    <span class="sinhala">දිනය සහ වේලාව</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Extra Days</span>
+                                    <span class="sinhala">අමතර දින</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Total</span>
+                                    <span class="sinhala">මුළු</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Status</span>
+                                    <span class="sinhala">තත්වය</span>
+                                </th>
+                                <th class="text-left py-2">
+                                    <span class="english">Actions</span>
+                                    <span class="sinhala">ක්‍රියා</span>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-table">
+                            <!-- Bookings will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">
+                        <span class="english">Manage Promo Codes</span>
+                        <span class="sinhala">ප්‍රවර්ධන කේත කළමනාකරණය</span>
+                    </h3>
+                    <div class="mb-4">
+                        <div class="promo-input">
+                            <input type="text" id="promo-code" placeholder="Enter promo code">
+                            <input type="number" id="promo-discount" placeholder="Discount %" min="1" max="100">
+                            <button onclick="addPromoCode()" class="whatsapp-btn text-white px-4 py-2 rounded-lg">
+                                <span class="english">Add</span>
+                                <span class="sinhala">එකතු කරන්න</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-2">
+                                        <span class="english">Code</span>
+                                        <span class="sinhala">කේතය</span>
+                                    </th>
+                                    <th class="text-left py-2">
+                                        <span class="english">Discount</span>
+                                        <span class="sinhala">වට්ටම</span>
+                                    </th>
+                                    <th class="text-left py-2">
+                                        <span class="english">Actions</span>
+                                        <span class="sinhala">ක්‍රියා</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody id="promo-codes-table">
+                                <!-- Promo codes will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div class="booking-form rounded-xl p-6">
+                    <h3 class="text-xl font-semibold mb-4">
+                        <span class="english">Send Notification</span>
+                        <span class="sinhala">දැනුම්දීම් යවන්න</span>
+                    </h3>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Message</span>
+                            <span class="sinhala">පණිවිඩය</span>
+                        </label>
+                        <textarea id="notification-message" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" rows="4"></textarea>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Recipients</span>
+                            <span class="sinhala">ලබන්නන්</span>
+                        </label>
+                        <select id="notification-recipients" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600">
+                            <option value="all">
+                                <span class="english">All Customers</span>
+                                <span class="sinhala">සියලුම පාරිභෝගිකයින්</span>
+                            </option>
+                            <option value="unpaid">
+                                <span class="english">Unpaid Bookings Only</span>
+                                <span class="sinhala">ගෙවීමට ඇති වෙන්කිරීම් පමණක්</span>
+                            </option>
+                        </select>
+                    </div>
+                    <button onclick="sendNotification()" class="whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                        <span class="english">Send Notification</span>
+                        <span class="sinhala">දැනුම්දීම යවන්න</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Booking Modal -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeBookingModal()">&times;</span>
+            <h2 class="text-2xl font-bold mb-6">
+                <span class="english">Book Your Package</span>
+                <span class="sinhala">ඔබගේ පැකේජය වෙන්කර ගන්න</span>
+            </h2>
+            <form onsubmit="submitBooking(event)">
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Selected Package</span>
+                        <span class="sinhala">තෝරාගත් පැකේජය</span>
+                    </label>
+                    <input type="text" id="selected-package" class="w-full px-3 py-2 border rounded-lg bg-gray-100" readonly>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Booking Date</span>
+                            <span class="sinhala">වෙන්කිරීම් දිනය</span>
+                        </label>
+                        <input type="date" id="booking-date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Booking Time</span>
+                            <span class="sinhala">වෙන්කිරීම් වේලාව</span>
+                        </label>
+                        <input type="time" id="booking-time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Extra Days</span>
+                        <span class="sinhala">අමතර දින</span>
+                    </label>
+                    <select id="extra-days" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" onchange="calculateTotal()">
+                        <option value="0">
+                            <span class="english">No Extra Days</span>
+                            <span class="sinhala">අමතර දින නැත</span>
+                        </option>
+                        <option value="1">
+                            <span class="english">1 Day (+Rs.250)</span>
+                            <span class="sinhala">1 දිනය (+රු.250)</span>
+                        </option>
+                        <option value="2">
+                            <span class="english">2 Days (+Rs.500)</span>
+                            <span class="sinhala">2 දින (+රු.500)</span>
+                        </option>
+                    </select>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Promo Code (Optional)</span>
+                        <span class="sinhala">ප්‍රවර්ධන කේතය (වෛකල්පික)</span>
+                    </label>
+                    <div class="promo-input">
+                        <input type="text" id="promo-code-input" class="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Enter promo code">
+                        <button type="button" onclick="applyPromoCode()" class="bg-purple-600 text-white px-4 py-2 rounded-lg">
+                            <span class="english">Apply</span>
+                            <span class="sinhala">යොදන්න</span>
+                        </button>
+                    </div>
+                    <p id="promo-status" class="text-sm mt-1"></p>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Referral Code (Optional)</span>
+                        <span class="sinhala">��ොමු කිරීම් කේතය (වෛකල්පික)</span>
+                    </label>
+                    <input type="text" id="referral-code-input" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" placeholder="Enter referral code">
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Your Name</span>
+                            <span class="sinhala">ඔබගේ නම</span>
+                        </label>
+                        <input type="text" id="customer-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                    <div>
+                        <label class="block text-gray-700 mb-2">
+                            <span class="english">Contact Number</span>
+                            <span class="sinhala">අමතන අංකය</span>
+                        </label>
+                        <input type="tel" id="contact-number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 mb-2">
+                        <span class="english">Payment Status</span>
+                        <span class="sinhala">ගෙවීම් තත්වය</span>
+                    </label>
+                    <div class="flex space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-status" value="paid" class="mr-2">
+                            <span class="english">Paid</span>
+                            <span class="sinhala">ගෙවා ඇත</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="payment-status" value="unpaid" class="mr-2" checked>
+                            <span class="english">Will Pay Later</span>
+                            <span class="sinhala">පසුව ගෙවන්න</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="mb-6 p-4 bg-gray-100 rounded-lg">
+                    <h3 class="font-semibold mb-2">
+                        <span class="english">Total Amount</span>
+                        <span class="sinhala">මුළු මුදල</span>
+                    </h3>
+                    <p class="text-2xl font-bold text-purple-600" id="total-amount">Rs.0</p>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="submit" class="flex-1 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
+                        <span class="english">Confirm Booking</span>
+                        <span class="sinhala">වෙන්කිරීම තහවුරු කරන්න</span>
+                    </button>
+                    <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                        <span class="english">Cancel</span>
+                        <span class="sinhala">අවලංගු කරන්න</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Chat Widget -->
+    <div class="chat-widget">
+        <div class="chat-button" onclick="openWhatsAppChat()">
+            <i class="fab fa-whatsapp text-2xl"></i>
+        </div>
+    </div>
+
+    <!-- Notification -->
+    <div id="notification" class="notification">
+        <span id="notification-message"></span>
+    </div>
+
+    <script>
+        // Initialize variables
+        let currentPackage = '';
+        let currentPrice = 0;
+        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        let customers = JSON.parse(localStorage.getItem('customers')) || [];
+        let promoCodes = JSON.parse(localStorage.getItem('promoCodes')) || [
+            { code: 'WELCOME10', discount: 10 },
+            { code: 'SAVE20', discount: 20 }
+        ];
+        let currentCustomer = null;
+        let appliedPromoCode = null;
+        let appliedDiscount = 0;
+
+        // Language toggle functionality
+        function toggleLanguage(lang) {
+            const englishElements = document.querySelectorAll('.english');
+            const sinhalaElements = document.querySelectorAll('.sinhala');
+            const enBtn = document.getElementById('en-btn');
+            const siBtn = document.getElementById('si-btn');
+            
+            if (lang === 'en') {
+                englishElements.forEach(el => el.classList.add('lang-active'));
+                sinhalaElements.forEach(el => el.classList.remove('lang-active'));
+                enBtn.classList.add('bg-white', 'text-purple-600');
+                enBtn.classList.remove('bg-opacity-20');
+                siBtn.classList.remove('bg-white', 'text-purple-600');
+                siBtn.classList.add('bg-opacity-20');
+            } else {
+                englishElements.forEach(el => el.classList.remove('lang-active'));
+                sinhalaElements.forEach(el => el.classList.add('lang-active'));
+                siBtn.classList.add('bg-white', 'text-purple-600');
+                siBtn.classList.remove('bg-opacity-20');
+                enBtn.classList.remove('bg-white', 'text-purple-600');
+                enBtn.classList.add('bg-opacity-20');
+            }
+        }
+        
+        // Dark mode toggle
+        function toggleDarkMode() {
+            const body = document.body;
+            const icon = document.getElementById('dark-mode-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            }
+        }
+        
+        // Customer panel functions
+        function showCustomerLogin() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('customer-login').classList.add('active');
+        }
+        
+        function hideCustomerLogin() {
+            document.getElementById('customer-login').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function showCustomerRegister() {
+            document.getElementById('customer-login').classList.remove('active');
+            document.getElementById('customer-register').classList.add('active');
+        }
+        
+        function hideCustomerRegister() {
+            document.getElementById('customer-register').classList.remove('active');
+            document.getElementById('customer-login').classList.add('active');
+        }
+        
+        function customerLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('customer-username').value;
+            const password = document.getElementById('customer-password').value;
+            
+            // Find customer by email or phone
+            const customer = customers.find(c => 
+                (c.email === username || c.phone === username) && c.password === password
+            );
+            
+            if (customer) {
+                currentCustomer = customer;
+                document.getElementById('customer-login').classList.remove('active');
+                document.getElementById('customer-dashboard').classList.add('active');
+                loadCustomerDashboard();
+            } else {
+                showNotification('Invalid username or password', 'error');
+            }
+        }
+        
+        function customerRegister(event) {
+            event.preventDefault();
+            const name = document.getElementById('register-name').value;
+            const email = document.getElementById('register-email').value;
+            const phone = document.getElementById('register-phone').value;
+            const password = document.getElementById('register-password').value;
+            const confirmPassword = document.getElementById('register-confirm-password').value;
+            
+            if (password !== confirmPassword) {
+                showNotification('Passwords do not match', 'error');
+                return;
+            }
+            
+            // Check if email or phone already exists
+            const existingCustomer = customers.find(c => c.email === email || c.phone === phone);
+            if (existingCustomer) {
+                showNotification('Email or phone already registered', 'error');
+                return;
+            }
+            
+            // Generate referral code
+            const referralCode = 'MK-' + Math.random().toString(36).substring(2, 7).toUpperCase();
+            
+            // Create new customer
+            const newCustomer = {
+                id: Date.now(),
+                name,
+                email,
+                phone,
+                password,
+                referralCode,
+                rewardsPoints: 0,
+                bookings: []
+            };
+            
+            customers.push(newCustomer);
+            localStorage.setItem('customers', JSON.stringify(customers));
+            
+            showNotification('Registration successful! Please login.', 'success');
+            hideCustomerRegister();
+        }
+        
+        function logoutCustomer() {
+            currentCustomer = null;
+            document.getElementById('customer-dashboard').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function loadCustomerDashboard() {
+            if (!currentCustomer) return;
+            
+            // Load customer bookings
+            const customerBookings = bookings.filter(b => b.customerId === currentCustomer.id);
+            document.getElementById('customer-bookings-count').textContent = customerBookings.length;
+            
+            // Load referral code
+            document.getElementById('customer-referral-code').textContent = currentCustomer.referralCode;
+            
+            // Load rewards points
+            document.getElementById('customer-rewards-points').textContent = currentCustomer.rewardsPoints;
+            
+            // Load profile
+            document.getElementById('profile-name').value = currentCustomer.name;
+            document.getElementById('profile-email').value = currentCustomer.email;
+            document.getElementById('profile-phone').value = currentCustomer.phone;
+            
+            // Load bookings table
+            const tableBody = document.getElementById('customer-bookings-table');
+            tableBody.innerHTML = '';
+            
+            customerBookings.forEach((booking, index) => {
+                const row = document.createElement('tr');
+                row.className = 'booking-row border-b';
+                
+                row.innerHTML = `
+                    <td class="py-2">${booking.package}</td>
+                    <td class="py-2">${booking.date} ${booking.time}</td>
+                    <td class="py-2">
+                        ${booking.paymentStatus === 'paid' 
+                            ? '<span class="paid-badge">Paid</span>' 
+                            : '<span class="unpaid-badge">Unpaid</span>'}
+                    </td>
+                    <td class="py-2">
+                        <button onclick="viewBookingDetails(${booking.id})" class="bg-blue-500 text-white px-2 py-1 rounded text-sm mr-2">
+                            <span class="english">View</span>
+                            <span class="sinhala">බලන්න</span>
+                        </button>
+                        ${booking.paymentStatus === 'unpaid' 
+                            ? `<button onclick="payForBooking(${booking.id})" class="bg-green-500 text-white px-2 py-1 rounded text-sm">
+                                <span class="english">Pay</span>
+                                <span class="sinhala">ගෙවන්න</span>
+                            </button>`
+                            : ''}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+        }
+        
+        function updateProfile() {
+            if (!currentCustomer) return;
+            
+            const name = document.getElementById('profile-name').value;
+            const email = document.getElementById('profile-email').value;
+            const phone = document.getElementById('profile-phone').value;
+            const password = document.getElementById('profile-password').value;
+            
+            // Update customer data
+            const customerIndex = customers.findIndex(c => c.id === currentCustomer.id);
+            if (customerIndex !== -1) {
+                customers[customerIndex].name = name;
+                customers[customerIndex].email = email;
+                customers[customerIndex].phone = phone;
+                if (password) {
+                    customers[customerIndex].password = password;
+                }
+                
+                localStorage.setItem('customers', JSON.stringify(customers));
+                currentCustomer = customers[customerIndex];
+                
+                showNotification('Profile updated successfully', 'success');
+            }
+        }
+        
+        function viewBookingDetails(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (booking) {
+                alert(`Booking Details:\n\nPackage: ${booking.package}\nDate: ${booking.date}\nTime: ${booking.time}\nExtra Days: ${booking.extraDays}\nTotal: Rs.${booking.total}\nPayment Status: ${booking.paymentStatus}`);
+            }
+        }
+        
+        function payForBooking(bookingId) {
+            const booking = bookings.find(b => b.id === bookingId);
+            if (booking) {
+                // Mark as paid
+                booking.paymentStatus = 'paid';
+                localStorage.setItem('bookings', JSON.stringify(bookings));
+                
+                // Update customer rewards
+                if (currentCustomer) {
+                    const customerIndex = customers.findIndex(c => c.id === currentCustomer.id);
+                    if (customerIndex !== -1) {
+                        customers[customerIndex].rewardsPoints += Math.floor(booking.total / 100);
+                        localStorage.setItem('customers', JSON.stringify(customers));
+                        currentCustomer = customers[customerIndex];
+                    }
+                }
+                
+                loadCustomerDashboard();
+                showNotification('Payment successful! Rewards points added.', 'success');
+            }
+        }
+        
+        // Admin panel functions
+        function showAdminLogin() {
+            document.getElementById('main-content').style.display = 'none';
+            document.getElementById('admin-login').classList.add('active');
+        }
+        
+        function hideAdminLogin() {
+            document.getElementById('admin-login').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function adminLogin(event) {
+            event.preventDefault();
+            const username = document.getElementById('admin-username').value;
+            const password = document.getElementById('admin-password').value;
+            
+            if (username === 'admin' && password === 'admin123') {
+                document.getElementById('admin-login').classList.remove('active');
+                document.getElementById('admin-dashboard').classList.add('active');
+                loadAdminDashboard();
+            } else {
+                showNotification('Invalid username or password', 'error');
+            }
+        }
+        
+        function logoutAdmin() {
+            document.getElementById('admin-dashboard').classList.remove('active');
+            document.getElementById('main-content').style.display = 'block';
+        }
+        
+        function loadAdminDashboard() {
+            // Update statistics
+            const totalBookings = bookings.length;
+            const paidBookings = bookings.filter(b => b.paymentStatus === 'paid').length;
+            const unpaidBookings = totalBookings - paidBookings;
+            const totalRevenue = bookings.reduce((sum, booking) => {
+                return booking.paymentStatus === 'paid' ? sum + booking.total : sum;
+            }, 0);
+            
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('paid-bookings').textContent = paidBookings;
+            document.getElementById('unpaid-bookings').textContent = unpaidBookings;
+            document.getElementById('total-revenue').textContent = `Rs.${totalRevenue.toLocaleString()}`;
+            
+            // Populate bookings table
+            const tableBody = document.getElementById('bookings-table');
+            tableBody.innerHTML = '';
+            
+            bookings.forEach((booking, index) => {
+                const customer = customers.find(c => c.id === booking.customerId);
+                const row = document.createElement('tr');
+                row.className = 'booking-row border-b';
+                
+                row.innerHTML = `
+                    <td class="py-2">${customer ? customer.name : 'Unknown'}</td>
+                    <td class="py-2">${customer ? customer.phone : 'Unknown'}</td>
+                    <td class="py-2">${booking.package}</td>
+                    <td class="py-2">${booking.date} ${booking.time}</td>
+                    <td class="py-2">${booking.extraDays}</td>
+                    <td class="py-2">Rs.${booking.total}</td>
+                    <td class="py-2">
+                        ${booking.paymentStatus === 'paid' 
+                            ? '<span class="paid-badge">Paid</span>' 
+                            : '<span class="unpaid-badge">Unpaid</span>'}
+                    </td>
+                    <td class="py-2">
+                        ${booking.paymentStatus === 'unpaid' 
+                            ? `<button onclick="markAsPaid(${index})" class="bg-green-500 text-white px-2 py-1 rounded text-sm">Mark as Paid</button>`
+                            : '-'}
+                    </td>
+                `;
+                
+                tableBody.appendChild(row);
+            });
+            
+            // Populate promo codes table
+            const promoTableBody = document.getElementById('promo-codes-table');
+            promoTableBody.innerHTML = '';
+            
+            promoCodes.forEach((promo, index) => {
+                const row = document.createElement('tr');
+                row.className = 'booking-row border-b';
+                
+                row.innerHTML = `
+                    <td class="py-2">${promo.code}</td>
+                    <td class="py-2">${promo.discount}%</td>
+                    <td class="py-2">
+                        <button onclick="removePromoCode(${index})" class="bg-red-500 text-white px-2 py-1 rounded text-sm">Remove</button>
+                    </td>
+                `;
+                
+                promoTableBody.appendChild(row);
+            });
+            
+            // Load charts
+            loadRevenueChart();
+            loadPackageChart();
+        }
+        
+        function markAsPaid(index) {
+            bookings[index].paymentStatus = 'paid';
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            loadAdminDashboard();
+            showNotification('Booking marked as paid', 'success');
+        }
+        
+        function addPromoCode() {
+            const code = document.getElementById('promo-code').value;
+            const discount = parseInt(document.getElementById('promo-discount').value);
+            
+            if (!code || !discount || discount < 1 || discount > 100) {
+                showNotification('Please enter a valid promo code and discount', 'error');
+                return;
+            }
+            
+            promoCodes.push({ code, discount });
+            localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
+            
+            document.getElementById('promo-code').value = '';
+            document.getElementById('promo-discount').value = '';
+            
+            loadAdminDashboard();
+            showNotification('Promo code added successfully', 'success');
+        }
+        
+        function removePromoCode(index) {
+            promoCodes.splice(index, 1);
+            localStorage.setItem('promoCodes', JSON.stringify(promoCodes));
+            loadAdminDashboard();
+            showNotification('Promo code removed', 'success');
+        }
+        
+        function sendNotification() {
+            const message = document.getElementById('notification-message').value;
+            const recipients = document.getElementById('notification-recipients').value;
+            
+            if (!message) {
+                showNotification('Please enter a message', 'error');
+                return;
+            }
+            
+            // In a real application, this would send notifications to the selected recipients
+            // For this demo, we'll just show a success message
+            document.getElementById('notification-message').value = '';
+            showNotification('Notification sent successfully', 'success');
+        }
+        
+        function loadRevenueChart() {
+            const ctx = document.getElementById('revenue-chart').getContext('2d');
+            
+            // Generate sample data for the last 7 days
+            const labels = [];
+            const data = [];
+            const today = new Date();
+            
+            for (let i = 6; i >= 0; i--) {
+                const date = new Date(today);
+                date.setDate(date.getDate() - i);
+                labels.push(date.toLocaleDateString('en-US', { weekday: 'short' }));
+                
+                // Generate random revenue data for demo purposes
+                data.push(Math.floor(Math.random() * 50000) + 10000);
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Revenue (Rs.)',
+                        data,
+                        borderColor: '#667eea',
+                        backgroundColor: 'rgba(102, 126, 234, 0.1)',
+                        tension: 0.3,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+        
+        function loadPackageChart() {
+            const ctx = document.getElementById('package-chart').getContext('2d');
+            
+            // Count bookings by package
+            const packageCounts = {};
+            bookings.forEach(booking => {
+                packageCounts[booking.package] = (packageCounts[booking.package] || 0) + 1;
+            });
+            
+            const labels = Object.keys(packageCounts);
+            const data = Object.values(packageCounts);
+            
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels,
+                    datasets: [{
+                        label: 'Bookings',
+                        data,
+                        backgroundColor: [
+                            '#10b981',
+                            '#3b82f6',
+                            '#f59e0b',
+                            '#ef4444',
+                            '#8b5cf6',
+                            '#ec4899',
+                            '#06b6d4',
+                            '#84cc16'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                precision: 0
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Booking modal functions
+        function openBookingModal(packageName, price) {
+            currentPackage = packageName;
+            currentPrice = price;
+            appliedPromoCode = null;
+            appliedDiscount = 0;
+            
+            document.getElementById('selected-package').value = packageName;
+            document.getElementById('booking-date').value = '';
+            document.getElementById('booking-time').value = '';
+            document.getElementById('extra-days').value = '0';
+            document.getElementById('customer-name').value = currentCustomer ? currentCustomer.name : '';
+            document.getElementById('contact-number').value = currentCustomer ? currentCustomer.phone : '';
+            document.getElementById('promo-code-input').value = '';
+            document.getElementById('referral-code-input').value = '';
+            document.getElementById('promo-status').textContent = '';
+            document.querySelector('input[name="payment-status"][value="unpaid"]').checked = true;
+            
+            calculateTotal();
+            document.getElementById('booking-modal').style.display = 'block';
+        }
+        
+        function closeBookingModal() {
+            document.getElementById('booking-modal').style.display = 'none';
+        }
+        
+        function calculateTotal() {
+            const extraDays = parseInt(document.getElementById('extra-days').value);
+            const extraCost = extraDays * 250;
+            let total = currentPrice + extraCost;
+            
+            // Apply promo code discount if available
+            if (appliedDiscount > 0) {
+                total = total * (1 - appliedDiscount / 100);
+            }
+            
+            document.getElementById('total-amount').textContent = `Rs.${Math.round(total)}`;
+        }
+        
+        function applyPromoCode() {
+            const promoCodeInput = document.getElementById('promo-code-input').value;
+            const promoStatus = document.getElementById('promo-status');
+            
+            if (!promoCodeInput) {
+                promoStatus.textContent = '';
+                return;
+            }
+            
+            const promo = promoCodes.find(p => p.code === promoCodeInput.toUpperCase());
+            
+            if (promo) {
+                appliedPromoCode = promo.code;
+                appliedDiscount = promo.discount;
+                promoStatus.textContent = `Promo code applied! ${promo.discount}% discount`;
+                promoStatus.className = 'text-sm mt-1 text-green-600';
+            } else {
+                appliedPromoCode = null;
+                appliedDiscount = 0;
+                promoStatus.textContent = 'Invalid promo code';
+                promoStatus.className = 'text-sm mt-1 text-red-600';
+            }
+            
+            calculateTotal();
+        }
+        
+        function submitBooking(event) {
+            event.preventDefault();
+            
+            const booking = {
+                id: Date.now(),
+                customerId: currentCustomer ? currentCustomer.id : null,
+                package: currentPackage,
+                date: document.getElementById('booking-date').value,
+                time: document.getElementById('booking-time').value,
+                extraDays: document.getElementById('extra-days').value,
+                name: document.getElementById('customer-name').value,
+                contact: document.getElementById('contact-number').value,
+                paymentStatus: document.querySelector('input[name="payment-status"]:checked').value,
+                promoCode: appliedPromoCode,
+                referralCode: document.getElementById('referral-code-input').value,
+                total: parseInt(document.getElementById('total-amount').textContent.replace('Rs.', '').replace(',', ''))
+            };
+            
+            // Check if referral code is valid
+            if (booking.referralCode) {
+                const referrer = customers.find(c => c.referralCode === booking.referralCode);
+                if (referrer) {
+                    // Add rewards to referrer
+                    const referrerIndex = customers.findIndex(c => c.id === referrer.id);
+                    if (referrerIndex !== -1) {
+                        customers[referrerIndex].rewardsPoints += 50;
+                        localStorage.setItem('customers', JSON.stringify(customers));
+                    }
+                }
+            }
+            
+            // Save booking
+            bookings.push(booking);
+            localStorage.setItem('bookings', JSON.stringify(bookings));
+            
+            // Add booking to customer if logged in
+            if (currentCustomer) {
+                const customerIndex = customers.findIndex(c => c.id === currentCustomer.id);
+                if (customerIndex !== -1) {
+                    customers[customerIndex].bookings.push(booking.id);
+                    localStorage.setItem('customers', JSON.stringify(customers));
+                }
+            }
+            
+            // Send WhatsApp message
+            const message = `Hi, I'd like to book the following package:\n\n` +
+                `Package: ${booking.package}\n` +
+                `Date: ${booking.date}\n` +
+                `Time: ${booking.time}\n` +
+                `Extra Days: ${booking.extraDays}\n` +
+                `Name: ${booking.name}\n` +
+                `Contact: ${booking.contact}\n` +
+                `Payment Status: ${booking.paymentStatus}\n` +
+                `Total Amount: Rs.${booking.total}\n\n` +
+                `Please confirm my booking.`;
+            
+            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            closeBookingModal();
+            showNotification('Booking submitted successfully!', 'success');
+        }
+        
+        // FAQ toggle function
+        function toggleFAQ(element) {
+            const answer = element.nextElementSibling;
+            const icon = element.querySelector('i');
+            
+            answer.classList.toggle('active');
+            
+            if (answer.classList.contains('active')) {
+                icon.classList.remove('fa-chevron-down');
+                icon.classList.add('fa-chevron-up');
+            } else {
+                icon.classList.remove('fa-chevron-up');
+                icon.classList.add('fa-chevron-down');
+            }
+        }
+        
+        // Chat widget function
+        function openWhatsAppChat() {
+            const message = 'Hi, I have a question about your WhatsApp promotion services.';
+            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        // Notification function
+        function showNotification(message, type = 'success') {
+            const notification = document.getElementById('notification');
+            const notificationMessage = document.getElementById('notification-message');
+            
+            notificationMessage.textContent = message;
+            
+            if (type === 'error') {
+                notification.style.backgroundColor = '#ef4444';
+            } else {
+                notification.style.backgroundColor = '#10b981';
+            }
+            
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Initialize with English
+        toggleLanguage('en');
+        
+        // Set minimum date to today
+        document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
+    </script>
+</body>
+</html>
