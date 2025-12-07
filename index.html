@@ -6,6 +6,7 @@
     <title>M&K Promotions - WhatsApp Channel Advertising</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
         
@@ -162,6 +163,192 @@
             border-radius: 12px;
             font-size: 12px;
         }
+        
+        .testimonial-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .faq-item {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            margin-bottom: 10px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 15px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .faq-answer {
+            padding: 0 15px;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .faq-answer.active {
+            max-height: 200px;
+            padding: 0 15px 15px;
+        }
+        
+        .gallery-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            transition: transform 0.3s ease;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.1);
+        }
+        
+        .blog-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+        }
+        
+        .blog-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .comparison-table {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        
+        .comparison-table th,
+        .comparison-table td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .comparison-table th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .comparison-table tr:last-child td {
+            border-bottom: none;
+        }
+        
+        .chat-widget {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+        }
+        
+        .chat-button {
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .chat-button:hover {
+            transform: scale(1.1);
+        }
+        
+        .social-links {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            transform: scale(1.1);
+            background-color: var(--secondary-color);
+        }
+        
+        .promo-input {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .promo-input input {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+        }
+        
+        .referral-code {
+            background-color: #f3f4f6;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            text-align: center;
+            margin-top: 10px;
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background-color: #10b981;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 1001;
+            display: none;
+        }
+        
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+            }
+            to {
+                transform: translateX(0);
+            }
+        }
     </style>
 </head>
 <body>
@@ -177,6 +364,9 @@
                 <button onclick="toggleLanguage('si')" class="lang-btn px-3 py-1 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition" id="si-btn">සිං</button>
                 <button onclick="toggleDarkMode()" class="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">
                     <i class="fas fa-moon" id="dark-mode-icon"></i>
+                </button>
+                <button onclick="showCustomerLogin()" class="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">
+                    <i class="fas fa-user"></i>
                 </button>
                 <button onclick="showAdminLogin()" class="p-2 rounded-full bg-white bg-opacity-20 hover:bg-opacity-30 transition">
                     <i class="fas fa-user-shield"></i>
@@ -266,6 +456,242 @@
                             <span class="sinhala">පූර්ණ දින දෘශ්‍යතාව</span>
                         </p>
                     </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testimonials Section -->
+        <section class="py-12 px-4 bg-gray-50">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Customer Testimonials</span>
+                    <span class="sinhala">පාරිභෝගික සාක්ෂි</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="testimonial-card p-6 rounded-xl shadow-md">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                        </div>
+                        <p class="mb-4">
+                            <span class="english">"Amazing service! My business got 50+ new customers within 24 hours of posting. Highly recommended!"</span>
+                            <span class="sinhala">"අනර්ඝ සේවාවක්! මගේ ව්‍යාපාරයට පළ කිරීමෙන් පැය 24ක් ඇතුළත පාරිභෝගිකයින් 50+ ක් ලැබුණා. අතිශයින් නිර්දේශ කරනවා!"</span>
+                        </p>
+                        <div class="flex items-center">
+                            <img src="https://picsum.photos/seed/user1/40/40.jpg" alt="User" class="rounded-full mr-3">
+                            <div>
+                                <h4 class="font-semibold">John Smith</h4>
+                                <p class="text-sm text-gray-600">
+                                    <span class="english">Business Owner</span>
+                                    <span class="sinhala">ව්‍යාපාරිකයා</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card p-6 rounded-xl shadow-md">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                        </div>
+                        <p class="mb-4">
+                            <span class="english">"Best promotion service in Sri Lanka. The team is very professional and delivers results quickly."</span>
+                            <span class="sinhala">"ශ්‍රී ලංකාවේ හොඳම ප්‍රචාරණ සේවාව. කණ්ඩායම ඉතා වෘත්තීය වන අතර ප්‍රතිඵල ඉක්මනින් ලබා දෙයි."</span>
+                        </p>
+                        <div class="flex items-center">
+                            <img src="https://picsum.photos/seed/user2/40/40.jpg" alt="User" class="rounded-full mr-3">
+                            <div>
+                                <h4 class="font-semibold">Sarah Johnson</h4>
+                                <p class="text-sm text-gray-600">
+                                    <span class="english">Marketing Manager</span>
+                                    <span class="sinhala">අලෙවිකරණ කළමනාකරු</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="testimonial-card p-6 rounded-xl shadow-md">
+                        <div class="flex items-center mb-4">
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                            <i class="fas fa-star text-yellow-400"></i>
+                        </div>
+                        <p class="mb-4">
+                            <span class="english">"I've tried many promotion services, but M&K Promotions is by far the best. Great value for money!"</span>
+                            <span class="sinhala">"මම බොහෝ ප්‍රචාරණ සේවා උත්සාහ කළා, නමුත් M&K ප්‍රචාරණ ඉතා හොඳයි. මුදලට සාධාරණ අගයක්!"</span>
+                        </p>
+                        <div class="flex items-center">
+                            <img src="https://picsum.photos/seed/user3/40/40.jpg" alt="User" class="rounded-full mr-3">
+                            <div>
+                                <h4 class="font-semibold">David Wilson</h4>
+                                <p class="text-sm text-gray-600">
+                                    <span class="english">Entrepreneur</span>
+                                    <span class="sinhala">ව්‍යවසායකයා</span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Frequently Asked Questions</span>
+                    <span class="sinhala">නිතර අසන ප්‍රශ්න</span>
+                </h2>
+                <div class="max-w-3xl mx-auto">
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>
+                                <span class="english">How long does it take for my ad to be posted?</span>
+                                <span class="sinhala">මගේ දැන්වීම පළ කිරීමට කොපමණ කාලයක් ගතවේද?</span>
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                <span class="english">Once you complete the booking and payment, your ad will be posted within 1-2 hours during business hours (9 AM - 9 PM).</span>
+                                <span class="sinhala">ඔබ වෙන්කිරීම සහ ගෙවීම සම්පූර්ණ කළ පසු, ඔබගේ දැන්වීම ව්‍යාපාර පැයවල් තුළ (පෙ.ව. 9 - ප.ව. 9) පැය 1-2 ක් ඇතුළත පළ කෙරේ.</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>
+                                <span class="english">Can I choose which channels my ad appears on?</span>
+                                <span class="sinhala">මගේ දැන්වීම කුමන නාලිකාවල පෙන්වන්නේද යන්න මට තෝරාගත හැකිද?</span>
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                <span class="english">Yes, each package specifies which channels your ad will appear on. You can choose packages based on your target audience.</span>
+                                <span class="sinhala">ඔව්, සෑම පැකේජයක්ම ඔබගේ දැන්වීම කුමන නාලිකාවල පෙන්වනු ඇතිද යන්න විශේෂයෙන් සඳහන් කරයි. ඔබට ඔබගේ ඉලක්ක ප්‍රේක්ෂකයින් මත පදනම්ව පැකේජ තෝරාගත හැකිය.</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>
+                                <span class="english">What payment methods do you accept?</span>
+                                <span class="sinhala">ඔබ කුමන ගෙවීම් ක්‍රම පිළිගන්නවාද?</span>
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                <span class="english">We accept bank transfers to our Commercial Bank and People's Bank accounts. Details are provided in the Bank Details section.</span>
+                                <span class="sinhala">අපි අපගේ වාණිජ බැංකුව සහ ජනතා බැංකුව ගිණුම්වලට බැංකු හුවමාරු පිළිගනිමු. විස්තර බැංකු විස්තර අංශයේ සපයා ඇත.</span>
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="faq-item">
+                        <div class="faq-question" onclick="toggleFAQ(this)">
+                            <span>
+                                <span class="english">Can I get a refund if I'm not satisfied?</span>
+                                <span class="sinhala">මම තෘප්තිමත් නොවුනහොත් මට මුදල් ආපසු ලබා ගත හැකිද?</span>
+                            </span>
+                            <i class="fas fa-chevron-down"></i>
+                        </div>
+                        <div class="faq-answer">
+                            <p>
+                                <span class="english">We offer a 100% satisfaction guarantee. If you're not happy with the results, we'll repost your ad for free or provide a full refund.</span>
+                                <span class="sinhala">අපි 100% තෘප්තිය සහතිකයක් ලබා දෙමු. ඔබ ප්‍රතිඵලවලින් තෘප්තිමත් නොවුනහොත්, අපි ඔබගේ දැන්වීම නොමිලේ නැවත පළ කරන්නෙමු හෝ සම්පූර්ණ මුදල් ආපසු ලබා දෙමු.</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Package Comparison -->
+        <section class="py-12 px-4 bg-gray-50">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Package Comparison</span>
+                    <span class="sinhala">පැකේජ සසඳන්න</span>
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="comparison-table w-full">
+                        <thead>
+                            <tr>
+                                <th>
+                                    <span class="english">Features</span>
+                                    <span class="sinhala">විශේෂාංග</span>
+                                </th>
+                                <th>Basic</th>
+                                <th>Standard</th>
+                                <th>Premium</th>
+                                <th>All In One</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <span class="english">Price</span>
+                                    <span class="sinhala">මිල</span>
+                                </td>
+                                <td>Rs.500</td>
+                                <td>Rs.1,000</td>
+                                <td>Rs.2,500</td>
+                                <td>Rs.6,000</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="english">Total Reach</span>
+                                    <span class="sinhala">මුළු ළඟාවීම</span>
+                                </td>
+                                <td>9K+</td>
+                                <td>40K+</td>
+                                <td>82K+</td>
+                                <td>129K+</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="english">Channels</span>
+                                    <span class="sinhala">නාලිකා</span>
+                                </td>
+                                <td>3</td>
+                                <td>2</td>
+                                <td>1</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="english">Video Edit</span>
+                                    <span class="sinhala">වීඩියෝ සංස්කරණය</span>
+                                </td>
+                                <td><i class="fas fa-times text-red-500"></i></td>
+                                <td><i class="fas fa-times text-red-500"></i></td>
+                                <td><i class="fas fa-check text-green-500"></i></td>
+                                <td><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <span class="english">Permanent Post</span>
+                                    <span class="sinhala">ස්ථිර පෝස්ට් එක</span>
+                                </td>
+                                <td><i class="fas fa-times text-red-500"></i></td>
+                                <td><i class="fas fa-times text-red-500"></i></td>
+                                <td><i class="fas fa-check text-green-500"></i></td>
+                                <td><i class="fas fa-check text-green-500"></i></td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </section>
@@ -578,6 +1004,107 @@
             </div>
         </section>
 
+        <!-- Gallery Section -->
+        <section class="py-12 px-4 bg-gray-50">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Our Work Gallery</span>
+                    <span class="sinhala">අපගේ වැඩ ගැලරිය</span>
+                </h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery1/300/300.jpg" alt="Gallery 1" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery2/300/300.jpg" alt="Gallery 2" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery3/300/300.jpg" alt="Gallery 3" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery4/300/300.jpg" alt="Gallery 4" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery5/300/300.jpg" alt="Gallery 5" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery6/300/300.jpg" alt="Gallery 6" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery7/300/300.jpg" alt="Gallery 7" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                    <div class="gallery-item">
+                        <img src="https://picsum.photos/seed/gallery8/300/300.jpg" alt="Gallery 8" class="w-full h-full object-cover rounded-lg">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Section -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center mb-10">
+                    <span class="english">Latest News & Tips</span>
+                    <span class="sinhala">නවතම පුවත් සහ ඉඟි</span>
+                </h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="blog-card rounded-xl shadow-md overflow-hidden">
+                        <img src="https://picsum.photos/seed/blog1/400/200.jpg" alt="Blog 1" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="font-semibold text-lg mb-2">
+                                <span class="english">5 Tips for Effective WhatsApp Marketing</span>
+                                <span class="sinhala">ඵලදායී වට්සැප් අලෙවිකරණය සඳහා ඉඟි 5ක්</span>
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                <span class="english">Learn how to maximize your reach on WhatsApp with these proven strategies.</span>
+                                <span class="sinhala">මේ සාක්ෂාත්කාරී උපාය මාර්ග සමඟ වට්සැප් හි ඔබගේ ළඟාවීම උපරිම කරගන්නේ කෙසේද ඉගෙනගන්න.</span>
+                            </p>
+                            <button class="text-purple-600 font-semibold">
+                                <span class="english">Read More</span>
+                                <span class="sinhala">තව කියවන්න</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-card rounded-xl shadow-md overflow-hidden">
+                        <img src="https://picsum.photos/seed/blog2/400/200.jpg" alt="Blog 2" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="font-semibold text-lg mb-2">
+                                <span class="english">The Future of Digital Advertising</span>
+                                <span class="sinhala">ඩිජිටල් දැන්වීම් වල අනාගතය</span>
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                <span class="english">Discover the latest trends shaping the future of digital advertising.</span>
+                                <span class="sinhala">ඩිජිටල් දැන්වීම් අනාගතය සැකසෙන නවතම ප්‍රවණතා සොයාගන්න.</span>
+                            </p>
+                            <button class="text-purple-600 font-semibold">
+                                <span class="english">Read More</span>
+                                <span class="sinhala">තව කියවන්න</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="blog-card rounded-xl shadow-md overflow-hidden">
+                        <img src="https://picsum.photos/seed/blog3/400/200.jpg" alt="Blog 3" class="w-full h-48 object-cover">
+                        <div class="p-5">
+                            <h3 class="font-semibold text-lg mb-2">
+                                <span class="english">Success Stories from Our Clients</span>
+                                <span class="sinhala">අපගේ පාරිභෝගිකයින්ගෙන් සාර්ථකත්ව කථා</span>
+                            </h3>
+                            <p class="text-gray-600 mb-4">
+                                <span class="english">Real stories from businesses that grew with our promotion services.</span>
+                                <span class="sinhala">අපගේ ප්‍රචාරණ සේවා සමඟ වර්ධනය වූ ව්‍යාපාරවලින් සැබෑ කථා.</span>
+                            </p>
+                            <button class="text-purple-600 font-semibold">
+                                <span class="english">Read More</span>
+                                <span class="sinhala">තව කියවන්න</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Additional Information -->
         <section class="py-12 px-4">
             <div class="container mx-auto">
@@ -825,11 +1352,11 @@
                 
                 <div class="mt-8 text-center">
                     <p class="text-gray-600 mb-2">
-                        <span class="english">Owner by Malindu Nethmina</span>
+                        <span class="english">Owner by Malindu Nethmitha</span>
                         <span class="sinhala">මලින්දු නෙත්මිත විසින් හිමිකරගෙන ඇත</span>
                     </p>
                     <p class="text-gray-600">
-                        <span class="english">Promotion admin by D.M.Kaawya</span>
+                        <span class="english">Promotion admin by D.M. Kaawya</span>
                         <span class="sinhala">ප්‍රචාරණ පරිපාලක D.M. කාව්යා</span>
                     </p>
                 </div>
@@ -847,456 +1374,81 @@
                     <p class="text-lg">0775048455</p>
                     <p class="text-lg">dmkaawya@gmail.com</p>
                 </div>
-                <div class="flex justify-center space-x-4 mb-4">
-                    <a href="https://wa.me/94775048455" target="_blank" class="text-white hover:text-green-200 transition">
-                        <i class="fab fa-whatsapp text-2xl"></i>
+                <div class="social-links">
+                    <a href="https://wa.me/94775048455" target="_blank">
+                        <i class="fab fa-whatsapp"></i>
+                    </a>
+                    <a href="https://facebook.com" target="_blank">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                    <a href="https://instagram.com" target="_blank">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="https://twitter.com" target="_blank">
+                        <i class="fab fa-twitter"></i>
                     </a>
                 </div>
-                <p class="text-sm opacity-75">
-                    <span class="english">© 2026 M&K Promotions. All rights reserved.</span>
-                    <span class="sinhala">© 2026 M&K ප්‍රචාරණ. සියලු හිමිකම් ඇවිරිණි.</span>
+                <p class="text-sm opacity-75 mt-4">
+                    <span class="english">© 2023 M&K Promotions. All rights reserved.</span>
+                    <span class="sinhala">© 2023 M&K ප්‍රචාරණ. සියලු හිමිකම් ඇවිරිණි.</span>
                 </p>
             </div>
         </footer>
     </div>
 
-    <!-- Admin Login Form -->
-    <div id="admin-login" class="admin-panel">
+    <!-- Customer Login Form -->
+    <div id="customer-login" class="admin-panel">
         <div class="login-form">
             <h2 class="text-2xl font-bold text-center mb-6">
-                <span class="english">Admin Login</span>
-                <span class="sinhala">පරිපාලක පිවිසුම</span>
+                <span class="english">Customer Login</span>
+                <span class="sinhala">පාරිභෝගික පිවිසුම</span>
             </h2>
-            <form onsubmit="adminLogin(event)">
+            <form onsubmit="customerLogin(event)">
                 <div class="mb-4">
                     <label class="block text-gray-700 mb-2">
-                        <span class="english">Username</span>
-                        <span class="sinhala">පරිශීලක නාමය</span>
+                        <span class="english">Email or Phone</span>
+                        <span class="sinhala">විද්‍යුත් තැපැල් හෝ දුරකථන</span>
                     </label>
-                    <input type="text" id="admin-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    <input type="text" id="customer-username" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                 </div>
                 <div class="mb-6">
                     <label class="block text-gray-700 mb-2">
                         <span class="english">Password</span>
                         <span class="sinhala">මුරපදය</span>
                     </label>
-                    <input type="password" id="admin-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
+                    <input type="password" id="customer-password" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
                 </div>
                 <button type="submit" class="w-full whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
                     <span class="english">Login</span>
                     <span class="sinhala">පිවිසෙන්න</span>
                 </button>
-                <button type="button" onclick="hideAdminLogin()" class="w-full mt-2 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
+                <button type="button" onclick="hideCustomerLogin()" class="w-full mt-2 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
                     <span class="english">Cancel</span>
                     <span class="sinhala">අවලංගු කරන්න</span>
                 </button>
+                <p class="text-center mt-4 text-sm">
+                    <span class="english">Don't have an account?</span>
+                    <span class="sinhala">ගිණුමක් නැද්ද?</span>
+                    <a href="#" onclick="showCustomerRegister()" class="text-purple-600">
+                        <span class="english">Register here</span>
+                        <span class="sinhala">ලියාපදිංචි වන්න</span>
+                    </a>
+                </p>
             </form>
         </div>
     </div>
 
-    <!-- Admin Dashboard -->
-    <div id="admin-dashboard" class="admin-panel">
-        <div class="container mx-auto py-8 px-4">
-            <div class="flex justify-between items-center mb-8">
-                <h2 class="text-2xl font-bold">
-                    <span class="english">Admin Dashboard</span>
-                    <span class="sinhala">පරිපාලක පැනලය</span>
-                </h2>
-                <button onclick="logoutAdmin()" class="bg-red-500 text-white px-4 py-2 rounded-lg">
-                    <span class="english">Logout</span>
-                    <span class="sinhala">නික්මෙන්න</span>
-                </button>
-            </div>
-            
-            <div class="booking-form rounded-xl p-6 mb-8">
-                <h3 class="text-xl font-semibold mb-4">
-                    <span class="english">Booking Statistics</span>
-                    <span class="sinhala">වෙන්කිරීම් සංඛ්‍යාලේඛන</span>
-                </h3>
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div class="bg-blue-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-blue-800">
-                            <span class="english">Total Bookings</span>
-                            <span class="sinhala">මුළු වෙන්කිරීම්</span>
-                        </h4>
-                        <p class="text-2xl font-bold text-blue-600" id="total-bookings">0</p>
-                    </div>
-                    <div class="bg-green-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-green-800">
-                            <span class="english">Paid Bookings</span>
-                            <span class="sinhala">ගෙවූ වෙන්කිරීම්</span>
-                        </h4>
-                        <p class="text-2xl font-bold text-green-600" id="paid-bookings">0</p>
-                    </div>
-                    <div class="bg-red-100 p-4 rounded-lg">
-                        <h4 class="font-semibold text-red-800">
-                            <span class="english">Unpaid Bookings</span>
-                            <span class="sinhala">ගෙවීමට ඇති වෙන්කිරීම්</span>
-                        </h4>
-                        <p class="text-2xl font-bold text-red-600" id="unpaid-bookings">0</p>
-                    </div>
-                </div>
-            </div>
-            
-            <div class="booking-form rounded-xl p-6">
-                <h3 class="text-xl font-semibold mb-4">
-                    <span class="english">All Bookings</span>
-                    <span class="sinhala">සියලුම වෙන්කිරීම්</span>
-                </h3>
-                <div class="overflow-x-auto">
-                    <table class="w-full">
-                        <thead>
-                            <tr class="border-b">
-                                <th class="text-left py-2">
-                                    <span class="english">Name</span>
-                                    <span class="sinhala">නම</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Contact</span>
-                                    <span class="sinhala">අමතන්න</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Package</span>
-                                    <span class="sinhala">පැකේජය</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Date & Time</span>
-                                    <span class="sinhala">දිනය සහ වේලාව</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Extra Days</span>
-                                    <span class="sinhala">අමතර දින</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Total</span>
-                                    <span class="sinhala">මුළු</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Status</span>
-                                    <span class="sinhala">තත්වය</span>
-                                </th>
-                                <th class="text-left py-2">
-                                    <span class="english">Actions</span>
-                                    <span class="sinhala">ක්‍රියා</span>
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody id="bookings-table">
-                            <!-- Bookings will be populated here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Booking Modal -->
-    <div id="booking-modal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeBookingModal()">&times;</span>
-            <h2 class="text-2xl font-bold mb-6">
-                <span class="english">Book Your Package</span>
-                <span class="sinhala">ඔබගේ පැකේජය වෙන්කර ගන්න</span>
+    <!-- Customer Register Form -->
+    <div id="customer-register" class="admin-panel">
+        <div class="login-form">
+            <h2 class="text-2xl font-bold text-center mb-6">
+                <span class="english">Customer Registration</span>
+                <span class="sinhala">පාරිභෝගික ලියාපදිංචිය</span>
             </h2>
-            <form onsubmit="submitBooking(event)">
+            <form onsubmit="customerRegister(event)">
                 <div class="mb-4">
                     <label class="block text-gray-700 mb-2">
-                        <span class="english">Selected Package</span>
-                        <span class="sinhala">තෝරාගත් පැකේජය</span>
+                        <span class="english">Full Name</span>
+                        <span class="sinhala">සම්පූර්ණ නම</span>
                     </label>
-                    <input type="text" id="selected-package" class="w-full px-3 py-2 border rounded-lg bg-gray-100" readonly>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">
-                            <span class="english">Booking Date</span>
-                            <span class="sinhala">වෙන්කිරීම් දිනය</span>
-                        </label>
-                        <input type="date" id="booking-date" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">
-                            <span class="english">Booking Time</span>
-                            <span class="sinhala">වෙන්කිරීම් වේලාව</span>
-                        </label>
-                        <input type="time" id="booking-time" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
-                    </div>
-                </div>
-                
-                <div class="mb-4">
-                    <label class="block text-gray-700 mb-2">
-                        <span class="english">Extra Days</span>
-                        <span class="sinhala">අමතර දින</span>
-                    </label>
-                    <select id="extra-days" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" onchange="calculateTotal()">
-                        <option value="0">
-                            <span class="english">No Extra Days</span>
-                            <span class="sinhala">අමතර දින නැත</span>
-                        </option>
-                        <option value="1">
-                            <span class="english">1 Day (+Rs.250)</span>
-                            <span class="sinhala">1 දිනය (+රු.250)</span>
-                        </option>
-                        <option value="2">
-                            <span class="english">2 Days (+Rs.500)</span>
-                            <span class="sinhala">2 දින (+රු.500)</span>
-                        </option>
-                    </select>
-                </div>
-                
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                    <div>
-                        <label class="block text-gray-700 mb-2">
-                            <span class="english">Your Name</span>
-                            <span class="sinhala">ඔබගේ නම</span>
-                        </label>
-                        <input type="text" id="customer-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
-                    </div>
-                    <div>
-                        <label class="block text-gray-700 mb-2">
-                            <span class="english">Contact Number</span>
-                            <span class="sinhala">අමතන අංකය</span>
-                        </label>
-                        <input type="tel" id="contact-number" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
-                    </div>
-                </div>
-                
-                <div class="mb-6">
-                    <label class="block text-gray-700 mb-2">
-                        <span class="english">Payment Status</span>
-                        <span class="sinhala">ගෙවීම් තත්වය</span>
-                    </label>
-                    <div class="flex space-x-4">
-                        <label class="flex items-center">
-                            <input type="radio" name="payment-status" value="paid" class="mr-2">
-                            <span class="english">Paid</span>
-                            <span class="sinhala">ගෙවා ඇත</span>
-                        </label>
-                        <label class="flex items-center">
-                            <input type="radio" name="payment-status" value="unpaid" class="mr-2" checked>
-                            <span class="english">Will Pay Later</span>
-                            <span class="sinhala">පසුව ගෙවන්න</span>
-                        </label>
-                    </div>
-                </div>
-                
-                <div class="mb-6 p-4 bg-gray-100 rounded-lg">
-                    <h3 class="font-semibold mb-2">
-                        <span class="english">Total Amount</span>
-                        <span class="sinhala">මුළු මුදල</span>
-                    </h3>
-                    <p class="text-2xl font-bold text-purple-600" id="total-amount">Rs.0</p>
-                </div>
-                
-                <div class="flex space-x-4">
-                    <button type="submit" class="flex-1 whatsapp-btn text-white font-bold py-2 px-4 rounded-lg">
-                        <span class="english">Confirm Booking</span>
-                        <span class="sinhala">වෙන්කිරීම තහවුරු කරන්න</span>
-                    </button>
-                    <button type="button" onclick="closeBookingModal()" class="flex-1 bg-gray-500 text-white font-bold py-2 px-4 rounded-lg">
-                        <span class="english">Cancel</span>
-                        <span class="sinhala">අවලංගු කරන්න</span>
-                    </button>
-                </div>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        // Initialize variables
-        let currentPackage = '';
-        let currentPrice = 0;
-        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
-        
-        // Language toggle functionality
-        function toggleLanguage(lang) {
-            const englishElements = document.querySelectorAll('.english');
-            const sinhalaElements = document.querySelectorAll('.sinhala');
-            const enBtn = document.getElementById('en-btn');
-            const siBtn = document.getElementById('si-btn');
-            
-            if (lang === 'en') {
-                englishElements.forEach(el => el.classList.add('lang-active'));
-                sinhalaElements.forEach(el => el.classList.remove('lang-active'));
-                enBtn.classList.add('bg-white', 'text-purple-600');
-                enBtn.classList.remove('bg-opacity-20');
-                siBtn.classList.remove('bg-white', 'text-purple-600');
-                siBtn.classList.add('bg-opacity-20');
-            } else {
-                englishElements.forEach(el => el.classList.remove('lang-active'));
-                sinhalaElements.forEach(el => el.classList.add('lang-active'));
-                siBtn.classList.add('bg-white', 'text-purple-600');
-                siBtn.classList.remove('bg-opacity-20');
-                enBtn.classList.remove('bg-white', 'text-purple-600');
-                enBtn.classList.add('bg-opacity-20');
-            }
-        }
-        
-        // Dark mode toggle
-        function toggleDarkMode() {
-            const body = document.body;
-            const icon = document.getElementById('dark-mode-icon');
-            
-            if (body.getAttribute('data-theme') === 'dark') {
-                body.removeAttribute('data-theme');
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            } else {
-                body.setAttribute('data-theme', 'dark');
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            }
-        }
-        
-        // Admin panel functions
-        function showAdminLogin() {
-            document.getElementById('main-content').style.display = 'none';
-            document.getElementById('admin-login').classList.add('active');
-        }
-        
-        function hideAdminLogin() {
-            document.getElementById('admin-login').classList.remove('active');
-            document.getElementById('main-content').style.display = 'block';
-        }
-        
-        function adminLogin(event) {
-            event.preventDefault();
-            const username = document.getElementById('admin-username').value;
-            const password = document.getElementById('admin-password').value;
-            
-            if (username === 'admin' && password === 'admin123') {
-                document.getElementById('admin-login').classList.remove('active');
-                document.getElementById('admin-dashboard').classList.add('active');
-                loadAdminDashboard();
-            } else {
-                alert('Invalid username or password');
-            }
-        }
-        
-        function logoutAdmin() {
-            document.getElementById('admin-dashboard').classList.remove('active');
-            document.getElementById('main-content').style.display = 'block';
-        }
-        
-        function loadAdminDashboard() {
-            // Update statistics
-            const totalBookings = bookings.length;
-            const paidBookings = bookings.filter(b => b.paymentStatus === 'paid').length;
-            const unpaidBookings = totalBookings - paidBookings;
-            
-            document.getElementById('total-bookings').textContent = totalBookings;
-            document.getElementById('paid-bookings').textContent = paidBookings;
-            document.getElementById('unpaid-bookings').textContent = unpaidBookings;
-            
-            // Populate bookings table
-            const tableBody = document.getElementById('bookings-table');
-            tableBody.innerHTML = '';
-            
-            bookings.forEach((booking, index) => {
-                const row = document.createElement('tr');
-                row.className = 'booking-row border-b';
-                
-                row.innerHTML = `
-                    <td class="py-2">${booking.name}</td>
-                    <td class="py-2">${booking.contact}</td>
-                    <td class="py-2">${booking.package}</td>
-                    <td class="py-2">${booking.date} ${booking.time}</td>
-                    <td class="py-2">${booking.extraDays}</td>
-                    <td class="py-2">Rs.${booking.total}</td>
-                    <td class="py-2">
-                        ${booking.paymentStatus === 'paid' 
-                            ? '<span class="paid-badge">Paid</span>' 
-                            : '<span class="unpaid-badge">Unpaid</span>'}
-                    </td>
-                    <td class="py-2">
-                        ${booking.paymentStatus === 'unpaid' 
-                            ? `<button onclick="markAsPaid(${index})" class="bg-green-500 text-white px-2 py-1 rounded text-sm">Mark as Paid</button>`
-                            : '-'}
-                    </td>
-                `;
-                
-                tableBody.appendChild(row);
-            });
-        }
-        
-        function markAsPaid(index) {
-            bookings[index].paymentStatus = 'paid';
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            loadAdminDashboard();
-        }
-        
-        // Booking modal functions
-        function openBookingModal(packageName, price) {
-            currentPackage = packageName;
-            currentPrice = price;
-            
-            document.getElementById('selected-package').value = packageName;
-            document.getElementById('booking-date').value = '';
-            document.getElementById('booking-time').value = '';
-            document.getElementById('extra-days').value = '0';
-            document.getElementById('customer-name').value = '';
-            document.getElementById('contact-number').value = '';
-            document.querySelector('input[name="payment-status"][value="unpaid"]').checked = true;
-            
-            calculateTotal();
-            document.getElementById('booking-modal').style.display = 'block';
-        }
-        
-        function closeBookingModal() {
-            document.getElementById('booking-modal').style.display = 'none';
-        }
-        
-        function calculateTotal() {
-            const extraDays = parseInt(document.getElementById('extra-days').value);
-            const extraCost = extraDays * 250;
-            const total = currentPrice + extraCost;
-            
-            document.getElementById('total-amount').textContent = `Rs.${total}`;
-        }
-        
-        function submitBooking(event) {
-            event.preventDefault();
-            
-            const booking = {
-                id: Date.now(),
-                package: currentPackage,
-                date: document.getElementById('booking-date').value,
-                time: document.getElementById('booking-time').value,
-                extraDays: document.getElementById('extra-days').value,
-                name: document.getElementById('customer-name').value,
-                contact: document.getElementById('contact-number').value,
-                paymentStatus: document.querySelector('input[name="payment-status"]:checked').value,
-                total: currentPrice + (parseInt(document.getElementById('extra-days').value) * 250)
-            };
-            
-            // Save booking
-            bookings.push(booking);
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            
-            // Send WhatsApp message
-            const message = `Hi, I'd like to book the following package:\n\n` +
-                `Package: ${booking.package}\n` +
-                `Date: ${booking.date}\n` +
-                `Time: ${booking.time}\n` +
-                `Extra Days: ${booking.extraDays}\n` +
-                `Name: ${booking.name}\n` +
-                `Contact: ${booking.contact}\n` +
-                `Payment Status: ${booking.paymentStatus}\n` +
-                `Total Amount: Rs.${booking.total}\n\n` +
-                `Please confirm my booking.`;
-            
-            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            closeBookingModal();
-        }
-        
-        // Initialize with English
-        toggleLanguage('en');
-        
-        // Set minimum date to today
-        document.getElementById('booking-date').min = new Date().toISOString().split('T')[0];
-    </script>
-</body>
-</html>
+                    <input type="text" id="register-name" class="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600" required>
