@@ -3,20 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M&K Promotions - WhatsApp Channel Advertising</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>MK Boost - Social Media Promotion</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4F46E5;
-            --secondary-color: #10B981;
-            --accent-color: #F59E0B;
-            --dark-bg: #1F2937;
-            --dark-card: #374151;
-            --dark-text: #F9FAFB;
-            --light-bg: #F3F4F6;
-            --light-card: #FFFFFF;
-            --light-text: #1F2937;
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --accent-color: #ec4899;
+            --dark-color: #1e293b;
+            --light-color: #f8fafc;
+            --card-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
         }
 
         * {
@@ -26,1014 +23,530 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--light-bg);
-            color: var(--light-text);
-            transition: all 0.3s ease;
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--light-color);
+            color: var(--dark-color);
+            line-height: 1.6;
         }
 
-        body.dark-mode {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        body.dark-mode .card {
-            background-color: var(--dark-card);
-            color: var(--dark-text);
-        }
-
-        body.dark-mode .navbar {
-            background-color: var(--dark-card) !important;
-        }
-
-        body.dark-mode .form-control, 
-        body.dark-mode .form-select {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-            border-color: #4B5563;
-        }
-
-        body.dark-mode .form-control:focus, 
-        body.dark-mode .form-select:focus {
-            background-color: var(--dark-bg);
-            color: var(--dark-text);
-            border-color: var(--primary-color);
-        }
-
-        body.dark-mode .table {
-            color: var(--dark-text);
-        }
-
-        body.dark-mode .table-striped > tbody > tr:nth-of-type(odd) > * {
-            background-color: rgba(55, 65, 81, 0.5);
-        }
-
-        .navbar {
-            background-color: var(--light-card);
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar-brand {
-            font-weight: 700;
-            color: var(--primary-color) !important;
-        }
-
-        .hero-section {
+        header {
             background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
             color: white;
-            padding: 60px 0;
+            padding: 2rem 0;
             text-align: center;
+            box-shadow: var(--card-shadow);
         }
 
-        .hero-section h1 {
-            font-weight: 800;
-            margin-bottom: 20px;
+        header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
         }
 
-        .section-title {
-            font-weight: 700;
-            margin-bottom: 30px;
-            position: relative;
-            display: inline-block;
+        header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
         }
 
-        .section-title::after {
-            content: '';
-            position: absolute;
-            bottom: -10px;
-            left: 0;
-            width: 50px;
-            height: 4px;
-            background-color: var(--primary-color);
-        }
-
-        .package-card {
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-bottom: 25px;
-            height: 100%;
-        }
-
-        .package-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .package-header {
-            padding: 15px;
-            color: white;
-            font-weight: 700;
-            text-align: center;
-        }
-
-        .basic-header { background-color: #3B82F6; }
-        .standard-header { background-color: #8B5CF6; }
-        .special-header { background-color: #EC4899; }
-        .dual-header { background-color: #F59E0B; }
-        .premium-header { background-color: #EF4444; }
-        .all-in-header { background-color: #10B981; }
-
-        .package-body {
-            padding: 20px;
-        }
-
-        .package-price {
-            font-size: 28px;
-            font-weight: 800;
-            color: var(--primary-color);
-            margin-bottom: 15px;
-        }
-
-        .package-duration {
-            font-size: 14px;
-            color: #6B7280;
-            margin-bottom: 20px;
-        }
-
-        .package-features {
-            list-style: none;
-            margin-bottom: 20px;
-        }
-
-        .package-features li {
-            padding: 8px 0;
-            border-bottom: 1px solid #E5E7EB;
-        }
-
-        .package-features li:last-child {
-            border-bottom: none;
-        }
-
-        .package-features li i {
-            color: var(--secondary-color);
-            margin-right: 10px;
-        }
-
-        .btn-book {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-weight: 600;
-            width: 100%;
-            transition: background-color 0.3s ease;
-        }
-
-        .btn-book:hover {
-            background-color: #4338CA;
-            color: white;
-        }
-
-        .booking-section {
-            background-color: var(--light-card);
-            padding: 50px 0;
-            border-radius: 12px;
-            margin: 30px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .form-control, .form-select {
-            border-radius: 8px;
-            border: 1px solid #D1D5DB;
-            padding: 12px;
-        }
-
-        .form-control:focus, .form-select:focus {
-            border-color: var(--primary-color);
-            box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.25);
-        }
-
-        .theme-toggle {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background-color: var(--primary-color);
-            color: white;
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+        .package-toggle {
             display: flex;
-            align-items: center;
             justify-content: center;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            margin: 2rem 0;
+            gap: 1rem;
+        }
+
+        .toggle-btn {
+            padding: 0.75rem 1.5rem;
+            background: white;
+            border: 2px solid var(--primary-color);
+            color: var(--primary-color);
+            border-radius: 50px;
             cursor: pointer;
-            z-index: 1000;
+            font-weight: 600;
             transition: all 0.3s ease;
         }
 
-        .theme-toggle:hover {
-            background-color: #4338CA;
-            transform: scale(1.1);
+        .toggle-btn.active {
+            background: var(--primary-color);
+            color: white;
         }
 
-        .admin-panel {
+        .package-section {
             display: none;
-            padding: 30px 0;
         }
 
-        .admin-panel.active {
+        .package-section.active {
             display: block;
         }
 
-        .footer {
-            background-color: var(--dark-bg);
-            color: white;
-            padding: 40px 0 20px;
-            margin-top: 50px;
+        .packages {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
         }
 
-        .footer h5 {
+        .package-card {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--card-shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+        }
+
+        .package-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+
+        .package-card.featured {
+            border: 2px solid var(--accent-color);
+        }
+
+        .package-card.featured::before {
+            content: "MOST POPULAR";
+            position: absolute;
+            top: 15px;
+            right: -30px;
+            background: var(--accent-color);
+            color: white;
+            padding: 5px 40px;
+            transform: rotate(45deg);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .package-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .package-card.featured .package-header {
+            background: linear-gradient(135deg, var(--accent-color), var(--secondary-color));
+        }
+
+        .package-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-price {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .package-duration {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .package-details {
+            padding: 1.5rem;
+        }
+
+        .package-details h3 {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+        }
+
+        .package-details ul {
+            list-style-type: none;
+        }
+
+        .package-details li {
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .package-details li i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .package-card.featured .package-details li i {
             color: var(--accent-color);
-            margin-bottom: 20px;
         }
 
-        .footer a {
-            color: #D1D5DB;
+        .package-cta {
+            padding: 0 1.5rem 1.5rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            padding: 0.75rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            text-align: center;
             text-decoration: none;
-            transition: color 0.3s ease;
         }
 
-        .footer a:hover {
-            color: white;
+        .package-card.featured .btn {
+            background: var(--accent-color);
         }
 
-        .whatsapp-float {
-            position: fixed;
-            bottom: 80px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background-color: #25D366;
-            color: white;
-            border-radius: 50%;
+        .btn:hover {
+            background: var(--secondary-color);
+        }
+
+        .package-card.featured .btn:hover {
+            background: #db2777;
+        }
+
+        .best-results {
+            background: rgba(99, 102, 241, 0.1);
+            border-left: 4px solid var(--primary-color);
+            padding: 0.75rem 1rem;
+            margin-top: 1rem;
+            border-radius: 0 8px 8px 0;
+            font-weight: 500;
             display: flex;
             align-items: center;
+        }
+
+        .best-results i {
+            color: var(--primary-color);
+            margin-right: 0.5rem;
+        }
+
+        .package-card.featured .best-results {
+            background: rgba(236, 72, 153, 0.1);
+            border-left-color: var(--accent-color);
+        }
+
+        .package-card.featured .best-results i {
+            color: var(--accent-color);
+        }
+
+        footer {
+            background: var(--dark-color);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .contact-info {
+            display: flex;
             justify-content: center;
-            font-size: 30px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-            z-index: 1000;
-            transition: all 0.3s ease;
+            gap: 2rem;
+            margin-bottom: 1rem;
         }
 
-        .whatsapp-float:hover {
-            transform: scale(1.1);
+        .contact-info a {
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .customization-panel {
-            background-color: var(--light-card);
-            border-radius: 12px;
-            padding: 20px;
-            margin: 20px 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
-        }
-
-        .color-picker {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            margin: 0 5px;
-            display: inline-block;
-            border: 3px solid transparent;
-            transition: all 0.3s ease;
-        }
-
-        .color-picker.active {
-            border-color: var(--primary-color);
-            transform: scale(1.1);
+        .contact-info a:hover {
+            color: var(--primary-color);
         }
 
         @media (max-width: 768px) {
-            .hero-section {
-                padding: 40px 0;
+            header h1 {
+                font-size: 2rem;
             }
-            
-            .hero-section h1 {
-                font-size: 28px;
+
+            .packages {
+                grid-template-columns: 1fr;
             }
-            
-            .package-card {
-                margin-bottom: 20px;
+
+            .contact-info {
+                flex-direction: column;
+                gap: 1rem;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-light sticky-top">
+    <header>
         <div class="container">
-            <a class="navbar-brand" href="#">M&K Promotions</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#hourly">Hourly Packages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#daily">Daily Packages</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#booking">Book Now</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#" id="adminLoginLink">Admin</a>
-                    </li>
-                </ul>
-            </div>
+            <h1>MK Boost</h1>
+            <p>Boost Your Social Media Presence</p>
         </div>
-    </nav>
+    </header>
 
-    <!-- Hero Section -->
-    <section class="hero-section">
+    <main class="container">
+        <div class="package-toggle">
+            <button class="toggle-btn active" id="daily-btn">Daily Packages</button>
+            <button class="toggle-btn" id="hourly-btn">Hourly Packages</button>
+        </div>
+
+        <section id="daily-packages" class="package-section active">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">Daily Promotion Packages</h2>
+            <div class="packages">
+                <!-- Daily packages would go here -->
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">BASIC DAILY PACK</div>
+                        <div class="package-price">Rs. 1,500</div>
+                        <div class="package-duration">Duration: 24 Hours</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 15K+ Followers</li>
+                            <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 3K+ Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card featured">
+                    <div class="package-header">
+                        <div class="package-name">STANDARD DAILY PACK</div>
+                        <div class="package-price">Rs. 3,000</div>
+                        <div class="package-duration">Duration: 24 Hours</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Followers</li>
+                            <li><i class="fas fa-check-circle"></i> 15K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 10K+ Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">PREMIUM DAILY PACK</div>
+                        <div class="package-price">Rs. 5,000</div>
+                        <div class="package-duration">Duration: 24 Hours</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 82K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 15K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 10K+ Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="hourly-packages" class="package-section">
+            <h2 style="text-align: center; margin-bottom: 2rem; color: var(--primary-color);">Hourly Promotion Packages</h2>
+            <div class="packages">
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">BASIC HOURLY PACK</div>
+                        <div class="package-price">Rs. 300</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 7K+ Followers</li>
+                            <li><i class="fas fa-check-circle"></i> 1K+ Followers</li>
+                            <li><i class="fas fa-check-circle"></i> 3K+ Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">STANDARD HOURLY PACK</div>
+                        <div class="package-price">Rs. 500</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Followers</li>
+                            <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">BUDDHIST / FUNNY SPECIAL</div>
+                        <div class="package-price">Rs. 700</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Funny Channel OR</li>
+                            <li><i class="fas fa-check-circle"></i> 36K+ Buddhist Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">FUNNY PREMIUM PACK</div>
+                        <div class="package-price">Rs. 800</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 82K+ Funny Channel (single channel)</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">FUNNY DUAL PACK</div>
+                        <div class="package-price">Rs. 1,200</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 82K+ Funny Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Funny Channel</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">TRIPLE BOOST PACK</div>
+                        <div class="package-price">Rs. 1,600</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 82K+ Funny</li>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Funny</li>
+                            <li><i class="fas fa-check-circle"></i> 36K+ Buddhist</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card featured">
+                    <div class="package-header">
+                        <div class="package-name">ALL-IN-ONE HOURLY PACK</div>
+                        <div class="package-price">Rs. 2,300</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Reach:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> 82K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 35K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 36K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
+                            <li><i class="fas fa-check-circle"></i> Two 1K+ Channels</li>
+                        </ul>
+                        <div class="best-results">
+                            <i class="fas fa-star"></i> Highest reach — best for fast results
+                        </div>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+
+                <div class="package-card">
+                    <div class="package-header">
+                        <div class="package-name">PREMIUM EDIT PACK</div>
+                        <div class="package-price">Rs. 2,500</div>
+                        <div class="package-duration">Duration: 1 Hour</div>
+                    </div>
+                    <div class="package-details">
+                        <h3>Includes:</h3>
+                        <ul>
+                            <li><i class="fas fa-check-circle"></i> Funny video edit + ad extra</li>
+                            <li><i class="fas fa-check-circle"></i> Your ad turned into funny content</li>
+                            <li><i class="fas fa-check-circle"></i> Uploaded with caption</li>
+                        </ul>
+                    </div>
+                    <div class="package-cta">
+                        <a href="#" class="btn">Order Now</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
         <div class="container">
-            <h1>Boost Your Business with WhatsApp Channel Ads</h1>
-            <p class="lead">Reach thousands of potential customers with our targeted promotion packages</p>
-            <a href="#booking" class="btn btn-light btn-lg mt-3">Book Your Promotion</a>
-        </div>
-    </section>
-
-    <!-- Customization Panel -->
-    <div class="container">
-        <div class="customization-panel">
-            <h4>Customize Your Experience</h4>
-            <div class="row mt-3">
-                <div class="col-md-6">
-                    <h6>Theme Color</h6>
-                    <div class="mt-2">
-                        <div class="color-picker active" style="background-color: #4F46E5;" data-color="#4F46E5"></div>
-                        <div class="color-picker" style="background-color: #10B981;" data-color="#10B981"></div>
-                        <div class="color-picker" style="background-color: #F59E0B;" data-color="#F59E0B"></div>
-                        <div class="color-picker" style="background-color: #EF4444;" data-color="#EF4444"></div>
-                        <div class="color-picker" style="background-color: #8B5CF6;" data-color="#8B5CF6"></div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h6>Display Mode</h6>
-                    <div class="form-check form-switch mt-2">
-                        <input class="form-check-input" type="checkbox" id="darkModeToggle">
-                        <label class="form-check-label" for="darkModeToggle">Dark Mode</label>
-                    </div>
-                </div>
+            <div class="contact-info">
+                <a href="tel:+94771234567"><i class="fas fa-phone"></i> +94 77 123 4567</a>
+                <a href="mailto:info@mkboost.com"><i class="fas fa-envelope"></i> info@mkboost.com</a>
+                <a href="https://wa.me/94771234567"><i class="fab fa-whatsapp"></i> WhatsApp</a>
             </div>
-        </div>
-    </div>
-
-    <!-- Hourly Packages -->
-    <section id="hourly" class="py-5">
-        <div class="container">
-            <h2 class="section-title">Hourly Packages</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header basic-header">BASIC HOURLY PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 300</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 7K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 1K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 3K+ Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('BASIC HOURLY PACK', 300, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header standard-header">STANDARD HOURLY PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 500</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 35K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('STANDARD HOURLY PACK', 500, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header special-header">BUDDHIST / FUNNY SPECIAL</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 700</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny Channel OR</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Buddhist Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('BUDDHIST / FUNNY SPECIAL', 700, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header premium-header">FUNNY PREMIUM PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 800</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Funny Channel (single channel)</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('FUNNY PREMIUM PACK', 800, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header dual-header">FUNNY DUAL PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 1,200</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Funny Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('FUNNY DUAL PACK', 1200, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header all-in-header">TRIPLE BOOST PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 1,600</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Funny</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Buddhist</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('TRIPLE BOOST PACK', 1600, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header all-in-header">ALL-IN-ONE HOURLY PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 2,300</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> Two 1K+ Channels</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('ALL-IN-ONE HOURLY PACK', 2300, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header premium-header">PREMIUM EDIT PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 2,500</div>
-                            <div class="package-duration">Duration: 1 Hour</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> Funny video edit + ad extra</li>
-                                <li><i class="fas fa-check-circle"></i> Your ad turned into funny content</li>
-                                <li><i class="fas fa-check-circle"></i> Uploaded with caption</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('PREMIUM EDIT PACK', 2500, 'hourly')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Daily Packages -->
-    <section id="daily" class="py-5 bg-light">
-        <div class="container">
-            <h2 class="section-title">Daily Packages</h2>
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header basic-header">BASIC PACKAGE</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 500</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 5K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 1K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 3K+ Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('BASIC PACKAGE', 500, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header standard-header">STANDARD PACKAGE</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 1,000</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 35K+ Followers</li>
-                                <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('STANDARD PACKAGE', 1000, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header special-header">FUNNY / BUDDHIST SPECIAL</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 1,500</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny Video Channel or</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Buddhist Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('FUNNY / BUDDHIST SPECIAL', 1500, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header dual-header">DUAL DIGITAL BOOST</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 2,000</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 35K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('DUAL DIGITAL BOOST', 2000, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header premium-header">FUNNY PREMIUM</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 2,500</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> Only 82K+ Funny Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('FUNNY PREMIUM', 2500, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header dual-header">FUNNY DUAL PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 3,000</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Funny Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny Channel</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('FUNNY DUAL PACK', 3000, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header all-in-header">TRIPLE BOOST</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 4,000</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Funny</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Funny</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Buddhist</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('TRIPLE BOOST', 4000, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="package-card">
-                        <div class="package-header all-in-header">ALL IN ONE PACK</div>
-                        <div class="package-body">
-                            <div class="package-price">Rs. 6,000</div>
-                            <div class="package-duration">Duration: 24 Hours</div>
-                            <ul class="package-features">
-                                <li><i class="fas fa-check-circle"></i> 82K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 35K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 36K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> 5K+ Channel</li>
-                                <li><i class="fas fa-check-circle"></i> Two 1K+ Channels</li>
-                            </ul>
-                            <button class="btn-book" onclick="selectPackage('ALL IN ONE PACK', 6000, 'daily')">Select Package</button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Booking Section -->
-    <section id="booking" class="py-5">
-        <div class="container">
-            <div class="booking-section">
-                <h2 class="section-title text-center">Book Your Promotion</h2>
-                <div class="row">
-                    <div class="col-lg-8 mx-auto">
-                        <form id="bookingForm">
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="customerName" class="form-label">Full Name</label>
-                                    <input type="text" class="form-control" id="customerName" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="customerNumber" class="form-label">Contact Number</label>
-                                    <input type="tel" class="form-control" id="customerNumber" required>
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="selectedPackage" class="form-label">Selected Package</label>
-                                    <input type="text" class="form-control" id="selectedPackage" readonly>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="packagePrice" class="form-label">Package Price (Rs.)</label>
-                                    <input type="text" class="form-control" id="packagePrice" readonly>
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="bookingDate" class="form-label">Booking Date</label>
-                                    <input type="date" class="form-control" id="bookingDate" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="bookingTime" class="form-label">Booking Time</label>
-                                    <input type="time" class="form-control" id="bookingTime" required>
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <label for="extraDays" class="form-label">Extra Days</label>
-                                    <select class="form-select" id="extraDays">
-                                        <option value="0">None</option>
-                                        <option value="1">1 Day (Rs. 250)</option>
-                                        <option value="2">2 Days (Rs. 500)</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="rebooking" class="form-label">Rebooking Discount</label>
-                                    <select class="form-select" id="rebooking">
-                                        <option value="no">No</option>
-                                        <option value="yes">Yes (20% Discount)</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="row mb-3">
-                                <div class="col-md-12">
-                                    <label for="totalPrice" class="form-label">Total Price (Rs.)</label>
-                                    <input type="text" class="form-control" id="totalPrice" readonly>
-                                </div>
-                            </div>
-                            
-                            <div class="d-grid">
-                                <button type="submit" class="btn btn-primary btn-lg">Book Now via WhatsApp</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Admin Panel -->
-    <section id="adminPanel" class="admin-panel py-5">
-        <div class="container">
-            <h2 class="section-title">Admin Panel</h2>
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive">
-                        <table class="table table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Contact</th>
-                                    <th>Package</th>
-                                    <th>Date & Time</th>
-                                    <th>Extra Days</th>
-                                    <th>Total Price</th>
-                                    <th>Payment Status</th>
-                                </tr>
-                            </thead>
-                            <tbody id="adminBookingsTable">
-                                <!-- Bookings will be populated here -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-4">
-                    <h5>M&K Promotions</h5>
-                    <p>Your trusted partner for WhatsApp channel advertising in Sri Lanka.</p>
-                    <p>Email: dmkaawya@gmail.com</p>
-                    <p>Phone: 0775048455</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Bank Details</h5>
-                    <p><strong>Commercial Bank</strong></p>
-                    <p>Account No: 8019226176</p>
-                    <p>Branch: Rathnapura</p>
-                    <p>Name: N. Malindu Nethmina Noragalla</p>
-                </div>
-                <div class="col-md-4">
-                    <h5>Follow Our Channels</h5>
-                    <ul class="list-unstyled">
-                        <li><a href="https://whatsapp.com/channel/0029Vb6n24M05MUYH9tZZ022" target="_blank">Free Data Offers</a></li>
-                        <li><a href="https://whatsapp.com/channel/0029Vb6ogyEFXUufM9dLsa3A" target="_blank">English Status</a></li>
-                        <li><a href="https://whatsapp.com/channel/0029VbBxyuG0Vyc7iTdPEa1U" target="_blank">සිංදු වීඩියෝ</a></li>
-                        <li><a href="https://whatsapp.com/channel/0029VbBmvNYEQIakOTBz540d" target="_blank">පිරිත් දේශනා</a></li>
-                    </ul>
-                </div>
-            </div>
-            <hr class="my-4 bg-secondary">
-            <div class="text-center">
-                <p class="mb-0">&copy; 2023 M&K Promotions. All rights reserved.</p>
-                <p>Owner by Malindu Nethmitha | Promotion Admin by D.M.Kaawya</p>
-            </div>
+            <p>&copy; 2023 MK Boost. All rights reserved.</p>
         </div>
     </footer>
 
-    <!-- Theme Toggle Button -->
-    <div class="theme-toggle" id="themeToggle">
-        <i class="fas fa-moon"></i>
-    </div>
-
-    <!-- WhatsApp Float Button -->
-    <a href="https://wa.me/94775048455" class="whatsapp-float" target="_blank">
-        <i class="fab fa-whatsapp"></i>
-    </a>
-
-    <!-- Admin Login Modal -->
-    <div class="modal fade" id="adminLoginModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Admin Login</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="adminLoginForm">
-                        <div class="mb-3">
-                            <label for="adminUsername" class="form-label">Username</label>
-                            <input type="text" class="form-control" id="adminUsername" required>
-                        </div>
-                        <div class="mb-3">
-                            <label for="adminPassword" class="form-label">Password</label>
-                            <input type="password" class="form-control" id="adminPassword" required>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100">Login</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        // Initialize variables
-        let selectedPackageType = '';
-        let selectedPackageName = '';
-        let selectedPackagePrice = 0;
-        let bookings = JSON.parse(localStorage.getItem('bookings')) || [];
+        document.addEventListener('DOMContentLoaded', function() {
+            const dailyBtn = document.getElementById('daily-btn');
+            const hourlyBtn = document.getElementById('hourly-btn');
+            const dailyPackages = document.getElementById('daily-packages');
+            const hourlyPackages = document.getElementById('hourly-packages');
 
-        // DOM Elements
-        const themeToggle = document.getElementById('themeToggle');
-        const darkModeToggle = document.getElementById('darkModeToggle');
-        const colorPickers = document.querySelectorAll('.color-picker');
-        const adminLoginLink = document.getElementById('adminLoginLink');
-        const adminLoginForm = document.getElementById('adminLoginForm');
-        const bookingForm = document.getElementById('bookingForm');
-        const adminPanel = document.getElementById('adminPanel');
-        const adminBookingsTable = document.getElementById('adminBookingsTable');
-        const extraDaysSelect = document.getElementById('extraDays');
-        const rebookingSelect = document.getElementById('rebooking');
-        const totalPriceInput = document.getElementById('totalPrice');
-
-        // Theme Toggle
-        themeToggle.addEventListener('click', () => {
-            document.body.classList.toggle('dark-mode');
-            const icon = themeToggle.querySelector('i');
-            if (document.body.classList.contains('dark-mode')) {
-                icon.classList.remove('fa-moon');
-                icon.classList.add('fa-sun');
-            } else {
-                icon.classList.remove('fa-sun');
-                icon.classList.add('fa-moon');
-            }
-        });
-
-        // Dark Mode Toggle
-        darkModeToggle.addEventListener('change', () => {
-            if (darkModeToggle.checked) {
-                document.body.classList.add('dark-mode');
-                themeToggle.querySelector('i').classList.remove('fa-moon');
-                themeToggle.querySelector('i').classList.add('fa-sun');
-            } else {
-                document.body.classList.remove('dark-mode');
-                themeToggle.querySelector('i').classList.remove('fa-sun');
-                themeToggle.querySelector('i').classList.add('fa-moon');
-            }
-        });
-
-        // Color Picker
-        colorPickers.forEach(picker => {
-            picker.addEventListener('click', () => {
-                colorPickers.forEach(p => p.classList.remove('active'));
-                picker.classList.add('active');
-                const color = picker.getAttribute('data-color');
-                document.documentElement.style.setProperty('--primary-color', color);
+            dailyBtn.addEventListener('click', function() {
+                dailyBtn.classList.add('active');
+                hourlyBtn.classList.remove('active');
+                dailyPackages.classList.add('active');
+                hourlyPackages.classList.remove('active');
             });
-        });
 
-        // Admin Login
-        adminLoginLink.addEventListener('click', (e) => {
-            e.preventDefault();
-            const adminModal = new bootstrap.Modal(document.getElementById('adminLoginModal'));
-            adminModal.show();
-        });
-
-        adminLoginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const username = document.getElementById('adminUsername').value;
-            const password = document.getElementById('adminPassword').value;
-
-            if (username === 'admin' && password === 'admin123') {
-                adminPanel.classList.add('active');
-                document.getElementById('adminLoginModal').querySelector('.btn-close').click();
-                renderAdminBookings();
-                window.location.href = '#adminPanel';
-            } else {
-                alert('Invalid username or password!');
-            }
-        });
-
-        // Package Selection
-        function selectPackage(packageName, price, type) {
-            selectedPackageName = packageName;
-            selectedPackagePrice = price;
-            selectedPackageType = type;
-            
-            document.getElementById('selectedPackage').value = packageName;
-            document.getElementById('packagePrice').value = price;
-            
-            // Scroll to booking form
-            document.getElementById('booking').scrollIntoView({ behavior: 'smooth' });
-            
-            // Calculate total price
-            calculateTotalPrice();
-        }
-
-        // Calculate Total Price
-        function calculateTotalPrice() {
-            let extraDaysPrice = 0;
-            const extraDays = parseInt(extraDaysSelect.value);
-            
-            if (extraDays === 1) {
-                extraDaysPrice = 250;
-            } else if (extraDays === 2) {
-                extraDaysPrice = 500;
-            }
-            
-            let totalPrice = selectedPackagePrice + extraDaysPrice;
-            
-            // Apply 20% discount if rebooking
-            if (rebookingSelect.value === 'yes') {
-                totalPrice = totalPrice * 0.8;
-            }
-            
-            totalPriceInput.value = totalPrice.toFixed(2);
-        }
-
-        // Event Listeners for price calculation
-        extraDaysSelect.addEventListener('change', calculateTotalPrice);
-        rebookingSelect.addEventListener('change', calculateTotalPrice);
-
-        // Booking Form Submission
-        bookingForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            
-            const customerName = document.getElementById('customerName').value;
-            const customerNumber = document.getElementById('customerNumber').value;
-            const bookingDate = document.getElementById('bookingDate').value;
-            const bookingTime = document.getElementById('bookingTime').value;
-            const extraDays = extraDaysSelect.value;
-            const rebooking = rebookingSelect.value;
-            const totalPrice = totalPriceInput.value;
-            
-            // Create booking object
-            const booking = {
-                id: Date.now(),
-                name: customerName,
-                number: customerNumber,
-                package: selectedPackageName,
-                packageType: selectedPackageType,
-                date: bookingDate,
-                time: bookingTime,
-                extraDays: extraDays,
-                rebooking: rebooking,
-                totalPrice: totalPrice,
-                paymentStatus: 'Pending'
-            };
-            
-            // Save to localStorage
-            bookings.push(booking);
-            localStorage.setItem('bookings', JSON.stringify(bookings));
-            
-            // Create WhatsApp message
-            let message = `Hello, I would like to book the following promotion:\n\n`;
-            message += `Package: ${selectedPackageName}\n`;
-            message += `Price: Rs. ${selectedPackagePrice}\n`;
-            message += `Date: ${bookingDate}\n`;
-            message += `Time: ${bookingTime}\n`;
-            
-            if (extraDays !== '0') {
-                message += `Extra Days: ${extraDays}\n`;
-            }
-            
-            if (rebooking === 'yes') {
-                message += `Rebooking Discount: 20%\n`;
-            }
-            
-            message += `Total Price: Rs. ${totalPrice}\n\n`;
-            message += `Customer Details:\n`;
-            message += `Name: ${customerName}\n`;
-            message += `Contact: ${customerNumber}`;
-            
-            // Open WhatsApp with pre-filled message
-            const whatsappUrl = `https://wa.me/94775048455?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-            
-            // Reset form
-            bookingForm.reset();
-            document.getElementById('selectedPackage').value = '';
-            document.getElementById('packagePrice').value = '';
-            document.getElementById('totalPrice').value = '';
-            
-            // Show success message
-            alert('Booking details sent to WhatsApp! Our team will contact you soon.');
-        });
-
-        // Render Admin Bookings
-        function renderAdminBookings() {
-            adminBookingsTable.innerHTML = '';
-            
-            if (bookings.length === 0) {
-                adminBookingsTable.innerHTML = '<tr><td colspan="7" class="text-center">No bookings found</td></tr>';
-                return;
-            }
-            
-            bookings.forEach(booking => {
-                const row = document.createElement('tr');
-                
-                let paymentStatusClass = '';
-                if (booking.paymentStatus === 'Paid') {
-                    paymentStatusClass = 'text-success';
-                } else if (booking.paymentStatus === 'Pending') {
-                    paymentStatusClass = 'text-warning';
-                } else {
-                    paymentStatusClass = 'text-danger';
-                }
-                
-                row.innerHTML = `
-                    <td>${booking.name}</td>
-                    <td>${booking.number}</td>
-                    <td>${booking.package}</td>
-                    <td>${booking.date} at ${booking.time}</td>
-                    <td>${booking.extraDays === '0' ? 'None' : booking.extraDays}</td>
-                    <td>Rs. ${booking.totalPrice}</td>
-                    <td class="${paymentStatusClass}">${booking.paymentStatus}</td>
-                `;
-                
-                adminBookingsTable.appendChild(row);
+            hourlyBtn.addEventListener('click', function() {
+                hourlyBtn.classList.add('active');
+                dailyBtn.classList.remove('active');
+                hourlyPackages.classList.add('active');
+                dailyPackages.classList.remove('active');
             });
-        }
-
-        // Initialize
-        document.addEventListener('DOMContentLoaded', () => {
-            // Set minimum date to today
-            const today = new Date().toISOString().split('T')[0];
-            document.getElementById('bookingDate').setAttribute('min', today);
         });
     </script>
 </body>
